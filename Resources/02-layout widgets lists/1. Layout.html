@@ -1,0 +1,838 @@
+
+<!-- saved from url=(0162)file:///D:/old_data/D3/old%20Data/Adnan/courses/2018%201%20Spring/CSE491%20Mobile/cs193a/CS193A-master/Winter2017Update/class/cs193a/lectures/slides/layout.html#/ -->
+<html><head><meta http-equiv="Content-Type" content="text/html; charset=windows-1252">
+		<title>CSE 491: Android - Layout</title>
+		<link rel="stylesheet" href="./Layout_files/default.css" tppabs="http://web.stanford.edu/class/cs193a/lectures/slides/highlightjs/styles/default.css">
+		<link rel="stylesheet" href="./Layout_files/reveal.css" tppabs="http://web.stanford.edu/class/cs193a/lectures/slides/reveal/css/reveal.css">
+		<link rel="stylesheet" href="./Layout_files/white.css" tppabs="http://web.stanford.edu/class/cs193a/lectures/slides/reveal/css/theme/white.css">
+		<link rel="stylesheet" href="./Layout_files/cs193a-slides.css" tppabs="http://web.stanford.edu/class/cs193a/lectures/slides/cs193a-slides.css">
+	</head>
+	<body>
+		<div class="reveal slide" role="application" data-transition-speed="default" data-background-transition="fade">
+			<div class="slides" style="width: 960px; height: 700px; left: 50%; top: 50%; bottom: auto; right: auto; transform: translate(-50%, -50%) scale(0.907929);">
+
+<!-- BEGIN SLIDES AREA -->
+
+<section class="titleslide present" style="display: block;">
+	<h1>CSE 491: Android</h1>
+
+	<p>Layout</p>
+	<br/>
+	<br/>
+	<pre>
+Acknowledgment:
+   The slides are of ones by Marty Stepp.
+   http://cs193a.stanford.edu
+	</pre>
+</section>
+
+<section class="future" style="display: block;" hidden="" aria-hidden="true">
+	<h1>Sizing and positioning</h1>
+
+	<p>	
+		How does the programmer specify where each component appears, how big each component should be, etc.?
+	</p>
+
+	<ul>
+		<li><strong>Absolute positioning</strong> (C++, C#, others):
+			<ul>
+				<li>Programmer specifies exact pixel coordinates of every component.</li>
+				<li>"Put this button at (x=15, y=75) and make it 70x31 px in size."</li>
+			</ul>
+		</li>
+		
+		<li><strong>Layout managers</strong> (Java, Android):
+			<ul>
+				<li>Objects that decide where to position each component based on some general rules or criteria.</li>
+				<li>"Put these four buttons into a 2x2 grid and put these text boxes in a horizontal flow in the south part of the app."</li>
+				<li>More flexible and general; works better with a variety of devices.</li>
+			</ul>
+		</li>
+	</ul>
+</section>
+
+<section class="future" style="display: block;" hidden="" aria-hidden="true">
+	<h1>ViewGroup as layout</h1>
+	
+	<ul>
+		<li><strong><code>ViewGroup</code></strong> superclass represents containers of views
+			<ul>
+				<li>layouts are described in <strong>XML</strong> and mirrored in Java code</li>
+				<li>Android provides several pre-existing layout managers;
+				you can define your own <strong>custom layouts</strong> if needed</li>
+				<li>layouts can be <strong>nested</strong> to achieve combinations of features</li>
+			</ul>
+		</li>
+		
+		<li>in the Java code and XML:
+			<ul>
+				<li>an <strong><code>Activity</code></strong> is a <code>ViewGroup</code></li>
+				<li>various <code>Layout</code> classes are also <code>ViewGroup</code>s</li>
+				<li>widgets can be added to a <code>ViewGroup</code>, which will then
+				manage that widget's position/size behavior</li>
+			</ul>
+		</li>
+	</ul>
+</section>
+
+<section class="future" style="display: none;" hidden="" aria-hidden="true">
+	<h1>XML, in brief</h1>
+	
+	<ul>
+		<li><strong>XML</strong>: a language for describing hierarchical text data.
+			<ul>
+				<li>Uses tags that consist of elements and attributes.  Tags can be nested.</li>
+				<li>Some tags are opened and closed;  others self-close.</li>
+			</ul>
+		</li>
+	</ul>
+
+	<div class="linenumbersouter"><pre class=" linenumbers"><code style="float: left;">&nbsp;1&nbsp;
+&nbsp;2&nbsp;</code></pre><pre><code class="xml hljs"><span class="hljs-tag">&lt;</span><var><span class="hljs-tag"><span class="hljs-name">element</span></span></var><span class="hljs-tag"> </span><var><span class="hljs-tag"><span class="hljs-attr">attr</span></span></var><span class="hljs-tag">=<span class="hljs-string">"</span></span><var><span class="hljs-tag"><span class="hljs-string">value</span></span></var><span class="hljs-tag"><span class="hljs-string">"</span> </span><var><span class="hljs-tag"><span class="hljs-attr">attr</span></span></var><span class="hljs-tag">=<span class="hljs-string">"</span></span><var><span class="hljs-tag"><span class="hljs-string">value</span></span></var><span class="hljs-tag"><span class="hljs-string">"</span>&gt;</span>  ...  <span class="hljs-tag">&lt;/</span><var><span class="hljs-tag"><span class="hljs-name">element</span></span></var><span class="hljs-tag">&gt;</span>
+<span class="hljs-tag">&lt;</span><var><span class="hljs-tag"><span class="hljs-name">element</span></span></var><span class="hljs-tag"> </span><var><span class="hljs-tag"><span class="hljs-attr">attr</span></span></var><span class="hljs-tag">=<span class="hljs-string">"</span></span><var><span class="hljs-tag"><span class="hljs-string">value</span></span></var><span class="hljs-tag"><span class="hljs-string">"</span> </span><var><span class="hljs-tag"><span class="hljs-attr">attr</span></span></var><span class="hljs-tag">=<span class="hljs-string">"</span></span><var><span class="hljs-tag"><span class="hljs-string">value</span></span></var><span class="hljs-tag"><span class="hljs-string">"</span> /&gt;</span>    (self-closing)
+</code></pre></div>
+
+	<p>Example: (case-sensitive)</p>
+
+	<div class="linenumbersouter"><pre class=" linenumbers"><code style="float: left;">&nbsp;1&nbsp;
+&nbsp;2&nbsp;
+&nbsp;3&nbsp;
+&nbsp;4&nbsp;
+&nbsp;5&nbsp;</code></pre><pre><code class="xml hljs"><span class="hljs-comment">&lt;!-- this is a comment --&gt;</span>
+<span class="hljs-tag">&lt;<span class="hljs-name">course</span> <span class="hljs-attr">name</span>=<span class="hljs-string">"CSE 491: Android"</span> <span class="hljs-attr">quarter</span>=<span class="hljs-string">"16wi"</span>&gt;</span>
+    <span class="hljs-tag">&lt;<span class="hljs-name">instructor</span>&gt;</span>Marty Stepp<span class="hljs-tag">&lt;/<span class="hljs-name">instructor</span>&gt;</span>
+    <span class="hljs-tag">&lt;<span class="hljs-name">ta</span>&gt;</span>none<span class="hljs-tag">&lt;/<span class="hljs-name">ta</span>&gt;</span>
+<span class="hljs-tag">&lt;/<span class="hljs-name">course</span>&gt;</span>
+</code></pre></div>
+</section>
+
+<section class="future" style="display: none;" hidden="" aria-hidden="true">
+	<h1>Changing layouts</h1>
+	
+	<ul>
+		<li>go to the <strong>Text</strong> view for your layout XML file</li>
+		<li>change open/close tags to new layout type, e.g. <code>LinearLayout</code></li>
+		<li>now go back to <strong>Design</strong> view and add widgets</li>
+	</ul>
+	
+	<div class="">
+		<img src="./Layout_files/androidstudio-change-layout.png" tppabs="http://web.stanford.edu/class/cs193a/lectures/slides/images/androidstudio-change-layout.png" alt="screenshot">
+	</div>
+</section>
+
+<section class="future" style="display: none;" hidden="" aria-hidden="true">
+	<h1>LinearLayout</h1>
+	
+	<ul>
+		<li>lays out widgets/views in a single line</li>
+		<li><strong>orientation</strong> of horizontal or vertical</li>
+		<li>items do not wrap if they reach edge of screen!</li>
+	</ul>
+	
+	<div class="figureshorizontal">
+		<img src="./Layout_files/linearlayout-horizontal.png" tppabs="http://web.stanford.edu/class/cs193a/lectures/slides/images/linearlayout-horizontal.png" alt="figure">
+		<img src="./Layout_files/linearlayout-vertical.png" tppabs="http://web.stanford.edu/class/cs193a/lectures/slides/images/linearlayout-vertical.png" alt="figure">
+	</div>
+</section>
+
+<section class="future" style="display: none;" hidden="" aria-hidden="true">
+	<h1>LinearLayout example 1</h1>
+	
+	<div class="figuresright">
+		<img src="./Layout_files/linearlayout-horizontal-4buttons-1.png" tppabs="http://web.stanford.edu/class/cs193a/lectures/slides/images/linearlayout-horizontal-4buttons-1.png" alt="figure">
+	</div>
+	
+<div class="linenumbersouter"><pre class=" linenumbers"><code style="float: left;">&nbsp;1&nbsp;
+&nbsp;2&nbsp;
+&nbsp;3&nbsp;
+&nbsp;4&nbsp;
+&nbsp;5&nbsp;
+&nbsp;6&nbsp;
+&nbsp;7&nbsp;
+&nbsp;8&nbsp;
+&nbsp;9&nbsp;</code></pre><pre><code class="xml hljs"><span class="hljs-tag">&lt;<span class="hljs-name">LinearLayout</span> <span class="hljs-attr">...</span>
+        <span class="hljs-attr">android:orientation</span>=<span class="hljs-string">"</span></span><em><span class="hljs-tag"><span class="hljs-string">horizontal</span></span></em><span class="hljs-tag"><span class="hljs-string">"</span>
+        <span class="hljs-attr">tools:context</span>=<span class="hljs-string">".MainActivity"</span>&gt;</span>
+    <span class="hljs-tag">&lt;<span class="hljs-name">Button</span> <span class="hljs-attr">...</span> <span class="hljs-attr">android:text</span>=<span class="hljs-string">"Button 1"</span> /&gt;</span>
+    <span class="hljs-tag">&lt;<span class="hljs-name">Button</span> <span class="hljs-attr">...</span> <span class="hljs-attr">android:text</span>=<span class="hljs-string">"Button 2 Hooray"</span> /&gt;</span>
+    <span class="hljs-tag">&lt;<span class="hljs-name">Button</span> <span class="hljs-attr">...</span> <span class="hljs-attr">android:text</span>=<span class="hljs-string">"Button 3"</span> /&gt;</span>
+    <span class="hljs-tag">&lt;<span class="hljs-name">Button</span> <span class="hljs-attr">...</span> <span class="hljs-attr">android:text</span>=<span class="hljs-string">"Button 4
+                        Very Long Text"</span> /&gt;</span>
+<span class="hljs-tag">&lt;/<span class="hljs-name">LinearLayout</span>&gt;</span>
+</code></pre></div>
+
+	<ul>
+		<li>In our examples, we'll use ... when omitting boilerplate
+		code that is auto-generated by Android Studio and not
+		relevant to the specific example at hand.</li>
+	</ul>
+</section>
+
+<section class="future" style="display: none;" hidden="" aria-hidden="true">
+	<h1>LinearLayout example 2</h1>
+	
+	<div class="figuresright">
+		<img src="./Layout_files/linearlayout-vertical-4buttons-1.png" tppabs="http://web.stanford.edu/class/cs193a/lectures/slides/images/linearlayout-vertical-4buttons-1.png" alt="figure">
+	</div>
+	
+<div class="linenumbersouter"><pre class=" linenumbers"><code style="float: left;">&nbsp;1&nbsp;
+&nbsp;2&nbsp;
+&nbsp;3&nbsp;
+&nbsp;4&nbsp;
+&nbsp;5&nbsp;
+&nbsp;6&nbsp;
+&nbsp;7&nbsp;
+&nbsp;8&nbsp;
+&nbsp;9&nbsp;</code></pre><pre><code class="xml hljs"><span class="hljs-tag">&lt;<span class="hljs-name">LinearLayout</span> <span class="hljs-attr">...</span>
+        <span class="hljs-attr">android:orientation</span>=<span class="hljs-string">"</span></span><em><span class="hljs-tag"><span class="hljs-string">vertical</span></span></em><span class="hljs-tag"><span class="hljs-string">"</span>
+        <span class="hljs-attr">tools:context</span>=<span class="hljs-string">".MainActivity"</span>&gt;</span>
+    <span class="hljs-tag">&lt;<span class="hljs-name">Button</span> <span class="hljs-attr">...</span> <span class="hljs-attr">android:text</span>=<span class="hljs-string">"Button 1"</span> /&gt;</span>
+    <span class="hljs-tag">&lt;<span class="hljs-name">Button</span> <span class="hljs-attr">...</span> <span class="hljs-attr">android:text</span>=<span class="hljs-string">"Button 2 Hooray"</span> /&gt;</span>
+    <span class="hljs-tag">&lt;<span class="hljs-name">Button</span> <span class="hljs-attr">...</span> <span class="hljs-attr">android:text</span>=<span class="hljs-string">"Button 3"</span> /&gt;</span>
+    <span class="hljs-tag">&lt;<span class="hljs-name">Button</span> <span class="hljs-attr">...</span> <span class="hljs-attr">android:text</span>=<span class="hljs-string">"Button 4
+                        Very Long Text"</span> /&gt;</span>
+<span class="hljs-tag">&lt;/<span class="hljs-name">LinearLayout</span>&gt;</span>
+</code></pre></div>
+</section>
+
+<section class="future" style="display: none;" hidden="" aria-hidden="true">
+	<h1>Gravity</h1>
+
+	<div class="figuresright">
+		<img src="./Layout_files/gravity.png" tppabs="http://web.stanford.edu/class/cs193a/lectures/slides/images/gravity.png" alt="figure">
+	</div>
+	
+	<ul>
+		<li>gravity: alignment direction that widgets are pulled
+			<ul>
+				<li><code>top</code>, <code>bottom</code>, <code>left</code>, <code>right</code>, <code>center</code></li>
+				<li>combine multiple with <code>|</code></li>
+				<li>set <code>gravity</code> on the layout to adjust all widgets;
+				set <code>layout_gravity</code> on an individual widget</li>
+			</ul>
+		</li>
+	</ul>
+
+	<div class="linenumbersouter"><pre class=" linenumbers"><code style="float: left;">&nbsp;1&nbsp;
+&nbsp;2&nbsp;
+&nbsp;3&nbsp;
+&nbsp;4&nbsp;
+&nbsp;5&nbsp;
+&nbsp;6&nbsp;
+&nbsp;7&nbsp;
+&nbsp;8&nbsp;
+&nbsp;9&nbsp;
+10&nbsp;</code></pre><pre><code class="xml hljs"><span class="hljs-tag">&lt;<span class="hljs-name">LinearLayout</span> <span class="hljs-attr">...</span>
+        <span class="hljs-attr">android:orientation</span>=<span class="hljs-string">"vertical"</span>
+        <span class="hljs-attr">android:gravity</span>=<span class="hljs-string">"</span></span><em><span class="hljs-tag"><span class="hljs-string">center|right</span></span></em><span class="hljs-tag"><span class="hljs-string">"</span>&gt;</span>
+    <span class="hljs-tag">&lt;<span class="hljs-name">Button</span> <span class="hljs-attr">...</span> <span class="hljs-attr">android:text</span>=<span class="hljs-string">"Button 1"</span> /&gt;</span>
+    <span class="hljs-tag">&lt;<span class="hljs-name">Button</span> <span class="hljs-attr">...</span> <span class="hljs-attr">android:text</span>=<span class="hljs-string">"Button 2 Hooray"</span> /&gt;</span>
+    <span class="hljs-tag">&lt;<span class="hljs-name">Button</span> <span class="hljs-attr">...</span> <span class="hljs-attr">android:text</span>=<span class="hljs-string">"Button 3"</span> /&gt;</span>
+    <span class="hljs-tag">&lt;<span class="hljs-name">Button</span> <span class="hljs-attr">...</span> <span class="hljs-attr">android:text</span>=<span class="hljs-string">"Button 4 Long Text"</span> /&gt;</span>
+    <span class="hljs-tag">&lt;<span class="hljs-name">Button</span> <span class="hljs-attr">...</span> <span class="hljs-attr">android:text</span>=<span class="hljs-string">"Button 5"</span>
+                </span><em><span class="hljs-tag"><span class="hljs-attr">android:layout_gravity</span>=<span class="hljs-string">"left"</span></span></em><span class="hljs-tag"> /&gt;</span>
+<span class="hljs-tag">&lt;/<span class="hljs-name">LinearLayout</span>&gt;</span>
+</code></pre></div>
+</section>
+
+<section class="future" style="display: none;" hidden="" aria-hidden="true">
+	<h1>Weight</h1>
+	
+	<div class="figuresright">
+		<img src="./Layout_files/weight.png" tppabs="http://web.stanford.edu/class/cs193a/lectures/slides/images/weight.png" alt="figure">
+	</div>
+	
+	<ul>
+		<li><strong>weight</strong>: relative element sizes by integers
+			<ul>
+				<li>widget with weight <em>K</em> gets <em>K</em>/total fraction of total size</li>
+				<li>cooking analogy: "2 parts flour, 1 part water, ..."</li>
+			</ul>
+		</li>
+	</ul>
+
+	<div class="linenumbersouter"><pre class=" linenumbers"><code style="float: left;">&nbsp;1&nbsp;
+&nbsp;2&nbsp;
+&nbsp;3&nbsp;
+&nbsp;4&nbsp;
+&nbsp;5&nbsp;
+&nbsp;6&nbsp;
+&nbsp;7&nbsp;
+&nbsp;8&nbsp;
+&nbsp;9&nbsp;</code></pre><pre><code class="xml hljs"><span class="hljs-tag">&lt;<span class="hljs-name">LinearLayout</span> <span class="hljs-attr">...</span>
+        <span class="hljs-attr">android:orientation</span>=<span class="hljs-string">"vertical"</span>&gt;</span>
+    <span class="hljs-tag">&lt;<span class="hljs-name">Button</span> <span class="hljs-attr">...</span> <span class="hljs-attr">android:text</span>=<span class="hljs-string">"B1"</span>
+                </span><em><span class="hljs-tag"><span class="hljs-attr">android:layout_weight</span>=<span class="hljs-string">"1"</span></span></em><span class="hljs-tag"> /&gt;</span>
+    <span class="hljs-tag">&lt;<span class="hljs-name">Button</span> <span class="hljs-attr">...</span> <span class="hljs-attr">android:text</span>=<span class="hljs-string">"B2"</span>
+                </span><em><span class="hljs-tag"><span class="hljs-attr">android:layout_weight</span>=<span class="hljs-string">"3"</span></span></em><span class="hljs-tag"> /&gt;</span>
+    <span class="hljs-tag">&lt;<span class="hljs-name">Button</span> <span class="hljs-attr">...</span> <span class="hljs-attr">android:text</span>=<span class="hljs-string">"B3"</span>
+                </span><em><span class="hljs-tag"><span class="hljs-attr">android:layout_weight</span>=<span class="hljs-string">"1"</span></span></em><span class="hljs-tag"> /&gt;</span>
+<span class="hljs-tag">&lt;/<span class="hljs-name">LinearLayout</span>&gt;</span>
+</code></pre></div>
+</section>
+
+<section class="future" style="display: none;" hidden="" aria-hidden="true">
+	<h1>Widget box model</h1>
+	
+	<ul>
+		<li><strong>content</strong>: size of widget itself</li>
+		<li><strong>padding</strong>: artificial increase to widget size outside of content</li>
+		<li><strong>border</strong>: outside padding, a line around edge of widget</li>
+		<li><strong>margin</strong>: invisible separation from neighboring widgets</li>
+	</ul>
+
+	<div class="">
+		<img src="./Layout_files/box-model.png" tppabs="http://web.stanford.edu/class/cs193a/lectures/slides/images/box-model.png" alt="figure">
+	</div>
+</section>
+
+<section class="future" style="display: none;" hidden="" aria-hidden="true">
+	<h1>Sizing an individual widget</h1>
+	
+	<ul>
+		<li><strong>width</strong> and <strong>height</strong> of a widget can be:
+			<ul>
+				<li><code>wrap_content</code>: exactly large enough to fit the widget's content</li>
+				<li><code>match_parent</code>: as wide or tall as 100% of the screen or layout</li>
+				<li>a specific fixed width such as <code>64dp</code>  (not usually recommended)
+					<ul>
+						<li>dp = device pixels;    dip = device-independent pixels;    sp = scaling pixels</li>
+					</ul>
+				</li>
+			</ul>
+		</li>
+	</ul>
+
+	<div class="linenumbersouter"><pre class=" linenumbers"><code style="float: left;">&nbsp;1&nbsp;
+&nbsp;2&nbsp;
+&nbsp;3&nbsp;</code></pre><pre><code class="xml hljs"><span class="hljs-tag">&lt;<span class="hljs-name">Button</span> <span class="hljs-attr">...</span>
+        <span class="hljs-attr">android:layout_width</span>=<span class="hljs-string">"match_parent"</span>
+        <span class="hljs-attr">android:layout_height</span>=<span class="hljs-string">"wrap_content"</span> /&gt;</span>
+</code></pre></div>
+
+	<div class="">
+		<img src="./Layout_files/widget-width-height-1.png" tppabs="http://web.stanford.edu/class/cs193a/lectures/slides/images/widget-width-height-1.png" alt="figure">
+	</div>
+</section>
+
+<section data-transition="fade-out" class="future" style="display: none;" hidden="" aria-hidden="true">
+	<h1>Padding</h1>
+	
+	<div class="figuresright">
+		<img src="./Layout_files/padding.png" tppabs="http://web.stanford.edu/class/cs193a/lectures/slides/images/padding.png" alt="figure">
+	</div>
+	
+	<ul>
+		<li><strong>padding</strong>: extra space inside widget
+			<ul>
+				<li>set <code>padding</code> to adjust all sides; <br>
+				<code>paddingTop</code>, <code>Bottom</code>, <code>Left</code>, <code>Right</code> for one side</li>
+				<li>usually set to specific values like 10dp
+				(some widgets have a default value ~16dp)</li>
+			</ul>
+		</li>
+	</ul>
+
+<div class="linenumbersouter"><pre class=" linenumbers"><code style="float: left;">&nbsp;1&nbsp;
+&nbsp;2&nbsp;
+&nbsp;3&nbsp;
+&nbsp;4&nbsp;
+&nbsp;5&nbsp;
+&nbsp;6&nbsp;
+&nbsp;7&nbsp;
+&nbsp;8&nbsp;
+&nbsp;9&nbsp;</code></pre><pre><code class="xml hljs"><span class="hljs-tag">&lt;<span class="hljs-name">LinearLayout</span> <span class="hljs-attr">...</span>
+        <span class="hljs-attr">android:orientation</span>=<span class="hljs-string">"vertical"</span>&gt;</span>
+    <span class="hljs-tag">&lt;<span class="hljs-name">Button</span> <span class="hljs-attr">...</span> <span class="hljs-attr">android:text</span>=<span class="hljs-string">"Button 1"</span>
+                </span><em><span class="hljs-tag"><span class="hljs-attr">android:padding</span>=<span class="hljs-string">"50dp"</span></span></em><span class="hljs-tag"> /&gt;</span>
+    <span class="hljs-tag">&lt;<span class="hljs-name">Button</span> <span class="hljs-attr">...</span> <span class="hljs-attr">android:text</span>=<span class="hljs-string">"Button 2 Hooray"</span> /&gt;</span>
+    <span class="hljs-tag">&lt;<span class="hljs-name">Button</span> <span class="hljs-attr">...</span> <span class="hljs-attr">android:text</span>=<span class="hljs-string">"Button 3"</span>
+                </span><em><span class="hljs-tag"><span class="hljs-attr">android:paddingLeft</span>=<span class="hljs-string">"20dp"</span></span></em><span class="hljs-tag">
+                </span><em><span class="hljs-tag"><span class="hljs-attr">android:paddingBottom</span>=<span class="hljs-string">"40dp"</span></span></em><span class="hljs-tag"> /&gt;</span>
+<span class="hljs-tag">&lt;/<span class="hljs-name">LinearLayout</span>&gt;</span>
+</code></pre></div>
+</section>
+
+<section data-transition="fade-in" class="future" style="display: none;" hidden="" aria-hidden="true">
+	<h1>Margin</h1>
+	
+	<div class="figuresright">
+		<img src="./Layout_files/margin.png" tppabs="http://web.stanford.edu/class/cs193a/lectures/slides/images/margin.png" alt="figure">
+	</div>
+	<ul>
+		<li><strong>margin</strong>: extra blank space outside widget
+			<ul>
+				<li>set <code>layout_margin</code> to adjust all sides; <br>
+				<code>layout_marginTop</code>, <code>Bottom</code>, <code>Left</code>, <code>Right</code></li>
+				<li>usually set to specific values like 10dp
+				(set defaults in <span class="filename">res/values/dimens.xml</span>)</li>
+			</ul>
+		</li>
+	</ul>
+
+	<div class="linenumbersouter"><pre class=" linenumbers"><code style="float: left;">&nbsp;1&nbsp;
+&nbsp;2&nbsp;
+&nbsp;3&nbsp;
+&nbsp;4&nbsp;
+&nbsp;5&nbsp;
+&nbsp;6&nbsp;
+&nbsp;7&nbsp;
+&nbsp;8&nbsp;
+&nbsp;9&nbsp;</code></pre><pre><code class="xml hljs"><span class="hljs-tag">&lt;<span class="hljs-name">LinearLayout</span> <span class="hljs-attr">...</span>
+        <span class="hljs-attr">android:orientation</span>=<span class="hljs-string">"vertical"</span>&gt;</span>
+    <span class="hljs-tag">&lt;<span class="hljs-name">Button</span> <span class="hljs-attr">...</span> <span class="hljs-attr">android:text</span>=<span class="hljs-string">"Button 1"</span>
+                </span><em><span class="hljs-tag"><span class="hljs-attr">android:layout_margin</span>=<span class="hljs-string">"50dp"</span></span></em><span class="hljs-tag"> /&gt;</span>
+    <span class="hljs-tag">&lt;<span class="hljs-name">Button</span> <span class="hljs-attr">...</span> <span class="hljs-attr">android:text</span>=<span class="hljs-string">"Button 2 Hooray"</span> /&gt;</span>
+    <span class="hljs-tag">&lt;<span class="hljs-name">Button</span> <span class="hljs-attr">...</span> <span class="hljs-attr">android:text</span>=<span class="hljs-string">"Button 3"</span>
+                </span><em><span class="hljs-tag"><span class="hljs-attr">android:layout_marginLeft</span>=<span class="hljs-string">"30dp"</span></span></em><span class="hljs-tag">
+                </span><em><span class="hljs-tag"><span class="hljs-attr">android:layout_marginTop</span>=<span class="hljs-string">"40dp"</span></span></em><span class="hljs-tag"> /&gt;</span>
+<span class="hljs-tag">&lt;/<span class="hljs-name">LinearLayout</span>&gt;</span>
+</code></pre></div>
+</section>
+
+<section class="future" style="display: none;" hidden="" aria-hidden="true">
+	<h1>GridLayout</h1>
+	
+	<p>
+		lays out widgets/views in lines of rows and columns
+	</p>
+	
+	<div class="figuresright">
+		<img src="./Layout_files/gridlayout.png" tppabs="http://web.stanford.edu/class/cs193a/lectures/slides/images/gridlayout.png" alt="figure">
+		<p class="caption">
+			grid of 4 rows, 3 columns
+		</p>
+	</div>
+
+	<ul>
+		<li><strong><code>orientation</code></strong> attribute defines row/column-major order</li>
+		<li>introduced in Android 4;  replaces older <code>TableLayout</code></li>
+		<li>each widget placed into "next" available row/column unless given a <code>layout_row</code> and <code>layout_column</code> attribute</li>
+	</ul>
+</section>
+
+<section data-transition="fade-out" class="future" style="display: none;" hidden="" aria-hidden="true">
+	<h1>GridLayout example 1</h1>
+
+	<div class="figuresright">
+		<img src="./Layout_files/gridlayout-1.png" tppabs="http://web.stanford.edu/class/cs193a/lectures/slides/images/gridlayout-1.png" alt="figure">
+	</div>
+
+	<div class="linenumbersouter"><pre class=" linenumbers"><code style="float: left;">&nbsp;1&nbsp;
+&nbsp;2&nbsp;
+&nbsp;3&nbsp;
+&nbsp;4&nbsp;
+&nbsp;5&nbsp;
+&nbsp;6&nbsp;
+&nbsp;7&nbsp;
+&nbsp;8&nbsp;
+&nbsp;9&nbsp;
+10&nbsp;
+11&nbsp;</code></pre><pre><code class="xmp hljs xml"><span class="hljs-tag">&lt;<span class="hljs-name">GridLayout</span> <span class="hljs-attr">...</span>
+        </span><em><span class="hljs-tag"><span class="hljs-attr">android:rowCount</span>=<span class="hljs-string">"2"</span></span></em><span class="hljs-tag">
+        </span><em><span class="hljs-tag"><span class="hljs-attr">android:columnCount</span>=<span class="hljs-string">"3"</span></span></em><span class="hljs-tag">
+        <span class="hljs-attr">tools:context</span>=<span class="hljs-string">".MainActivity"</span>&gt;</span>
+    <span class="hljs-tag">&lt;<span class="hljs-name">Button</span> <span class="hljs-attr">...</span> <span class="hljs-attr">android:text</span>=<span class="hljs-string">"Button 1"</span> /&gt;</span>
+    <span class="hljs-tag">&lt;<span class="hljs-name">Button</span> <span class="hljs-attr">...</span> <span class="hljs-attr">android:text</span>=<span class="hljs-string">"Button Two"</span> /&gt;</span>
+    <span class="hljs-tag">&lt;<span class="hljs-name">Button</span> <span class="hljs-attr">...</span> <span class="hljs-attr">android:text</span>=<span class="hljs-string">"Button 3"</span> /&gt;</span>
+    <span class="hljs-tag">&lt;<span class="hljs-name">Button</span> <span class="hljs-attr">...</span> <span class="hljs-attr">android:text</span>=<span class="hljs-string">"Button Four"</span> /&gt;</span>
+    <span class="hljs-tag">&lt;<span class="hljs-name">Button</span> <span class="hljs-attr">...</span> <span class="hljs-attr">android:text</span>=<span class="hljs-string">"Button 5"</span> /&gt;</span>
+    <span class="hljs-tag">&lt;<span class="hljs-name">Button</span> <span class="hljs-attr">...</span> <span class="hljs-attr">android:text</span>=<span class="hljs-string">"Button Six"</span> /&gt;</span>
+<span class="hljs-tag">&lt;/<span class="hljs-name">GridLayout</span>&gt;</span>
+</code></pre></div>
+</section>
+
+<section data-transition="fade-in fade-out" class="future" style="display: none;" hidden="" aria-hidden="true">
+	<h1>GridLayout example 2</h1>
+
+	<div class="figuresright">
+		<img src="./Layout_files/gridlayout-2.png" tppabs="http://web.stanford.edu/class/cs193a/lectures/slides/images/gridlayout-2.png" alt="figure">
+	</div>
+
+	<div class="linenumbersouter"><pre class=" linenumbers"><code style="float: left;">&nbsp;1&nbsp;
+&nbsp;2&nbsp;
+&nbsp;3&nbsp;
+&nbsp;4&nbsp;
+&nbsp;5&nbsp;
+&nbsp;6&nbsp;
+&nbsp;7&nbsp;
+&nbsp;8&nbsp;
+&nbsp;9&nbsp;
+10&nbsp;
+11&nbsp;
+12&nbsp;
+13&nbsp;
+14&nbsp;
+15&nbsp;</code></pre><pre><code class="xmp hljs xml"><span class="hljs-tag">&lt;<span class="hljs-name">GridLayout</span> <span class="hljs-attr">...</span>
+        <span class="hljs-attr">android:rowCount</span>=<span class="hljs-string">"2"</span>
+        <span class="hljs-attr">android:columnCount</span>=<span class="hljs-string">"3"</span>
+        </span><em><span class="hljs-tag"><span class="hljs-attr">android:orientation</span>=<span class="hljs-string">"vertical"</span>&gt;</span></em>
+    <span class="hljs-tag">&lt;<span class="hljs-name">Button</span> <span class="hljs-attr">...</span> <span class="hljs-attr">android:text</span>=<span class="hljs-string">"Button 1"</span> /&gt;</span>
+    <span class="hljs-tag">&lt;<span class="hljs-name">Button</span> <span class="hljs-attr">...</span> <span class="hljs-attr">android:text</span>=<span class="hljs-string">"Button Two"</span> /&gt;</span>
+    <span class="hljs-tag">&lt;<span class="hljs-name">Button</span> <span class="hljs-attr">...</span> <span class="hljs-attr">android:text</span>=<span class="hljs-string">"Button 3"</span> /&gt;</span>
+    <span class="hljs-tag">&lt;<span class="hljs-name">Button</span> <span class="hljs-attr">...</span> <span class="hljs-attr">android:text</span>=<span class="hljs-string">"Button Four"</span> /&gt;</span>
+    <span class="hljs-tag">&lt;<span class="hljs-name">Button</span> <span class="hljs-attr">...</span> <span class="hljs-attr">android:text</span>=<span class="hljs-string">"Button 5"</span>
+                </span><em><span class="hljs-tag"><span class="hljs-attr">android:layout_row</span>=<span class="hljs-string">"1"</span></span></em><span class="hljs-tag">
+                </span><em><span class="hljs-tag"><span class="hljs-attr">android:layout_column</span>=<span class="hljs-string">"2"</span></span></em><span class="hljs-tag"> /&gt;</span>
+    <span class="hljs-tag">&lt;<span class="hljs-name">Button</span> <span class="hljs-attr">...</span> <span class="hljs-attr">android:text</span>=<span class="hljs-string">"Button Six"</span>
+                </span><em><span class="hljs-tag"><span class="hljs-attr">android:layout_row</span>=<span class="hljs-string">"0"</span></span></em><span class="hljs-tag">
+                </span><em><span class="hljs-tag"><span class="hljs-attr">android:layout_column</span>=<span class="hljs-string">"2"</span></span></em><span class="hljs-tag"> /&gt;</span>
+<span class="hljs-tag">&lt;/<span class="hljs-name">RelativeLayout</span>&gt;</span>
+</code></pre></div>
+</section>
+
+<section data-transition="fade-in" class="future" style="display: none;" hidden="" aria-hidden="true">
+	<h1>GridLayout example 3</h1>
+
+	<div class="figuresright">
+		<img src="./Layout_files/gridlayout-3.png" tppabs="http://web.stanford.edu/class/cs193a/lectures/slides/images/gridlayout-3.png" alt="figure">
+	</div>
+
+	<div class="linenumbersouter"><pre class=" linenumbers"><code style="float: left;">&nbsp;1&nbsp;
+&nbsp;2&nbsp;
+&nbsp;3&nbsp;
+&nbsp;4&nbsp;
+&nbsp;5&nbsp;
+&nbsp;6&nbsp;
+&nbsp;7&nbsp;
+&nbsp;8&nbsp;
+&nbsp;9&nbsp;
+10&nbsp;
+11&nbsp;
+12&nbsp;
+13&nbsp;
+14&nbsp;
+15&nbsp;
+16&nbsp;
+17&nbsp;</code></pre><pre><code class="xmp hljs xml"><span class="hljs-tag">&lt;<span class="hljs-name">GridLayout</span> <span class="hljs-attr">...</span>
+        <span class="hljs-attr">android:rowCount</span>=<span class="hljs-string">"2"</span>
+        <span class="hljs-attr">android:columnCount</span>=<span class="hljs-string">"3"</span>&gt;</span>
+    <span class="hljs-tag">&lt;<span class="hljs-name">Button</span> <span class="hljs-attr">...</span> <span class="hljs-attr">android:text</span>=<span class="hljs-string">"B1"</span> /&gt;</span>
+    <span class="hljs-tag">&lt;<span class="hljs-name">Button</span> <span class="hljs-attr">...</span> <span class="hljs-attr">android:text</span>=<span class="hljs-string">"B2"</span> /&gt;</span>
+    <span class="hljs-tag">&lt;<span class="hljs-name">Button</span> <span class="hljs-attr">...</span> <span class="hljs-attr">android:text</span>=<span class="hljs-string">"Button Number 3!"</span> /&gt;</span>
+    <span class="hljs-tag">&lt;<span class="hljs-name">Button</span> <span class="hljs-attr">...</span> <span class="hljs-attr">android:text</span>=<span class="hljs-string">"B4"</span>
+       </span><em><span class="hljs-tag"><span class="hljs-attr">android:layout_columnSpan</span>=<span class="hljs-string">"2"</span></span></em><span class="hljs-tag">
+       </span><em><span class="hljs-tag"><span class="hljs-attr">android:layout_gravity</span>=<span class="hljs-string">"center"</span></span></em><span class="hljs-tag"> /&gt;</span>
+    <span class="hljs-tag">&lt;<span class="hljs-name">Button</span> <span class="hljs-attr">...</span> <span class="hljs-attr">android:text</span>=<span class="hljs-string">"B5"</span> /&gt;</span>
+    <span class="hljs-tag">&lt;<span class="hljs-name">Button</span> <span class="hljs-attr">...</span> <span class="hljs-attr">android:text</span>=<span class="hljs-string">"B6"</span> 
+       </span><em><span class="hljs-tag"><span class="hljs-attr">android:layout_paddingTop</span>=<span class="hljs-string">"40dp"</span></span></em><span class="hljs-tag">
+       </span><em><span class="hljs-tag"><span class="hljs-attr">android:layout_paddingBottom</span>=<span class="hljs-string">"40dp"</span></span></em><span class="hljs-tag"> /&gt;</span>
+    <span class="hljs-tag">&lt;<span class="hljs-name">Button</span> <span class="hljs-attr">...</span> <span class="hljs-attr">android:text</span>=<span class="hljs-string">"B7"</span> /&gt;</span>
+    <span class="hljs-tag">&lt;<span class="hljs-name">Button</span> <span class="hljs-attr">...</span> <span class="hljs-attr">android:text</span>=<span class="hljs-string">"Button #8"</span>
+       </span><em><span class="hljs-tag"><span class="hljs-attr">android:layout_gravity</span>=<span class="hljs-string">"right"</span></span></em><span class="hljs-tag"> /&gt;</span>
+<span class="hljs-tag">&lt;/<span class="hljs-name">RelativeLayout</span>&gt;</span>
+</code></pre></div>
+</section>
+
+<section data-transition="fade-in" class="future" style="display: none;" hidden="" aria-hidden="true">
+	<h1>TableLayout</h1>
+
+	<p>
+		Similar to <code>GridLayout</code>, but each widget must be put into a row
+	</p>
+
+	<div class="figuresright">
+		<img src="./Layout_files/gridlayout-1.png" tppabs="http://web.stanford.edu/class/cs193a/lectures/slides/images/gridlayout-1.png" alt="figure">
+	</div>
+
+	<div class="linenumbersouter"><pre class=" linenumbers"><code style="float: left;">&nbsp;1&nbsp;
+&nbsp;2&nbsp;
+&nbsp;3&nbsp;
+&nbsp;4&nbsp;
+&nbsp;5&nbsp;
+&nbsp;6&nbsp;
+&nbsp;7&nbsp;
+&nbsp;8&nbsp;
+&nbsp;9&nbsp;
+10&nbsp;
+11&nbsp;
+12&nbsp;
+13&nbsp;
+14&nbsp;</code></pre><pre><code class="xmp hljs xml"><span class="hljs-tag">&lt;<span class="hljs-name">TableLayout</span> <span class="hljs-attr">...</span>
+        <span class="hljs-attr">tools:context</span>=<span class="hljs-string">".MainActivity"</span>&gt;</span>
+  <span class="hljs-tag">&lt;<span class="hljs-name">TableRow</span>&gt;</span>
+    <span class="hljs-tag">&lt;<span class="hljs-name">Button</span> <span class="hljs-attr">...</span> <span class="hljs-attr">android:text</span>=<span class="hljs-string">"Button 1"</span> /&gt;</span>
+    <span class="hljs-tag">&lt;<span class="hljs-name">Button</span> <span class="hljs-attr">...</span> <span class="hljs-attr">android:text</span>=<span class="hljs-string">"Button Two"</span> /&gt;</span>
+    <span class="hljs-tag">&lt;<span class="hljs-name">Button</span> <span class="hljs-attr">...</span> <span class="hljs-attr">android:text</span>=<span class="hljs-string">"Button 3"</span> /&gt;</span>
+  <span class="hljs-tag">&lt;/<span class="hljs-name">TableRow</span>&gt;</span>
+
+  <span class="hljs-tag">&lt;<span class="hljs-name">TableRow</span>&gt;</span>
+    <span class="hljs-tag">&lt;<span class="hljs-name">Button</span> <span class="hljs-attr">...</span> <span class="hljs-attr">android:text</span>=<span class="hljs-string">"Button Four"</span> /&gt;</span>
+    <span class="hljs-tag">&lt;<span class="hljs-name">Button</span> <span class="hljs-attr">...</span> <span class="hljs-attr">android:text</span>=<span class="hljs-string">"Button 5"</span> /&gt;</span>
+    <span class="hljs-tag">&lt;<span class="hljs-name">Button</span> <span class="hljs-attr">...</span> <span class="hljs-attr">android:text</span>=<span class="hljs-string">"Button Six"</span> /&gt;</span>
+  <span class="hljs-tag">&lt;/<span class="hljs-name">TableRow</span>&gt;</span>
+<span class="hljs-tag">&lt;/<span class="hljs-name">GridLayout</span>&gt;</span>
+</code></pre></div>
+</section>
+
+<section class="future" style="display: none;" hidden="" aria-hidden="true">
+	<h1>Nested layout</h1>
+	
+	<div class="figuresright">
+		<img src="./Layout_files/layout-nested.jpg" tppabs="http://web.stanford.edu/class/cs193a/lectures/slides/images/layout-nested.jpg" alt="figure">
+	</div>
+	
+	<ul>
+		<li><strong>nested layout</strong>: layouts inside other layouts
+			<ul>
+				<li>useful to produce more complicated appearance</li>
+			</ul>
+		</li>
+	</ul>
+
+	<div class="linenumbersouter"><pre class=" linenumbers"><code style="float: left;">&nbsp;1&nbsp;
+&nbsp;2&nbsp;
+&nbsp;3&nbsp;
+&nbsp;4&nbsp;
+&nbsp;5&nbsp;
+&nbsp;6&nbsp;
+&nbsp;7&nbsp;
+&nbsp;8&nbsp;
+&nbsp;9&nbsp;
+10&nbsp;
+11&nbsp;</code></pre><pre><code class="xml hljs"><span class="hljs-tag">&lt;</span><var><span class="hljs-tag"><span class="hljs-name">OuterLayout</span></span></var><span class="hljs-tag"> <span class="hljs-attr">...</span>&gt;</span>
+    <span class="hljs-tag">&lt;</span><var><span class="hljs-tag"><span class="hljs-name">InnerLayout</span></span></var><span class="hljs-tag"> <span class="hljs-attr">...</span>&gt;</span>
+        <span class="hljs-tag">&lt;</span><var><span class="hljs-tag"><span class="hljs-name">Widget</span></span></var><span class="hljs-tag"> <span class="hljs-attr">...</span> /&gt;</span>
+        <span class="hljs-tag">&lt;</span><var><span class="hljs-tag"><span class="hljs-name">Widget</span></span></var><span class="hljs-tag"> <span class="hljs-attr">...</span> /&gt;</span>
+    <span class="hljs-tag">&lt;/</span><var><span class="hljs-tag"><span class="hljs-name">InnerLayout</span></span></var><span class="hljs-tag">&gt;</span>
+
+    <span class="hljs-tag">&lt;</span><var><span class="hljs-tag"><span class="hljs-name">InnerLayout</span></span></var><span class="hljs-tag"> <span class="hljs-attr">...</span>&gt;</span>
+        <span class="hljs-tag">&lt;</span><var><span class="hljs-tag"><span class="hljs-name">Widget</span></span></var><span class="hljs-tag"> <span class="hljs-attr">...</span> /&gt;</span>
+        <span class="hljs-tag">&lt;</span><var><span class="hljs-tag"><span class="hljs-name">Widget</span></span></var><span class="hljs-tag"> <span class="hljs-attr">...</span> /&gt;</span>
+    <span class="hljs-tag">&lt;/</span><var><span class="hljs-tag"><span class="hljs-name">InnerLayout</span></span></var><span class="hljs-tag">&gt;</span>
+<span class="hljs-tag">&lt;/</span><var><span class="hljs-tag"><span class="hljs-name">OuterLayout</span></span></var><span class="hljs-tag">&gt;</span>
+</code></pre></div>
+</section>
+
+<section class="future" style="display: none;" hidden="" aria-hidden="true">
+	<h1>Nested layout exercise</h1>
+	
+	<div class="figuresright">
+		<img src="./Layout_files/nested-layout-exercise.png" tppabs="http://web.stanford.edu/class/cs193a/lectures/slides/images/nested-layout-exercise.png" alt="figure">
+	</div>
+	
+	<ul>
+		<li>Write the layout XML necessary to create the following app UI.
+			<ul>
+				<li>How many overall layouts are needed?</li>
+				<li>Which widgets go into which layouts?</li>
+			</ul>
+		</li>
+	</ul>
+</section>
+
+<section class="future" style="display: none;" hidden="" aria-hidden="true">
+	<h1>Nested layout solution</h1>
+
+	<div class="figuresright">
+		<img src="./Layout_files/nested-layout-exercise.png" tppabs="http://web.stanford.edu/class/cs193a/lectures/slides/images/nested-layout-exercise.png" alt="figure">
+	</div>
+
+	<div class="linenumbersouter"><pre class="longcode linenumbers"><code style="float: left;">&nbsp;1&nbsp;
+&nbsp;2&nbsp;
+&nbsp;3&nbsp;
+&nbsp;4&nbsp;
+&nbsp;5&nbsp;
+&nbsp;6&nbsp;
+&nbsp;7&nbsp;
+&nbsp;8&nbsp;
+&nbsp;9&nbsp;
+10&nbsp;
+11&nbsp;
+12&nbsp;
+13&nbsp;
+14&nbsp;
+15&nbsp;
+16&nbsp;
+17&nbsp;
+18&nbsp;
+19&nbsp;
+20&nbsp;
+21&nbsp;
+22&nbsp;
+23&nbsp;
+24&nbsp;
+25&nbsp;</code></pre><pre class="longcode"><code class="xml hljs"><span class="hljs-tag">&lt;<span class="hljs-name">LinearLayout</span> <span class="hljs-attr">...</span>
+        <span class="hljs-attr">android:orientation</span>=<span class="hljs-string">"vertical"</span>
+        <span class="hljs-attr">android:gravity</span>=<span class="hljs-string">"center|top"</span>&gt;</span>
+    <span class="hljs-tag">&lt;<span class="hljs-name">Button</span> <span class="hljs-attr">...</span> <span class="hljs-attr">android:text</span>=<span class="hljs-string">"B1"</span> /&gt;</span>
+    <span class="hljs-tag">&lt;<span class="hljs-name">LinearLayout</span> <span class="hljs-attr">...</span>
+            <span class="hljs-attr">android:layout_width</span>=<span class="hljs-string">"match_parent"</span>
+            <span class="hljs-attr">android:layout_height</span>=<span class="hljs-string">"wrap_content"</span>
+            <span class="hljs-attr">android:orientation</span>=<span class="hljs-string">"horizontal"</span>
+            <span class="hljs-attr">android:gravity</span>=<span class="hljs-string">"center|top"</span>&gt;</span>
+        <span class="hljs-tag">&lt;<span class="hljs-name">Button</span> <span class="hljs-attr">...</span> <span class="hljs-attr">android:text</span>=<span class="hljs-string">"B2"</span> /&gt;</span>
+        <span class="hljs-tag">&lt;<span class="hljs-name">Button</span> <span class="hljs-attr">...</span> <span class="hljs-attr">android:text</span>=<span class="hljs-string">"Button Number 3"</span> /&gt;</span>
+        <span class="hljs-tag">&lt;<span class="hljs-name">Button</span> <span class="hljs-attr">...</span> <span class="hljs-attr">android:text</span>=<span class="hljs-string">"B4"</span> /&gt;</span>
+    <span class="hljs-tag">&lt;/<span class="hljs-name">LinearLayout</span>&gt;</span>
+    <span class="hljs-tag">&lt;<span class="hljs-name">Button</span> <span class="hljs-attr">...</span> <span class="hljs-attr">android:text</span>=<span class="hljs-string">"B5"</span> /&gt;</span>
+    <span class="hljs-tag">&lt;<span class="hljs-name">Button</span> <span class="hljs-attr">...</span> <span class="hljs-attr">android:text</span>=<span class="hljs-string">"B6"</span>
+                <span class="hljs-attr">android:layout_gravity</span>=<span class="hljs-string">"left"</span> /&gt;</span>
+    <span class="hljs-tag">&lt;<span class="hljs-name">LinearLayout</span> <span class="hljs-attr">...</span>
+            <span class="hljs-attr">android:layout_width</span>=<span class="hljs-string">"match_parent"</span>
+            <span class="hljs-attr">android:layout_height</span>=<span class="hljs-string">"wrap_content"</span>
+            <span class="hljs-attr">android:orientation</span>=<span class="hljs-string">"horizontal"</span>
+            <span class="hljs-attr">android:gravity</span>=<span class="hljs-string">"center|top"</span>&gt;</span>
+        <span class="hljs-tag">&lt;<span class="hljs-name">Button</span> <span class="hljs-attr">...</span> <span class="hljs-attr">android:text</span>=<span class="hljs-string">"B7"</span> /&gt;</span>
+        <span class="hljs-tag">&lt;<span class="hljs-name">Button</span> <span class="hljs-attr">...</span> <span class="hljs-attr">android:text</span>=<span class="hljs-string">"Button Number 8"</span> /&gt;</span>
+    <span class="hljs-tag">&lt;/<span class="hljs-name">LinearLayout</span>&gt;</span>
+<span class="hljs-tag">&lt;/<span class="hljs-name">LinearLayout</span>&gt;</span>
+</code></pre></div>
+</section>
+
+<section class="future" style="display: none;" hidden="" aria-hidden="true">
+	<h1>RelativeLayout</h1>
+	
+	<p>
+		intended to reduce the need for nested layouts
+	</p>
+	
+	<ul>
+		<li>each widget's position and size are relative to other views
+			<ul>
+				<li>relative to "parent" (the activity itself)</li>
+				<li>relative to other widgets/views</li>
+				<li>x-positions of reference: left, right, center</li>
+				<li>y-positions of reference: top, bottom, center</li>
+			</ul>
+		</li>
+	</ul>
+	
+	<div class="">
+		<img src="./Layout_files/relativelayout.png" tppabs="http://web.stanford.edu/class/cs193a/lectures/slides/images/relativelayout.png" alt="figure">
+	</div>
+</section>
+
+<section class="future" style="display: none;" hidden="" aria-hidden="true">
+	<h1>Relative anchor points</h1>
+	
+	<ul>
+		<li>properties for x/y relative to another widget:
+			<ul>
+				<li><code>layout_below</code>,  <code>above</code>,  <code>toLeftOf</code>,  <code>toRightOf</code>
+					<ul>
+						<li>set these to the ID of another widget in the format <code>"@id/<var>theID</var>"</code>
+						(the given widget must have an ID for this to work)</li>
+					</ul>
+				</li>
+			</ul>
+		</li>
+		
+		<li>properties for x/y relative to layout container (the activity):
+			<ul>
+				<li><code>layout_alignParentTop</code>,  <code>Bottom</code>,  <code>Left</code>,  <code>Right</code>
+					<ul>
+						<li>set these flags to a boolean value of <code>"true"</code> to enable them</li>
+					</ul>
+				</li>
+				<li><code>layout_centerHorizontal</code>,  <code>Vertical</code>,  <code>InParent</code>
+					<ul>
+						<li>set these flags to <code>"true"</code> to center the control within its parent in a dimension</li>
+					</ul>
+				</li>
+			</ul>
+		</li>
+		
+	</ul>
+</section>
+
+<section class="future" style="display: none;" hidden="" aria-hidden="true">
+	<h1>RelativeLayout example 1</h1>
+
+	<div class="figuresright">
+		<img src="./Layout_files/relativelayout-1.png" tppabs="http://web.stanford.edu/class/cs193a/lectures/slides/images/relativelayout-1.png" alt="figure">
+	</div>
+
+	<div class="linenumbersouter"><pre class="longcode linenumbers"><code style="float: left;">&nbsp;1&nbsp;
+&nbsp;2&nbsp;
+&nbsp;3&nbsp;
+&nbsp;4&nbsp;
+&nbsp;5&nbsp;
+&nbsp;6&nbsp;
+&nbsp;7&nbsp;
+&nbsp;8&nbsp;
+&nbsp;9&nbsp;
+10&nbsp;
+11&nbsp;
+12&nbsp;
+13&nbsp;
+14&nbsp;
+15&nbsp;
+16&nbsp;
+17&nbsp;
+18&nbsp;
+19&nbsp;
+20&nbsp;
+21&nbsp;
+22&nbsp;</code></pre><pre class="longcode"><code class="xml hljs"><span class="hljs-tag">&lt;<span class="hljs-name">RelativeLayout</span> <span class="hljs-attr">...</span> &gt;</span>
+    <span class="hljs-tag">&lt;<span class="hljs-name">Button</span> <span class="hljs-attr">...</span> <span class="hljs-attr">android:id</span>=<span class="hljs-string">"@+id/b1"</span> <span class="hljs-attr">android:text</span>=<span class="hljs-string">"B1"</span>
+        <span class="hljs-attr">android:layout_alignParentTop</span>=<span class="hljs-string">"true"</span>
+        <span class="hljs-attr">android:layout_centerHorizontal</span>=<span class="hljs-string">"true"</span> /&gt;</span>
+    <span class="hljs-tag">&lt;<span class="hljs-name">Button</span> <span class="hljs-attr">...</span> <span class="hljs-attr">android:id</span>=<span class="hljs-string">"@+id/b2"</span> <span class="hljs-attr">android:text</span>=<span class="hljs-string">"B2"</span>
+        <span class="hljs-attr">android:layout_alignParentLeft</span>=<span class="hljs-string">"true"</span>
+        <span class="hljs-attr">android:layout_below</span>=<span class="hljs-string">"@+id/b1"</span> /&gt;</span>
+    <span class="hljs-tag">&lt;<span class="hljs-name">Button</span> <span class="hljs-attr">...</span> <span class="hljs-attr">android:id</span>=<span class="hljs-string">"@+id/b3"</span> <span class="hljs-attr">android:text</span>=<span class="hljs-string">"B3"</span>
+        <span class="hljs-attr">android:layout_centerHorizontal</span>=<span class="hljs-string">"true"</span>
+        <span class="hljs-attr">android:layout_below</span>=<span class="hljs-string">"@+id/b2"</span> /&gt;</span>
+    <span class="hljs-tag">&lt;<span class="hljs-name">Button</span> <span class="hljs-attr">...</span> <span class="hljs-attr">android:id</span>=<span class="hljs-string">"@+id/b4"</span> <span class="hljs-attr">android:text</span>=<span class="hljs-string">"B4"</span>
+        <span class="hljs-attr">android:layout_alignParentRight</span>=<span class="hljs-string">"true"</span>
+        <span class="hljs-attr">android:layout_below</span>=<span class="hljs-string">"@+id/b2"</span> /&gt;</span>
+    <span class="hljs-tag">&lt;<span class="hljs-name">TextView</span> <span class="hljs-attr">...</span> <span class="hljs-attr">android:id</span>=<span class="hljs-string">"@+id/tv1"</span>
+        <span class="hljs-attr">android:text</span>=<span class="hljs-string">"I'm a TextView!"</span>
+        <span class="hljs-attr">android:layout_centerInParent</span>=<span class="hljs-string">"true"</span> /&gt;</span>
+    <span class="hljs-tag">&lt;<span class="hljs-name">Button</span> <span class="hljs-attr">...</span> <span class="hljs-attr">android:id</span>=<span class="hljs-string">"@+id/b5"</span> <span class="hljs-attr">android:text</span>=<span class="hljs-string">"B5"</span>
+        <span class="hljs-attr">android:padding</span>=<span class="hljs-string">"50dp"</span>
+        <span class="hljs-attr">android:layout_centerHorizontal</span>=<span class="hljs-string">"true"</span>
+        <span class="hljs-attr">android:layout_alignParentBottom</span>=<span class="hljs-string">"true"</span>
+        <span class="hljs-attr">android:layout_marginBottom</span>=<span class="hljs-string">"50dp"</span> /&gt;</span>
+    <span class="hljs-tag">&lt;/<span class="hljs-name">RelativeLayout</span>&gt;</span>
+</code></pre></div>
+</section>
+
+<section class="future" style="display: none;" hidden="" aria-hidden="true">
+	<h1>FrameLayout</h1>
+	
+	<ul>
+		<li>meant to hold only a single widget inside,
+		which occupies the entirety of the activity
+			<ul>
+				<li>most commonly used with layout fragments (seen later)</li>
+				<li>less useful for more complex layouts
+				(can put in multiple items and move them to "front" in Z-order)</li>
+			</ul>
+		</li>
+	</ul>
+
+	<div class="figuresright">
+		<img src="./Layout_files/framelayout-1.jpg" tppabs="http://web.stanford.edu/class/cs193a/lectures/slides/images/framelayout-1.jpg" alt="figure">
+	</div>
+
+	<div class="linenumbersouter"><pre class=" linenumbers"><code style="float: left;">&nbsp;1&nbsp;
+&nbsp;2&nbsp;
+&nbsp;3&nbsp;
+&nbsp;4&nbsp;
+&nbsp;5&nbsp;</code></pre><pre><code class="xml hljs"><span class="hljs-tag">&lt;<span class="hljs-name">FrameLayout</span> <span class="hljs-attr">...</span> &gt;</span>
+    <span class="hljs-tag">&lt;<span class="hljs-name">ImageView</span>
+     <span class="hljs-attr">android:src</span>=<span class="hljs-string">"@drawable/jellybean"</span>
+     <span class="hljs-attr">...</span> /&gt;</span>
+<span class="hljs-tag">&lt;/<span class="hljs-name">FrameLayout</span>&gt;</span>
+</code></pre></div>
+</section>
+
+<!-- END SLIDES AREA -->
+			</div>
+		<div class="backgrounds"><div class="slide-background titleslide present" data-loaded="true" style="display: block;"></div><div class="slide-background future" data-loaded="true" style="display: block;"></div><div class="slide-background future" data-loaded="true" style="display: block;"></div><div class="slide-background future" data-loaded="true" style="display: none;"></div><div class="slide-background future" data-loaded="true" style="display: none;"></div><div class="slide-background future" data-loaded="true" style="display: none;"></div><div class="slide-background future" data-loaded="true" style="display: none;"></div><div class="slide-background future" data-loaded="true" style="display: none;"></div><div class="slide-background future" data-loaded="true" style="display: none;"></div><div class="slide-background future" data-loaded="true" style="display: none;"></div><div class="slide-background future" data-loaded="true" style="display: none;"></div><div class="slide-background future" data-loaded="true" style="display: none;"></div><div class="slide-background future" data-loaded="true" style="display: none;"></div><div class="slide-background future" data-loaded="true" style="display: none;"></div><div class="slide-background future" data-loaded="true" style="display: none;"></div><div class="slide-background future" data-loaded="true" style="display: none;"></div><div class="slide-background future" data-loaded="true" style="display: none;"></div><div class="slide-background future" data-loaded="true" style="display: none;"></div><div class="slide-background future" data-loaded="true" style="display: none;"></div><div class="slide-background future" data-loaded="true" style="display: none;"></div><div class="slide-background future" data-loaded="true" style="display: none;"></div><div class="slide-background future" data-loaded="true" style="display: none;"></div><div class="slide-background future" data-loaded="true" style="display: none;"></div><div class="slide-background future" data-loaded="true" style="display: none;"></div><div class="slide-background future" data-loaded="true" style="display: none;"></div><div class="slide-background future" data-loaded="true" style="display: none;"></div></div><div class="progress" style="display: block;"><span style="width: 0px;"></span></div><aside class="controls" style="display: block;"><button class="navigate-left" aria-label="previous slide"></button><button class="navigate-right enabled" aria-label="next slide"></button><button class="navigate-up" aria-label="above slide"></button><button class="navigate-down" aria-label="below slide"></button><button id="fullscreenbutton" title="full-screen mode">&#8862;</button></aside><div class="slide-number" style="display: block;"><span class="slide-number-a">1</span></div><div class="speaker-notes" data-prevent-swipe=""></div><div class="pause-overlay"></div><div id="aria-status-div" aria-live="polite" aria-atomic="true" style="position: absolute; height: 1px; width: 1px; overflow: hidden; clip: rect(1px 1px 1px 1px);">
+	CSE 491: Android
+
+	Layout
+</div></div>
+
+		<script src="./Layout_files/highlight.pack.js.download" tppabs="http://web.stanford.edu/class/cs193a/lectures/slides/highlightjs/highlight.pack.js"></script>
+		<script src="./Layout_files/cs193a-slides.js.download" tppabs="http://web.stanford.edu/class/cs193a/lectures/slides/cs193a-slides.js"></script>
+		<script src="./Layout_files/reveal.js.download" tppabs="http://web.stanford.edu/class/cs193a/lectures/slides/reveal/js/reveal.js"></script>
+		<script>
+			initializeSlides();
+		</script>
+	
+
+</body></html>

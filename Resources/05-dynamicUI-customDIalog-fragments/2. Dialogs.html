@@ -1,0 +1,668 @@
+
+<!-- saved from url=(0164)file:///D:/old_data/D3/old%20Data/Adnan/courses/2018%201%20Spring/CSE491%20Mobile/cs193a/CS193A-master/Winter2017Update/class/cs193a/lectures/slides/dialogs.html#/7 -->
+<html><head><meta http-equiv="Content-Type" content="text/html; charset=windows-1252">
+		<title>CSE 491: Android - Dialogs</title>
+		<link rel="stylesheet" href="./Dialogs_files/default.css" tppabs="http://web.stanford.edu/class/cs193a/lectures/slides/highlightjs/styles/default.css">
+		<link rel="stylesheet" href="./Dialogs_files/reveal.css" tppabs="http://web.stanford.edu/class/cs193a/lectures/slides/reveal/css/reveal.css">
+		<link rel="stylesheet" href="./Dialogs_files/white.css" tppabs="http://web.stanford.edu/class/cs193a/lectures/slides/reveal/css/theme/white.css">
+		<link rel="stylesheet" href="./Dialogs_files/cs193a-slides.css" tppabs="http://web.stanford.edu/class/cs193a/lectures/slides/cs193a-slides.css">
+	</head>
+	<body>
+		<div class="reveal slide" role="application" data-transition-speed="default" data-background-transition="fade">
+			<div class="slides" style="width: 960px; height: 700px; left: 50%; top: 50%; bottom: auto; right: auto; transform: translate(-50%, -50%) scale(0.871286);">
+
+<!-- BEGIN SLIDES AREA -->
+
+<section class="titleslide past" style="display: none;" hidden="" aria-hidden="true">
+	<h1>CSE 491: Android</h1>
+
+	<p>Dialogs</p>
+	<br/>
+	<br/>
+	<pre>
+Acknowledgment:
+   The slides are of ones by Marty Stepp.
+   http://cs193a.stanford.edu
+	</pre>
+</section>
+
+<section class="past" style="display: none;" hidden="" aria-hidden="true">
+	<h1>Motivation</h1>
+	
+	<ul>
+		<li><strong>dialog</strong>: A pop-up UI that interrupts your activity.
+			<ul>
+				<li>not a different activity itself; sits on top of the activity
+				</li><li>meant to briefly display information or ask for a bit of input
+				</li><li>once the user is done interacting with the dialog, it closes,
+					and app resumes activity it was on before
+			</li></ul>
+	</li></ul>
+	
+	<div class="figureshorizontal">
+		<img src="./Dialogs_files/dialogs-7.png" tppabs="http://web.stanford.edu/class/cs193a/lectures/slides/images/dialogs-7.png" alt="figure">
+		<img src="./Dialogs_files/dialogs-8.png" tppabs="http://web.stanford.edu/class/cs193a/lectures/slides/images/dialogs-8.png" alt="figure">
+	</div>
+</section>
+
+<section class="past" style="display: none;" hidden="" aria-hidden="true">
+	<h1>Types of dialogs</h1>
+	
+	<ul>
+		<li>Android has a <a target="_blank" href="https://developer.android.com/reference/android/app/Dialog.html"><code class="androidapi" data-class="android.app.Dialog">Dialog</code></a> class with subclasses including:
+	</li></ul>
+
+	<table class="columns5">
+		<tbody><tr>
+			<td><img src="./Dialogs_files/alertdialog.png" tppabs="http://web.stanford.edu/class/cs193a/lectures/slides/images/alertdialog.png" alt="figure"></td>
+			<td><img src="./Dialogs_files/characterpickerdialog.png" tppabs="http://web.stanford.edu/class/cs193a/lectures/slides/images/characterpickerdialog.png" alt="figure"></td>
+			<td><img src="./Dialogs_files/datepickerdialog.png" tppabs="http://web.stanford.edu/class/cs193a/lectures/slides/images/datepickerdialog.png" alt="figure"></td>
+		</tr>
+		
+		<tr>
+			<td><a target="_blank" href="https://developer.android.com/reference/android/app/AlertDialog.html"><code class="androidapi" data-class="android.app.AlertDialog">AlertDialog</code></a></td>
+			<td><a target="_blank" href="https://developer.android.com/reference/android/app/CharacterPickerDialog.html"><code class="androidapi" data-class="android.app.CharacterPickerDialog">CharacterPickerDialog</code></a></td>
+			<td><a target="_blank" href="https://developer.android.com/reference/android/app/DatePickerDialog.html"><code class="androidapi" data-class="android.app.DatePickerDialog">DatePickerDialog</code></a></td>
+		</tr>
+		
+		<tr>
+			<td><img src="./Dialogs_files/progressdialog.png" tppabs="http://web.stanford.edu/class/cs193a/lectures/slides/images/progressdialog.png" alt="figure"></td>
+			<td><img src="./Dialogs_files/timepickerdialog.png" tppabs="http://web.stanford.edu/class/cs193a/lectures/slides/images/timepickerdialog.png" alt="figure"></td>
+			<td></td>
+		</tr>
+		
+		<tr>
+			<td><a target="_blank" href="https://developer.android.com/reference/android/app/ProgressDialog.html"><code class="androidapi" data-class="android.app.ProgressDialog">ProgressDialog</code></a></td>
+			<td><a target="_blank" href="https://developer.android.com/reference/android/app/TimePickerDialog.html"><code class="androidapi" data-class="android.app.TimePickerDialog">TimePickerDialog</code></a></td>
+		</tr>
+	</tbody></table>
+</section>
+
+<section class="past" style="display: none;" hidden="" aria-hidden="true">
+	<h1>Parts of a dialog</h1>
+	
+	<div class="figure">
+		<img src="./Dialogs_files/dialog-parts-diagram.png" tppabs="http://web.stanford.edu/class/cs193a/lectures/slides/images/dialog-parts-diagram.png" alt="figure">
+	</div>
+</section>
+
+<section class="past" style="display: none;" hidden="" aria-hidden="true">
+	<h1>Building a dialog</h1>
+	
+	<ul>
+		<li>Create a dialog in your activity class with a dialog <em>builder</em>.
+		</li><li>The builder has many <code>set</code> methods to customize the dialog.
+		</li><li>When ready, <code>create()</code> the dialog and <code>show()</code> it.
+	</li></ul>
+	
+	<div class="linenumbersouter"><pre class=" linenumbers"><code style="float: left;">&nbsp;1&nbsp;
+&nbsp;2&nbsp;
+&nbsp;3&nbsp;
+&nbsp;4&nbsp;
+&nbsp;5&nbsp;
+&nbsp;6&nbsp;
+&nbsp;7&nbsp;</code></pre><pre><code class="java hljs"><span class="hljs-comment">// in MyActivity.java</span>
+<em>AlertDialog.Builder</em> builder = <span class="hljs-keyword">new</span> AlertDialog.Builder();
+builder.setTitle(<span class="hljs-string">"My Dialog"</span>);
+builder.setMessage(<span class="hljs-string">"Welcome to my app!"</span>);
+...
+AlertDialog dialog = builder.<em>create</em>();
+dialog.<em>show</em>();
+</code></pre></div>
+</section>
+
+<section class="past" style="display: block;" hidden="" aria-hidden="true">
+	<h1>
+		Dialog builder methods
+		(<a class="popup" href="javascript:if(confirm(%27http://developer.android.com/reference/android/app/AlertDialog.Builder.html  \n\nThis file was not retrieved by Teleport Pro, because it is addressed on a domain or path outside the boundaries set for its Starting Address.  \n\nDo you want to open it from the server?%27))window.location=%27http://developer.android.com/reference/android/app/AlertDialog.Builder.html%27" tppabs="http://developer.android.com/reference/android/app/AlertDialog.Builder.html" target="_blank">link</a>)
+	</h1>
+	
+	<table class="methodtable">
+		<tbody><tr>
+			<th>Method</th>
+			<th>Description</th>
+		</tr>
+		<tr>
+			<td><code>setCancelable(<var>bool</var>)</code></td>
+			<td>whether Cancel button should show</td>
+		</tr>
+		<tr>
+			<td><code>setIcon(<var>id</var>)</code></td>
+			<td>drawable icon on the dialog</td>
+		</tr>
+		<tr>
+			<td><code>setItems(<var>items</var>, <var>listener</var>)</code></td>
+			<td>items to display as a list</td>
+		</tr>
+		<tr>
+			<td><code>setMessage("<var>text</var>")</code></td>
+			<td>text to display in dialog</td>
+		</tr>
+		<tr>
+			<td><code>setMultiChoiceItems(<var>items</var>, <br>
+				<var>checkedItems</var>, <var>listener</var>)</code></td>
+			<td>items to display as checkboxes</td>
+		</tr>
+		<tr>
+			<td><code>setNegativeButton("<var>text</var>", <var>listener</var>)</code></td>
+			<td>text / event handler for No button</td>
+		</tr>
+		<tr>
+			<td><code>setPositiveButton("<var>text</var>", <var>listener</var>)</code></td>
+			<td>text / event handler for Yes/OK button</td>
+		</tr>
+		<tr>
+			<td><code>setSingleChoiceItems(<var>items</var>, <br>
+				<var>checkedIndex</var>, <var>listener</var>)</code></td>
+			<td>items to display as radio buttons</td>
+		</tr>
+		<tr>
+			<td><code>setTitle("<var>text</var>")</code></td>
+			<td>title text on top of dialog</td>
+		</tr>
+		<tr>
+			<td><code>setView(<var>view</var>)</code></td>
+			<td>defines a custom dialog layout</td>
+		</tr>
+		<tr>
+			<td><code>create()</code></td>
+			<td>builds and returns the dialog</td>
+		</tr>
+		<tr>
+			<td><code>show();</code></td>
+			<td>builds/returns dialog and shows it</td>
+		</tr>
+	</tbody></table>
+	
+	<ul class="aside">
+		<li>methods that accept a string or array can also take a resource ID
+	</li></ul>
+</section>
+
+<section data-transition="fade-out" class="past" style="display: block;" hidden="" aria-hidden="true">
+	<h1>Attaching listeners</h1>
+	
+	<div class="linenumbersouter"><pre class=" linenumbers"><code style="float: left;">&nbsp;1&nbsp;
+&nbsp;2&nbsp;
+&nbsp;3&nbsp;
+&nbsp;4&nbsp;
+&nbsp;5&nbsp;
+&nbsp;6&nbsp;
+&nbsp;7&nbsp;
+&nbsp;8&nbsp;
+&nbsp;9&nbsp;
+10&nbsp;
+11&nbsp;
+12&nbsp;
+13&nbsp;
+14&nbsp;
+15&nbsp;
+16&nbsp;
+17&nbsp;</code></pre><pre><code class="java hljs"><em>AlertDialog.Builder</em> builder = <span class="hljs-keyword">new</span> AlertDialog.Builder();
+...
+
+builder.<em>setPositiveButton</em>(<span class="hljs-string">"OK"</span>,
+    <span class="hljs-keyword">new</span> DialogInterface.OnClickListener() {
+        <span class="hljs-meta">@Override</span>
+        <span class="hljs-function"><span class="hljs-keyword">public</span> <span class="hljs-keyword">void</span> </span><em><span class="hljs-function"><span class="hljs-title">onClick</span></span></em><span class="hljs-function"><span class="hljs-params">(DialogInterface dialog, <span class="hljs-keyword">int</span> id)</span> </span>{
+            <span class="hljs-comment">// code to run when OK is pressed</span>
+        }
+});
+builder.<em>setNegativeButton</em>(<span class="hljs-string">"Cancel"</span>,
+    <span class="hljs-keyword">new</span> DialogInterface.OnClickListener() {
+        <span class="hljs-meta">@Override</span>
+        <span class="hljs-function"><span class="hljs-keyword">public</span> <span class="hljs-keyword">void</span> </span><em><span class="hljs-function"><span class="hljs-title">onClick</span></span></em><span class="hljs-function"><span class="hljs-params">(DialogInterface dialog, <span class="hljs-keyword">int</span> id)</span> </span>{
+            <span class="hljs-comment">// code to run when Cancel is pressed</span>
+        }
+});
+</code></pre></div>
+</section>
+
+<section data-transition="fade-in fade-out" class="present" style="display: block;">
+	<h1>Listening to a list of items</h1>
+	
+	<div class="linenumbersouter"><pre class=" linenumbers"><code style="float: left;">&nbsp;1&nbsp;
+&nbsp;2&nbsp;
+&nbsp;3&nbsp;
+&nbsp;4&nbsp;
+&nbsp;5&nbsp;
+&nbsp;6&nbsp;
+&nbsp;7&nbsp;
+&nbsp;8&nbsp;
+&nbsp;9&nbsp;
+10&nbsp;
+11&nbsp;
+12&nbsp;
+13&nbsp;
+14&nbsp;</code></pre><pre><code class="java hljs">AlertDialog.Builder builder = <span class="hljs-keyword">new</span> AlertDialog.Builder();
+...
+String[] items = {<span class="hljs-string">"Leo"</span>, <span class="hljs-string">"Mike"</span>, <span class="hljs-string">"Don"</span>, <span class="hljs-string">"Raph"</span>};
+builder.<em>setItems</em>(items,
+    <span class="hljs-keyword">new</span> DialogInterface.OnClickListener() {
+        <span class="hljs-meta">@Override</span>
+        <span class="hljs-function"><span class="hljs-keyword">public</span> <span class="hljs-keyword">void</span> </span><em><span class="hljs-function"><span class="hljs-title">onClick</span></span></em><span class="hljs-function"><span class="hljs-params">(DialogInterface dialog, <span class="hljs-keyword">int</span> index)</span> </span>{
+            <span class="hljs-comment">// code to run when the item at this index is pressed</span>
+        }
+});
+
+<span class="hljs-comment">// for radio buttons:    .setSingleChoiceItems</span>
+
+<span class="hljs-comment">// still need to call setPositiveButton, etc.</span>
+</code></pre></div>
+</section>
+
+<section data-transition="fade-in" class="future" style="display: block;" hidden="" aria-hidden="true">
+	<h1>Listening to checkbox items</h1>
+	
+	<div class="linenumbersouter"><pre class=" linenumbers"><code style="float: left;">&nbsp;1&nbsp;
+&nbsp;2&nbsp;
+&nbsp;3&nbsp;
+&nbsp;4&nbsp;
+&nbsp;5&nbsp;
+&nbsp;6&nbsp;
+&nbsp;7&nbsp;
+&nbsp;8&nbsp;
+&nbsp;9&nbsp;
+10&nbsp;
+11&nbsp;
+12&nbsp;
+13&nbsp;</code></pre><pre><code class="java hljs">AlertDialog.Builder builder = <span class="hljs-keyword">new</span> AlertDialog.Builder();
+...
+String[] items = {<span class="hljs-string">"lettuce"</span>, <span class="hljs-string">"tomato"</span>, <span class="hljs-string">"cheese"</span>, <span class="hljs-string">"mayo"</span>};
+builder.<em>setMultiChoiceItems</em>(items,
+    <span class="hljs-keyword">new</span> DialogInterface.OnMultiChoiceClickListener() {
+        <span class="hljs-meta">@Override</span>
+        <span class="hljs-function"><span class="hljs-keyword">public</span> <span class="hljs-keyword">void</span> </span><em><span class="hljs-function"><span class="hljs-title">onClick</span></span></em><span class="hljs-function"><span class="hljs-params">(DialogInterface dialog, <span class="hljs-keyword">int</span> index,
+                            <span class="hljs-keyword">boolean</span> isChecked)</span> </span>{
+            <span class="hljs-comment">// code to run when the item at this index is clicked</span>
+        }
+});
+
+<span class="hljs-comment">// still need to call setPositiveButton, etc.</span>
+</code></pre></div>
+</section>
+
+
+<section class="future" style="display: none;" hidden="" aria-hidden="true">
+	<h1>Custom dialogs</h1>
+	
+	<div class="figuresright">
+		<img src="./Dialogs_files/dialog-custom.png" tppabs="http://web.stanford.edu/class/cs193a/lectures/slides/images/dialog-custom.png" alt="figure">
+	</div>
+	
+	<ul>
+		<li><code>AlertDialog</code> is useful but very limited.
+		</li><li>To make your own custom dialog with its own widgets, layout, and behavior:
+			<ol>
+				<li>create a new <strong>fragment</strong> that extends DialogFragment  (<span class="filename">.java</span>)
+				</li><li>create a <strong>layout</strong> for it  (<span class="filename">.xml</span>)
+				</li><li>write the Java/XML code to create the fragment's UI and handle its <strong>events</strong>
+				</li><li>write the Java code in your <strong>activity</strong> to launch the dialog
+			</li></ol>
+	</li></ul>
+</section>
+
+<section class="future" style="display: none;" hidden="" aria-hidden="true">
+	<h1>Fragment layout, 2 text fields</h1>
+	
+	<div class="figuresright">
+		<img src="./Dialogs_files/dialog-custom-cropped.png" tppabs="http://web.stanford.edu/class/cs193a/lectures/slides/images/dialog-custom-cropped.png" alt="figure">
+	</div>
+	
+	<div class="linenumbersouter"><pre class="longcode linenumbers"><code style="float: left;">&nbsp;1&nbsp;
+&nbsp;2&nbsp;
+&nbsp;3&nbsp;
+&nbsp;4&nbsp;
+&nbsp;5&nbsp;
+&nbsp;6&nbsp;
+&nbsp;7&nbsp;
+&nbsp;8&nbsp;
+&nbsp;9&nbsp;
+10&nbsp;
+11&nbsp;
+12&nbsp;
+13&nbsp;
+14&nbsp;
+15&nbsp;
+16&nbsp;
+17&nbsp;
+18&nbsp;
+19&nbsp;
+20&nbsp;
+21&nbsp;
+22&nbsp;</code></pre><pre class="longcode"><code class="java hljs">&lt;LinearLayout ...
+    android:orientation=<span class="hljs-string">"vertical"</span>
+    android:minWidth=<span class="hljs-string">"700dp"</span>
+    tools:context=<span class="hljs-string">"cs193a.vocabquiz.AddWordFragment"</span>&gt;
+
+    &lt;EditText
+        android:id=<span class="hljs-string">"@+id/edit1"</span>
+        android:hint=<span class="hljs-string">"your new word"</span>
+        android:layout_width=<span class="hljs-string">"match_parent"</span>
+        android:layout_height=<span class="hljs-string">"wrap_content"</span> /&gt;
+    &lt;EditText
+        android:id=<span class="hljs-string">"@+id/edit2"</span>
+        android:hint=<span class="hljs-string">"its definition"</span>
+        android:layout_width=<span class="hljs-string">"match_parent"</span>
+        android:layout_height=<span class="hljs-string">"wrap_content"</span> /&gt;
+    &lt;Button
+        android:id=<span class="hljs-string">"@+id/add"</span>
+        android:layout_gravity=<span class="hljs-string">"right"</span>
+        android:text=<span class="hljs-string">"Add"</span>
+        android:layout_width=<span class="hljs-string">"wrap_content"</span>
+        android:layout_height=<span class="hljs-string">"wrap_content"</span> /&gt;
+&lt;/LinearLayout&gt;
+</code></pre></div>
+</section>
+
+<section class="future" style="display: none;" hidden="" aria-hidden="true">
+	<h1>DialogFragment</h1>
+	
+	<div class="linenumbersouter"><pre class=" linenumbers"><code style="float: left;">&nbsp;1&nbsp;
+&nbsp;2&nbsp;
+&nbsp;3&nbsp;
+&nbsp;4&nbsp;
+&nbsp;5&nbsp;
+&nbsp;6&nbsp;
+&nbsp;7&nbsp;
+&nbsp;8&nbsp;
+&nbsp;9&nbsp;
+10&nbsp;
+11&nbsp;
+12&nbsp;
+13&nbsp;
+14&nbsp;</code></pre><pre><code class="java hljs"><span class="hljs-comment">// Create a Fragment class that extends DialogFragment</span>
+<span class="hljs-keyword">public</span> <span class="hljs-class"><span class="hljs-keyword">class</span> </span><var><span class="hljs-class"><span class="hljs-title">Name</span></span></var><span class="hljs-class"> <span class="hljs-keyword">extends</span> <span class="hljs-title">DialogFragment</span> </span>{ 
+
+    <span class="hljs-function"><span class="hljs-keyword">public</span> View </span><em><span class="hljs-function"><span class="hljs-title">onCreateView</span></span></em><span class="hljs-function"><span class="hljs-params">(LayoutInflater inflater,
+            ViewGroup container, Bundle bundle)</span> </span>{
+
+        <span class="hljs-keyword">final</span> View dialog = inflater.inflate(R.layout.<var>layoutName</var>,
+                                     container, <span class="hljs-keyword">false</span>);
+
+        <span class="hljs-comment">// any code to initialize event listeners, etc.</span>
+        ...
+
+        <span class="hljs-keyword">return</span> dialog;
+    }
+
+</code></pre></div>
+</section>
+
+<section class="future" style="display: none;" hidden="" aria-hidden="true">
+	<h1>Why final?</h1>
+	
+	<div class="linenumbersouter"><pre class="longcode linenumbers"><code style="float: left;">&nbsp;1&nbsp;
+&nbsp;2&nbsp;
+&nbsp;3&nbsp;
+&nbsp;4&nbsp;
+&nbsp;5&nbsp;
+&nbsp;6&nbsp;
+&nbsp;7&nbsp;
+&nbsp;8&nbsp;
+&nbsp;9&nbsp;
+10&nbsp;
+11&nbsp;
+12&nbsp;
+13&nbsp;
+14&nbsp;
+15&nbsp;
+16&nbsp;
+17&nbsp;
+18&nbsp;
+19&nbsp;
+20&nbsp;
+21&nbsp;</code></pre><pre class="longcode"><code class="java hljs"><span class="hljs-comment">// A final variable can be used inside nested</span>
+<span class="hljs-comment">// anonymous classes declared in that code.</span>
+<span class="hljs-keyword">public</span> <span class="hljs-class"><span class="hljs-keyword">class</span> <span class="hljs-title">AddWordFragment</span> <span class="hljs-keyword">extends</span> <span class="hljs-title">DialogFragment</span> </span>{ 
+    <span class="hljs-function"><span class="hljs-keyword">public</span> View </span><em><span class="hljs-function"><span class="hljs-title">onCreateView</span></span></em><span class="hljs-function"><span class="hljs-params">(LayoutInflater inflater,
+            ViewGroup group, Bundle bundle)</span> </span>{
+        <span class="hljs-keyword">final</span> View dialog = inflater.inflate(R.layout.<var>layout</var>, group, <span class="hljs-keyword">false</span>);
+
+        <span class="hljs-comment">// any code to initialize event listeners, etc.</span>
+        Button addButton = (Button) dialog.findViewById(R.id.add);
+        addButton.<em>setOnClickListener</em>(<span class="hljs-keyword">new</span> View.OnClickListener() {
+            <span class="hljs-function"><span class="hljs-keyword">public</span> <span class="hljs-keyword">void</span> <span class="hljs-title">onClick</span><span class="hljs-params">(View v)</span> </span>{
+                EditText wordBox = (EditText) dialog.findViewById(R.id.edit1);
+                EditText defnBox = (EditText) dialog.findViewById(R.id.edit2);
+                String word = wordBox.getText().toString();
+                String defn = defnBox.getText().toString();
+                <span class="hljs-comment">// now what?</span>
+            }
+        });
+        <span class="hljs-keyword">return</span> dialog;
+    }
+}
+</code></pre></div>
+</section>
+
+<section class="future" style="display: none;" hidden="" aria-hidden="true">
+	<h1>Dialog[Fragment] methods</h1>
+	
+	<table class="methodtable">
+		<tbody><tr>
+			<th><a target="_blank" href="https://developer.android.com/reference/android/app/DialogFragment.html"><code class="androidapi" data-class="android.app.DialogFragment">DialogFragment</code></a> Method</th>
+			<th>Description</th>
+		</tr>
+		<tr>
+			<td><code>dismiss();</code></td>
+			<td>closes the dialog</td>
+		</tr>
+		<tr>
+			<td><code>getActivity()</code></td>
+			<td>returns the activity the dialog fragment is inside</td>
+		</tr>
+		<tr>
+			<td><code>getDialog()</code></td>
+			<td>returns the dialog the dialog fragment is inside</td>
+		</tr>
+		<tr>
+			<td><code>show(FragmentManager, "<var>tag</var>");</code></td>
+			<td>causes the fragment and its dialog to appear</td>
+		</tr>
+
+		<tr>
+			<td></td>
+			<td></td>
+		</tr>
+
+		<tr>
+			<th><a target="_blank" href="https://developer.android.com/reference/android/app/Dialog.html"><code class="androidapi" data-class="android.app.Dialog">Dialog</code></a> Method</th>
+			<th>Description</th>
+		</tr>
+		<tr>
+			<td><code>cancel();</code></td>
+			<td>closes the dialog</td>
+		</tr>
+		<tr>
+			<td><code>create();</code></td>
+			<td>creates the dialog</td>
+		</tr>
+		<tr>
+			<td><code>dismiss();</code></td>
+			<td>closes the dialog</td>
+		</tr>
+		<tr>
+			<td><code>findViewById(<var>id</var>)</code></td>
+			<td>return a <code>View</code> inside the dialog</td>
+		</tr>
+		<tr>
+			<td><code>hide();</code></td>
+			<td>make invisible but do not delete yet</td>
+		</tr>
+		<tr>
+			<td><code>isShowing()</code></td>
+			<td>returns <code>true</code> if not hidden</td>
+		</tr>
+		<tr>
+			<td><code>setTitle("<var>title</var>");</code></td>
+			<td>title text at top of dialog</td>
+		</tr>
+		<tr>
+			<td><code>show();</code></td>
+			<td>cause dialog to appear on screen</td>
+		</tr>
+	</tbody></table>
+</section>
+
+<section class="future" style="display: none;" hidden="" aria-hidden="true">
+	<h1>Dialog &#8594; Activity communication</h1>
+	
+	<div class="figuresright">
+		<img src="./Dialogs_files/dialog-custom.png" tppabs="http://web.stanford.edu/class/cs193a/lectures/slides/images/dialog-custom.png" alt="figure">
+	</div>
+	
+	<ul>
+		<li>When a dialog is finished, it often wants to send information back to the activity or fragment that created it.
+			<ul>
+				<li>In our example, that is the word and definition the user typed.
+			</li></ul>
+		
+		</li><li>Two common ways of doing this:
+			<ol>
+				<li>use <code>Intent</code> / <code>onActivityResult</code> system
+				</li><li>create a custom event listener interface
+			</li></ol>
+		
+		</li><li>We'll explore option 1 now.
+	</li></ul>
+</section>
+
+<section class="future" style="display: none;" hidden="" aria-hidden="true">
+	<h1>Dialog &#8594; Activity communication</h1>
+	
+	<div class="linenumbersouter"><pre class="longcode linenumbers"><code style="float: left;">&nbsp;1&nbsp;
+&nbsp;2&nbsp;
+&nbsp;3&nbsp;
+&nbsp;4&nbsp;
+&nbsp;5&nbsp;
+&nbsp;6&nbsp;
+&nbsp;7&nbsp;
+&nbsp;8&nbsp;
+&nbsp;9&nbsp;
+10&nbsp;
+11&nbsp;
+12&nbsp;
+13&nbsp;
+14&nbsp;
+15&nbsp;
+16&nbsp;
+17&nbsp;
+18&nbsp;
+19&nbsp;
+20&nbsp;
+21&nbsp;
+22&nbsp;
+23&nbsp;
+24&nbsp;</code></pre><pre class="longcode"><code class="java hljs"><span class="hljs-keyword">public</span> <span class="hljs-class"><span class="hljs-keyword">class</span> <span class="hljs-title">AddWordFragment</span> <span class="hljs-keyword">extends</span> <span class="hljs-title">DialogFragment</span> </span>{ 
+    <span class="hljs-function"><span class="hljs-keyword">public</span> View </span><em><span class="hljs-function"><span class="hljs-title">onCreateView</span></span></em><span class="hljs-function"><span class="hljs-params">(LayoutInflater inflater, ViewGroup group, Bundle bundle)</span> </span>{
+        <span class="hljs-keyword">final</span> View dialog = inflater.inflate(R.layout.layout, group, <span class="hljs-keyword">false</span>);
+        Button addButton = (Button) dialog.findViewById(R.id.add);
+        addButton.<em>setOnClickListener</em>(<span class="hljs-keyword">new</span> View.OnClickListener() {
+            <span class="hljs-function"><span class="hljs-keyword">public</span> <span class="hljs-keyword">void</span> <span class="hljs-title">onClick</span><span class="hljs-params">(View v)</span> </span>{
+                EditText wordBox = (EditText) dialog.findViewById(R.id.edit1);
+                EditText defnBox = (EditText) dialog.findViewById(R.id.edit2);
+                String word = wordBox.getText().toString();
+                String defn = defnBox.getText().toString();
+
+                <span class="hljs-comment">// send information back to activity using an intent</span>
+                <span class="hljs-comment">// (activity's onActivityResult method must be public)</span>
+                <em>MainActivity activity = (MainActivity) getActivity();
+                Intent intent = <span class="hljs-keyword">new</span> Intent();
+                intent.putExtra(<span class="hljs-string">"word"</span>, word);
+                intent.putExtra(<span class="hljs-string">"definition"</span>, defn);
+                activity.onActivityResult(MainActivity.REQ_CODE_ADD_WORD, 
+                                          Activity.RESULT_OK, intent);</em>
+            }
+        });
+        <span class="hljs-keyword">return</span> dialog;
+    }
+}
+</code></pre></div>
+</section>
+
+<section class="future" style="display: none;" hidden="" aria-hidden="true">
+	<h1>Launching a custom dialog</h1>
+	
+	<div class="linenumbersouter"><pre class=" linenumbers"><code style="float: left;">&nbsp;1&nbsp;
+&nbsp;2&nbsp;
+&nbsp;3&nbsp;
+&nbsp;4&nbsp;
+&nbsp;5&nbsp;
+&nbsp;6&nbsp;
+&nbsp;7&nbsp;
+&nbsp;8&nbsp;
+&nbsp;9&nbsp;
+10&nbsp;
+11&nbsp;
+12&nbsp;
+13&nbsp;
+14&nbsp;
+15&nbsp;
+16&nbsp;
+17&nbsp;
+18&nbsp;</code></pre><pre><code class="java hljs"><span class="hljs-comment">// Write code like the following in your activity class.</span>
+<span class="hljs-comment">// tell the dialog box to pop up</span>
+FragmentManager manager = getFragmentManager();
+AddWordFragment fragment = <span class="hljs-keyword">new</span> AddWordFragment();
+fragment.show(manager, <span class="hljs-string">"add_word_fragment_name"</span>);
+...
+
+<span class="hljs-meta">@Override</span>
+<span class="hljs-function"><span class="hljs-keyword">protected</span> <span class="hljs-keyword">void</span> <span class="hljs-title">onActivityResult</span><span class="hljs-params">(<span class="hljs-keyword">int</span> requestCode, <span class="hljs-keyword">int</span> resultCode,
+                                Intent intent)</span> </span>{
+    <span class="hljs-keyword">super</span>.onActivityResult(requestCode, resultCode, intent);
+    <span class="hljs-keyword">if</span> (requestCode == REQ_CODE_ADD_WORD &amp;&amp; resultCode == RESULT_OK) {
+        <span class="hljs-comment">// extract returned parameters from the intent</span>
+        String word = intent.getStringExtra(<span class="hljs-string">"word"</span>);
+        String defn = intent.getStringExtra(<span class="hljs-string">"definition"</span>);
+        addWordToFile(word, defn);
+    }
+}
+</code></pre></div>
+</section>
+
+<!-- END SLIDES AREA -->
+			</div>
+		<div class="backgrounds"><div class="slide-background titleslide past" data-loaded="true" style="display: none;"></div><div class="slide-background past" data-loaded="true" style="display: none;"></div><div class="slide-background past" data-loaded="true" style="display: none;"></div><div class="slide-background past" data-loaded="true" style="display: none;"></div><div class="slide-background past" data-loaded="true" style="display: none;"></div><div class="slide-background past" data-loaded="true" style="display: block;"></div><div class="slide-background past" data-loaded="true" style="display: block;"></div><div class="slide-background present" data-loaded="true" style="display: block;"></div><div class="slide-background future" data-loaded="true" style="display: block;"></div><div class="slide-background future" data-loaded="true" style="display: block;"></div><div class="slide-background future" data-loaded="true" style="display: none;"></div><div class="slide-background future" data-loaded="true" style="display: none;"></div><div class="slide-background future" data-loaded="true" style="display: none;"></div><div class="slide-background future" data-loaded="true" style="display: none;"></div><div class="slide-background future" data-loaded="true" style="display: none;"></div><div class="slide-background future" data-loaded="true" style="display: none;"></div><div class="slide-background future" data-loaded="true" style="display: none;"></div><div class="slide-background future" data-loaded="true" style="display: none;"></div><div class="slide-background future" data-loaded="true" style="display: none;"></div><div class="slide-background future" data-loaded="true" style="display: none;"></div><div class="slide-background future" data-loaded="true" style="display: none;"></div><div class="slide-background future" data-loaded="true" style="display: none;"></div></div><div class="progress" style="display: block;"><span style="width: 421.333px;"></span></div><aside class="controls" style="display: block;"><button class="navigate-left enabled" aria-label="previous slide"></button><button class="navigate-right enabled" aria-label="next slide"></button><button class="navigate-up" aria-label="above slide"></button><button class="navigate-down" aria-label="below slide"></button><button id="fullscreenbutton" title="full-screen mode">&#8862;</button></aside><div class="slide-number" style="display: block;"><span class="slide-number-a">8</span></div><div class="speaker-notes" data-prevent-swipe=""></div><div class="pause-overlay"></div><div id="aria-status-div" aria-live="polite" aria-atomic="true" style="position: absolute; height: 1px; width: 1px; overflow: hidden; clip: rect(1px 1px 1px 1px);">
+	Listening to a list of items
+	
+	&nbsp;1&nbsp;
+&nbsp;2&nbsp;
+&nbsp;3&nbsp;
+&nbsp;4&nbsp;
+&nbsp;5&nbsp;
+&nbsp;6&nbsp;
+&nbsp;7&nbsp;
+&nbsp;8&nbsp;
+&nbsp;9&nbsp;
+10&nbsp;
+11&nbsp;
+12&nbsp;
+13&nbsp;
+14&nbsp;AlertDialog.Builder builder = new AlertDialog.Builder();
+...
+String[] items = {"Leo", "Mike", "Don", "Raph"};
+builder.setItems(items,
+    new DialogInterface.OnClickListener() {
+        @Override
+        public void onClick(DialogInterface dialog, int index) {
+            // code to run when the item at this index is pressed
+        }
+});
+
+// for radio buttons:    .setSingleChoiceItems
+
+// still need to call setPositiveButton, etc.
+
+</div></div>
+
+		<script src="./Dialogs_files/highlight.pack.js.download" tppabs="http://web.stanford.edu/class/cs193a/lectures/slides/highlightjs/highlight.pack.js"></script>
+		<script src="./Dialogs_files/cs193a-slides.js.download" tppabs="http://web.stanford.edu/class/cs193a/lectures/slides/cs193a-slides.js"></script>
+		<script src="./Dialogs_files/reveal.js.download" tppabs="http://web.stanford.edu/class/cs193a/lectures/slides/reveal/js/reveal.js"></script>
+		<script>
+			initializeSlides();
+		</script>
+	
+
+</body></html>

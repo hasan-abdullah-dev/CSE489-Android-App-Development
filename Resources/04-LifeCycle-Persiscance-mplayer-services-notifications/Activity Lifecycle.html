@@ -1,0 +1,625 @@
+
+<!-- saved from url=(0175)file:///D:/old_data/D3/old%20Data/Adnan/courses/2018%201%20Spring/CSE491%20Mobile/cs193a/CS193A-master/Winter2017Update/class/cs193a/lectures/slides/activity-lifecycle.html#/3 -->
+<html><head><meta http-equiv="Content-Type" content="text/html; charset=windows-1252">
+		<title>CSE 491: Android - Activity Lifecycle</title>
+		<link rel="stylesheet" href="./Activity Lifecycle_files/default.css" tppabs="http://web.stanford.edu/class/cs193a/lectures/slides/highlightjs/styles/default.css">
+		<link rel="stylesheet" href="./Activity Lifecycle_files/reveal.css" tppabs="http://web.stanford.edu/class/cs193a/lectures/slides/reveal/css/reveal.css">
+		<link rel="stylesheet" href="./Activity Lifecycle_files/white.css" tppabs="http://web.stanford.edu/class/cs193a/lectures/slides/reveal/css/theme/white.css">
+		<link rel="stylesheet" href="./Activity Lifecycle_files/cs193a-slides.css" tppabs="http://web.stanford.edu/class/cs193a/lectures/slides/cs193a-slides.css">
+	</head>
+	<body>
+		<div class="reveal slide" role="application" data-transition-speed="default" data-background-transition="fade">
+			<div class="slides" style="width: 960px; height: 700px; left: 50%; top: 50%; bottom: auto; right: auto; transform: translate(-50%, -50%) scale(0.871286);">
+
+<!-- BEGIN SLIDES AREA -->
+
+<section class="titleslide past" style="display: none;" hidden="" aria-hidden="true" data-index-h="0">
+	<h1>CSE 491: Android</h1>
+
+	<p>The Activity Lifecycle</p>
+	<br/>
+	<br/>
+	<pre>
+Acknowledgment:
+   The slides are of ones by Marty Stepp.
+   http://cs193a.stanford.edu
+	</pre>
+</section>
+
+<section class="past" style="display: block;" hidden="" aria-hidden="true" data-index-h="1">
+	<h1>Activity state</h1>
+	
+	<ul>
+		<li>An activity can be thought of as being in one of several states:
+			<ul>
+				<li><strong>starting</strong>: In process of loading up, but not fully loaded.
+				</li><li><strong>running</strong>: Done loading and now visible on the screen.
+				</li><li><strong>paused</strong>: Partially obscured or out of focus, but not shut down.
+				</li><li><strong>stopped</strong>: No longer active, but still in the device's active memory.
+				</li><li><strong>destroyed</strong>: Shut down and no longer currently loaded in memory.
+			</li></ul>
+		
+		</li><li>Transitions between these states are represented by events that you can listen to in your activity code.
+			<ul>
+				<li><code>onCreate</code>, <code>onPause</code>, <code>onResume</code>, <code>onStop</code>, <code>onDestroy</code>, ...
+			</li></ul>
+	</li></ul>
+</section>
+
+<section class="past" style="display: block;" data-index-h="2" hidden="" aria-hidden="true">
+	<h1>Activity lifecycle</h1>
+	
+	<div class="figurelarge"  style="height:730px">
+		<img src="./Activity Lifecycle_files/activity-lifecycle-diagram-1.png" tppabs="http://web.stanford.edu/class/cs193a/lectures/slides/images/activity-lifecycle-diagram-1.png" alt="figure">
+	</div>
+</section>
+
+<section class="present" style="display: block;" data-index-h="3">
+	<h1>Activity state transitions</h1>
+	
+	<ul>
+		<li>jump between activities in the same app:  <code>onPause</code>/<code>onResume</code>
+		</li><li class="subbullet"><img src="./Activity Lifecycle_files/activity-state-transitions-1.png" tppabs="http://web.stanford.edu/class/cs193a/lectures/slides/images/activity-state-transitions-1.png" alt="figure" style="max-height: 6em">
+
+		</li><li>jump between two apps that are in memory:  <code>onStop</code>/<code>onStart</code>
+		</li><li class="subbullet"><img src="./Activity Lifecycle_files/activity-state-transitions-2.png" tppabs="http://web.stanford.edu/class/cs193a/lectures/slides/images/activity-state-transitions-2.png" alt="figure" style="max-height: 5em">
+
+		</li><li>app loaded/unloaded from memory:  <code>onDestroy</code>/<code>onCreate</code>
+	</li></ul>
+</section>
+
+<section class="future" style="display: block;" hidden="" aria-hidden="true" data-index-h="4">
+	<h1>Activity instance state</h1>
+	
+	<div class="figuresright">
+		<img src="./Activity Lifecycle_files/activity-state.png" tppabs="http://web.stanford.edu/class/cs193a/lectures/slides/images/activity-state.png" alt="figure">
+	</div>
+
+	<ul>
+		<li><strong>instance state</strong>: Current state of an activity.
+			<ul>
+				<li>Which boxes are checked
+				</li><li>Any text typed into text boxes
+				</li><li>Values of any private fields
+				</li><li>...
+			</li></ul>
+		
+		</li><li>Example: In the app at right, the instance state is that the Don checkbox is checked, and the Don image is showing.
+	</li></ul>
+</section>
+
+<section class="future" style="display: block;" hidden="" aria-hidden="true" data-index-h="5">
+	<h1>Lost activity state</h1>
+	
+	<ul>
+		<li>Several actions can cause your activity's state to be lost:
+			<ul>
+				<li>When you go from one <strong>activity</strong> to another and back, within same app
+				</li><li>When you launch another <strong>app</strong> and then come back
+				</li><li>When you rotate the device's <strong>orientation</strong> from portrait to landscape
+				</li><li>...
+			</li></ul>
+	</li></ul>
+	
+	<div class="figure">
+		<img src="./Activity Lifecycle_files/activity-state-lost.png" tppabs="http://web.stanford.edu/class/cs193a/lectures/slides/images/activity-state-lost.png" alt="figure" style="height: inherit;">
+	</div>
+</section>
+
+<section class="future" style="display: none;" hidden="" aria-hidden="true" data-index-h="6">
+	<h1>Simulate state change in AVD</h1>
+	
+	<ul>
+		<li>Testing orientation change: press <strong>Ctrl-F11</strong>
+		</li><li>Testing activity shutdown (<code>onDestroy</code>):
+			<ul>
+				<li>Settings &#8594; Developer options &#8594; Don't keep activities
+				</li><li>Developer options &#8594; Background process limit &#8594; No bg processes
+			</li></ul>
+	</li></ul>
+	
+	<div class="figureshorizontal">
+		<img src="./Activity Lifecycle_files/android-avd-rotate-2.png" tppabs="http://web.stanford.edu/class/cs193a/lectures/slides/images/android-avd-rotate-2.png" alt="figure">
+		<img src="./Activity Lifecycle_files/developer-options-dont-keep-activities.png" tppabs="http://web.stanford.edu/class/cs193a/lectures/slides/images/developer-options-dont-keep-activities.png" alt="figure">
+	</div>
+</section>
+
+<section class="future" style="display: none;" hidden="" aria-hidden="true" data-index-h="7">
+	<h1>Handling rotation</h1>
+	
+	<ul>
+		<li>A quick way to retain your activity's GUI state on rotation is to set the <code>configChanges</code> attribute of the activity in <span class="filename">AndroidManifest.xml</span>.
+		</li><li>This doesn't solve the other cases like loading other apps/activities.
+	</li></ul>
+	
+	<div class="linenumbersouter"><pre class=" linenumbers"><code style="float: left;">&nbsp;1&nbsp;
+&nbsp;2&nbsp;
+&nbsp;3&nbsp;
+&nbsp;4&nbsp;</code></pre><pre><code class="xml hljs"><span class="hljs-comment">&lt;!-- AndroidManifest.xml --&gt;</span>
+<span class="hljs-tag">&lt;<span class="hljs-name">activity</span> <span class="hljs-attr">android:name</span>=<span class="hljs-string">".MainActivity"</span>
+    </span><em><span class="hljs-tag"><span class="hljs-attr">android:configChanges</span>=<span class="hljs-string">"orientation|screenSize"</span></span></em><span class="hljs-tag">
+    <span class="hljs-attr">...</span>&gt;</span>
+</code></pre></div>
+
+	<div class="figureshorizontal">
+		<img src="./Activity Lifecycle_files/activity-state-lost-1.png" tppabs="http://web.stanford.edu/class/cs193a/lectures/slides/images/activity-state-lost-1.png" alt="figure">
+		<img src="./Activity Lifecycle_files/activity-state-lost-6.png" tppabs="http://web.stanford.edu/class/cs193a/lectures/slides/images/activity-state-lost-6.png" alt="figure">
+	</div>
+</section>
+
+<section data-transition="fade-in fade-out" class="future" style="display: none;" hidden="" aria-hidden="true" data-index-h="8">
+	<h1>The onCreate method</h1>
+	
+	<div class="figuresright">
+		<img src="./Activity Lifecycle_files/activity-lifecycle-1.png" tppabs="http://web.stanford.edu/class/cs193a/lectures/slides/images/activity-lifecycle-1.png" alt="figure" style="max-height: 10em">
+	</div>
+	
+	<ul>
+		<li><strong><code>onCreate</code></strong>: Called as activity is being initialized.
+			<ul>
+				<li>creates and sets up the activity object
+				</li><li>load any static resources like images, layouts, set up menus etc.
+				</li><li>after it runs, the Activity object exists
+				</li><li>think of this as the "constructor" of the activity
+				</li><li>(don't actually write a constructor; things will break)
+			</li></ul>
+	</li></ul>
+	
+	<div class="linenumbersouter"><pre class=" linenumbers"><code style="float: left;">&nbsp;1&nbsp;
+&nbsp;2&nbsp;
+&nbsp;3&nbsp;
+&nbsp;4&nbsp;
+&nbsp;5&nbsp;
+&nbsp;6&nbsp;
+&nbsp;7&nbsp;
+&nbsp;8&nbsp;</code></pre><pre><code class="java hljs"><span class="hljs-keyword">public</span> <span class="hljs-class"><span class="hljs-keyword">class</span> <span class="hljs-title">FooActivity</span> <span class="hljs-keyword">extends</span> <span class="hljs-title">Activity</span> </span>{
+    ...
+    <span class="hljs-function"><span class="hljs-keyword">public</span> <span class="hljs-keyword">void</span> <span class="hljs-title">onCreate</span><span class="hljs-params">(Bundle savedInstanceState)</span> </span>{
+        <span class="hljs-keyword">super</span>.onCreate(savedInstanceState);      <span class="hljs-comment">// always call super</span>
+        setContentView(R.layout.activity_foo);   <span class="hljs-comment">// set up layout</span>
+        <var>any other initialization code</var>;           <span class="hljs-comment">// anything else</span>
+    }
+}
+</code></pre></div>
+</section>
+
+<section data-transition="fade-in fade-out" class="future" style="display: none;" hidden="" aria-hidden="true" data-index-h="9">
+	<h1>The onPause method</h1>
+	
+	<div class="figuresright">
+		<img src="./Activity Lifecycle_files/activity-lifecycle-1.png" tppabs="http://web.stanford.edu/class/cs193a/lectures/slides/images/activity-lifecycle-1.png" alt="figure" style="max-height: 10em">
+	</div>
+	
+	<ul>
+		<li><strong><code>onPause</code></strong>: Called when another activity in same app pops up over your current activity.
+		</li><li>may be temporary, or on way to termination
+			<ul>
+				<li>stop animations or other actions that consume CPU
+				</li><li>commit unsaved changes (e.g. draft email)
+				</li><li>release system resources that affect battery life
+			</li></ul>
+	</li></ul>
+	
+	<div class="linenumbersouter"><pre class=" linenumbers"><code style="float: left;">&nbsp;1&nbsp;
+&nbsp;2&nbsp;
+&nbsp;3&nbsp;
+&nbsp;4&nbsp;
+&nbsp;5&nbsp;
+&nbsp;6&nbsp;
+&nbsp;7&nbsp;</code></pre><pre><code class="java hljs"><span class="hljs-function"><span class="hljs-keyword">public</span> <span class="hljs-keyword">void</span> <span class="hljs-title">onPause</span><span class="hljs-params">()</span> </span>{
+    <span class="hljs-keyword">super</span>.onPause();             <span class="hljs-comment">// always call super</span>
+    <span class="hljs-keyword">if</span> (myConnection != <span class="hljs-keyword">null</span>) {
+        myConnection.close();    <span class="hljs-comment">// release resources</span>
+        myConnection = <span class="hljs-keyword">null</span>;
+    }
+}
+</code></pre></div>
+</section>
+
+<section class="future" style="display: none;" hidden="" aria-hidden="true" data-index-h="10">
+	<h1>Testing activity states</h1>
+	
+	<ul>
+		<li>Use the LogCat system for logging messages when your app changes states:
+			<ul>
+				<li>analogous to <code>println</code> debugging for Android apps
+				</li><li>appears in the <strong>LogCat</strong> console in Android Studio
+			</li></ul>
+	</li></ul>
+	
+	<div class="linenumbersouter"><pre class=" linenumbers"><code style="float: left;">&nbsp;1&nbsp;
+&nbsp;2&nbsp;
+&nbsp;3&nbsp;
+&nbsp;4&nbsp;</code></pre><pre><code class="java hljs"><span class="hljs-function"><span class="hljs-keyword">public</span> <span class="hljs-keyword">void</span> <span class="hljs-title">onPause</span><span class="hljs-params">()</span> </span>{
+    <span class="hljs-keyword">super</span>.onPause();
+    <em>Log.v(<span class="hljs-string">"testing"</span>, <span class="hljs-string">"onPause was called!"</span>);</em>
+}
+</code></pre></div>
+
+	<div class="figure">
+		<img src="./Activity Lifecycle_files/logcat-exception.png" tppabs="http://web.stanford.edu/class/cs193a/lectures/slides/images/logcat-exception.png" alt="figure">
+	</div>
+</section>
+
+<section data-transition="fade-in fade-out" class="future" style="display: none;" hidden="" aria-hidden="true" data-index-h="11">
+	<h1>The onResume method</h1>
+	
+	<div class="figuresright">
+		<img src="./Activity Lifecycle_files/activity-lifecycle-1.png" tppabs="http://web.stanford.edu/class/cs193a/lectures/slides/images/activity-lifecycle-1.png" alt="figure" style="max-height: 10em">
+	</div>
+	
+	<ul>
+		<li><strong><code>onResume</code></strong>: Called when activity starts and when it comes back from having been paused.
+			<ul>
+				<li>initialize resources that you will release in <code>onPause</code>
+				</li><li>start/resume animations or other ongoing actions that should only run when activity is visible on screen
+			</li></ul>
+	</li></ul>
+	
+	<div class="linenumbersouter"><pre class=" linenumbers"><code style="float: left;">&nbsp;1&nbsp;
+&nbsp;2&nbsp;
+&nbsp;3&nbsp;
+&nbsp;4&nbsp;
+&nbsp;5&nbsp;
+&nbsp;6&nbsp;
+&nbsp;7&nbsp;
+&nbsp;8&nbsp;</code></pre><pre><code class="java hljs"><span class="hljs-function"><span class="hljs-keyword">public</span> <span class="hljs-keyword">void</span> <span class="hljs-title">onResume</span><span class="hljs-params">()</span> </span>{
+    <span class="hljs-keyword">super</span>.onResume();                          <span class="hljs-comment">// always call super</span>
+    beginAnimation();
+    <span class="hljs-keyword">if</span> (myConnection == <span class="hljs-keyword">null</span>) {
+        myConnection = <span class="hljs-keyword">new</span> ExampleConnect();  <span class="hljs-comment">// init resources</span>
+        myConnection.connect();
+    }
+}
+</code></pre></div>
+</section>
+
+<section data-transition="fade-in fade-out" class="future" style="display: none;" hidden="" aria-hidden="true" data-index-h="12">
+	<h1>The onStop method</h1>
+	
+	<div class="figuresright">
+		<img src="./Activity Lifecycle_files/activity-lifecycle-1.png" tppabs="http://web.stanford.edu/class/cs193a/lectures/slides/images/activity-lifecycle-1.png" alt="figure" style="max-height: 10em">
+	</div>
+	
+	<ul>
+		<li><strong><code>onStop</code></strong>: Called when activity is no longer running.
+			<ul>
+				<li>User chose another app from Recent Apps window.
+				</li><li>User starts a different activity in your app.
+				</li><li>User receives a phone call while in your app.
+			</li></ul>
+		</li><li><code>onPause</code> is always called before <code>onStop</code>.
+		</li><li><code>onStop</code> performs heavy-duty shutdown tasks like writing to a database.
+	</li></ul>
+	
+	<div class="linenumbersouter"><pre class=" linenumbers"><code style="float: left;">&nbsp;1&nbsp;
+&nbsp;2&nbsp;
+&nbsp;3&nbsp;
+&nbsp;4&nbsp;</code></pre><pre><code class="java hljs"><span class="hljs-function"><span class="hljs-keyword">public</span> <span class="hljs-keyword">void</span> <span class="hljs-title">onStop</span><span class="hljs-params">()</span> </span>{
+    <span class="hljs-keyword">super</span>.onStop();           <span class="hljs-comment">// always call super</span>
+    ...
+}
+</code></pre></div>
+</section>
+
+<section data-transition="fade-in fade-out" class="future" style="display: none;" hidden="" aria-hidden="true" data-index-h="13">
+	<h1>The onStart and onRestart method</h1>
+	
+	<div class="figuresright">
+		<img src="./Activity Lifecycle_files/activity-lifecycle-1.png" tppabs="http://web.stanford.edu/class/cs193a/lectures/slides/images/activity-lifecycle-1.png" alt="figure" style="max-height: 10em">
+	</div>
+	
+	<ul>
+		<li><strong><code>onStart</code></strong>: Called every time the activity begins.
+		</li><li><strong><code>onRestart</code></strong>: Called when activity was stopped but is started again later (all but the first start).
+			<ul>
+				<li>Not as commonly used; favor <code>onResume</code>.
+				</li><li>Re-open any resources that <code>onStop</code> closed.
+			</li></ul>
+	</li></ul>
+	
+	<div class="linenumbersouter"><pre class=" linenumbers"><code style="float: left;">&nbsp;1&nbsp;
+&nbsp;2&nbsp;
+&nbsp;3&nbsp;
+&nbsp;4&nbsp;
+&nbsp;5&nbsp;
+&nbsp;6&nbsp;
+&nbsp;7&nbsp;
+&nbsp;8&nbsp;</code></pre><pre><code class="java hljs"><span class="hljs-function"><span class="hljs-keyword">public</span> <span class="hljs-keyword">void</span> <span class="hljs-title">onStart</span><span class="hljs-params">()</span> </span>{
+    <span class="hljs-keyword">super</span>.onStart();           <span class="hljs-comment">// always call super</span>
+    ...
+}
+<span class="hljs-function"><span class="hljs-keyword">public</span> <span class="hljs-keyword">void</span> <span class="hljs-title">onRestart</span><span class="hljs-params">()</span> </span>{
+    <span class="hljs-keyword">super</span>.onRestart();         <span class="hljs-comment">// always call super</span>
+    ...
+}
+</code></pre></div>
+</section>
+
+<section data-transition="fade-in fade-out" class="future" style="display: none;" hidden="" aria-hidden="true" data-index-h="14">
+	<h1>The onDestroy method</h1>
+	
+	<div class="figuresright">
+		<img src="./Activity Lifecycle_files/activity-lifecycle-1.png" tppabs="http://web.stanford.edu/class/cs193a/lectures/slides/images/activity-lifecycle-1.png" alt="figure" style="max-height: 10em">
+	</div>
+	
+	<ul>
+		<li><strong><code>onDestroy</code></strong>: Called when your entire app is being shut down and unloaded from memory.
+			<ul>
+				<li>Unpredictable exactly when/if it will be called.
+				</li><li>Can be called whenever the system wants to reclaim the memory used by your app.
+				</li><li>Generally favor <code>onPause</code> or <code>onStop</code> because they are called in a predictable and timely manner.
+			</li></ul>
+	</li></ul>
+	
+	<div class="linenumbersouter"><pre class=" linenumbers"><code style="float: left;">&nbsp;1&nbsp;
+&nbsp;2&nbsp;
+&nbsp;3&nbsp;
+&nbsp;4&nbsp;</code></pre><pre><code class="java hljs"><span class="hljs-function"><span class="hljs-keyword">public</span> <span class="hljs-keyword">void</span> <span class="hljs-title">onDestroy</span><span class="hljs-params">()</span> </span>{
+    <span class="hljs-keyword">super</span>.onDestroy();           <span class="hljs-comment">// always call super</span>
+    ...
+}
+</code></pre></div>
+</section>
+
+<section data-transition="fade-out" class="future" style="display: none;" hidden="" aria-hidden="true" data-index-h="15">
+	<h1>onSaveInstanceStace method</h1>
+	
+	<div class="figuresright">
+		<img src="./Activity Lifecycle_files/bundle-saveinstancestate.png" tppabs="http://web.stanford.edu/class/cs193a/lectures/slides/images/bundle-saveinstancestate.png" alt="figure">
+	</div>
+	
+	<ul>
+		<li>When an activity is being destroyed, <code>onSaveInstanceState</code> is also called.
+			<ul>
+				<li><strong>non-persistent state</strong>: Stays for now, but lost on shutdown/reboot.
+			</li></ul>
+		</li><li>Accepts a <a target="_blank" href="https://developer.android.com/reference/android/os/Bundle.html"><code class="androidapi" data-class="android.os.Bundle">Bundle</code></a> parameter storing key/value pairs.
+			<ul>
+				<li>Bundle is passed back to activity if it is recreated later.
+				</li><li>Superclass version saves state of any Views <em>that have an ID</em>.
+			</li></ul>
+	</li></ul>
+	
+	<div class="linenumbersouter"><pre class=" linenumbers"><code style="float: left;">&nbsp;1&nbsp;
+&nbsp;2&nbsp;
+&nbsp;3&nbsp;
+&nbsp;4&nbsp;
+&nbsp;5&nbsp;
+&nbsp;6&nbsp;</code></pre><pre><code class="java hljs"><span class="hljs-function"><span class="hljs-keyword">public</span> <span class="hljs-keyword">void</span> <span class="hljs-title">onSaveInstanceState</span><span class="hljs-params">(Bundle outState)</span> </span>{
+    <span class="hljs-keyword">super</span>.onSaveInstanceState(outState);
+    outState.putInt(<span class="hljs-string">"</span><var><span class="hljs-string">name</span></var><span class="hljs-string">"</span>, <var>value</var>);      <span class="hljs-comment">// save an int</span>
+    outState.putString(<span class="hljs-string">"</span><var><span class="hljs-string">name</span></var><span class="hljs-string">"</span>, <var>value</var>);   <span class="hljs-comment">// save a string</span>
+    ...
+}
+</code></pre></div>
+</section>
+
+<section data-transition="fade-in" class="future" style="display: none;" hidden="" aria-hidden="true" data-index-h="16">
+	<h1>onRestoreInstanceStace method</h1>
+	
+	<div class="figuresright">
+		<img src="./Activity Lifecycle_files/bundle-saveinstancestate.png" tppabs="http://web.stanford.edu/class/cs193a/lectures/slides/images/bundle-saveinstancestate.png" alt="figure">
+	</div>
+	
+	<ul>
+		<li>When an activity is recreated later, <code>onRestoreInstanceState</code> is called. *
+			<ul>
+				<li><a target="_blank" href="https://developer.android.com/reference/android/os/Bundle.html"><code class="androidapi" data-class="android.os.Bundle">Bundle</code></a> from <code>onSaveInstanceState</code> is passed back in with same data in it.
+				</li><li class="aside">older versions of Android put this code in <code>onCreate</code>;  don't do that any more
+			</li></ul>
+	</li></ul>
+	
+	<div class="linenumbersouter"><pre class=" linenumbers"><code style="float: left;">&nbsp;1&nbsp;
+&nbsp;2&nbsp;
+&nbsp;3&nbsp;
+&nbsp;4&nbsp;
+&nbsp;5&nbsp;
+&nbsp;6&nbsp;</code></pre><pre><code class="java hljs"><span class="hljs-function"><span class="hljs-keyword">public</span> <span class="hljs-keyword">void</span> <span class="hljs-title">onRestoreInstanceState</span><span class="hljs-params">(Bundle inState)</span> </span>{
+    <span class="hljs-keyword">super</span>.onRestoreInstanceState(inState);
+    <span class="hljs-keyword">int</span> <var>name</var> = inState.getInt(<span class="hljs-string">"</span><var><span class="hljs-string">name</span></var><span class="hljs-string">"</span>);         <span class="hljs-comment">// restore an int</span>
+    String <var>name</var> = inState.getString(<span class="hljs-string">"</span><var><span class="hljs-string">name</span></var><span class="hljs-string">"</span>);   <span class="hljs-comment">// restore a string</span>
+    ...
+}
+</code></pre></div>
+</section>
+
+<section class="future" style="display: none;" hidden="" aria-hidden="true" data-index-h="17">
+	<h1><a target="_blank" href="https://developer.android.com/reference/android/os/Bundle.html"><code class="androidapi" data-class="android.os.Bundle">Bundle</code></a> methods</h1>
+	
+	<table class="methodtable">
+		<tbody><tr>
+			<th>Method</th>
+			<th>Description</th>
+		</tr>
+		<tr>
+			<td><code>clear();</code></td>
+			<td>removes all stored data</td>
+		</tr>
+		<tr>
+			<td><code>containsKey("<var>name</var>")</code></td>
+			<td><code>true</code> if stored data exists with given name</td>
+		</tr>
+		<tr>
+			<td><code>get("<var>name</var>")</code></td>
+			<td>return stored data for given key name</td>
+		</tr>
+		<tr>
+			<td style="font-size: 0.5em; width: 50%"><code>getBooleanArray("<var>name</var>")</code>, <code>getBoolean("<var>name</var>")</code>, <code>getByte("<var>name</var>")</code>, <code>getByte("<var>name</var>")</code>, <code>getCharArray("<var>name</var>")</code>, <code>getChar("<var>name</var>")</code>, <code>getDoubleArray("<var>name</var>")</code>, <code>getDouble("<var>name</var>")</code>, <code> getFloatArray("<var>name</var>")</code>, <code>getFloat("<var>name</var>")</code>, <code>getIntArray("<var>name</var>")</code>, <code>getInt("<var>name</var>")</code>, <code>getIntegerArrayList("<var>name</var>")</code>, <code>getLongArray("<var>name</var>")</code>, <code>getLong("<var>name</var>")</code>, <code>getParcelableArray("<var>name</var>")</code>, <code>getParcelable("<var>name</var>")</code>, <code>getParcelableArray("<var>name</var>")</code>, <code>getSerializable("<var>name</var>")</code>, <code>getStringArray("<var>name</var>")</code>, <code>getStringArrayList("<var>name</var>")</code>, <code>getString("<var>name</var>")</code></td>
+			<td>return stored data for given key name, cast to the appropriate type</td>
+		</tr>
+		<tr>
+			<td><code>isEmpty()</code></td>
+			<td>returns <code>true</code> if no data is stored</td>
+		</tr>
+		<tr>
+			<td><code>putBoolean("<var>name</var>", <var>value</var>);</code> <br>
+				... <br>
+				<code>putString("<var>name</var>", <var>value</var>);</code>
+			</td>
+			<td>stores data with given key name
+				<small>(there is a <code>putXxx</code> for every <code>getXxx</code> method listed above)</small>
+			</td>
+		</tr>
+		<tr>
+			<td><code>putAll(<var>bundle</var>);</code></td>
+			<td>merge another bundle's data with this one</td>
+		</tr>
+		<tr>
+			<td><code>remove("<var>name</var>");</code></td>
+			<td>delete the given stored data</td>
+		</tr>
+	</tbody></table>
+</section>
+
+<section class="future" style="display: none;" hidden="" aria-hidden="true" data-index-h="18">
+	<h1>Saving your own classes</h1>
+	
+	<ul>
+		<li>By default, your own classes can't be put into a <code>Bundle</code>.
+		</li><li>You can make a class able to be saved by implementing the (methodless)  <a target="_blank" href="https://docs.oracle.com/javase/8/docs/api/java/io/Serializable.html"><code class="javaapi">java.io.Serializable</code></a> interface.
+	</li></ul>
+
+	<div class="linenumbersouter"><pre class=" linenumbers"><code style="float: left;">&nbsp;1&nbsp;
+&nbsp;2&nbsp;
+&nbsp;3&nbsp;
+&nbsp;4&nbsp;
+&nbsp;5&nbsp;
+&nbsp;6&nbsp;
+&nbsp;7&nbsp;
+&nbsp;8&nbsp;
+&nbsp;9&nbsp;
+10&nbsp;
+11&nbsp;</code></pre><pre><code class="java hljs"><span class="hljs-keyword">public</span> <span class="hljs-class"><span class="hljs-keyword">class</span> <span class="hljs-title">Date</span> </span><em><span class="hljs-class"><span class="hljs-keyword">implements</span> <span class="hljs-title">Serializable</span></span></em><span class="hljs-class"> </span>{ ... }
+
+<span class="hljs-keyword">public</span> <span class="hljs-class"><span class="hljs-keyword">class</span> <span class="hljs-title">MainActivity</span> <span class="hljs-keyword">extends</span> <span class="hljs-title">Activity</span> </span>{
+    <span class="hljs-function"><span class="hljs-keyword">public</span> <span class="hljs-keyword">void</span> <span class="hljs-title">onSaveInstanceState</span><span class="hljs-params">(Bundle bundle)</span> </span>{
+        Date d = <span class="hljs-keyword">new</span> Date(<span class="hljs-number">2015</span>, <span class="hljs-number">1</span>, <span class="hljs-number">25</span>);
+        <em>bundle.putSerializable</em>(<span class="hljs-string">"today"</span>, d);
+    }
+    <span class="hljs-function"><span class="hljs-keyword">public</span> <span class="hljs-keyword">void</span> <span class="hljs-title">onRestoreInstanceState</span><span class="hljs-params">(Bundle bundle)</span> </span>{
+        Date d = (Date) <em>bundle.getSerializable</em>(<span class="hljs-string">"today"</span>);
+    }
+}
+</code></pre></div>
+</section>
+
+
+<section class="titleslide future" style="display: none;" hidden="" aria-hidden="true" data-index-h="21">
+	<h1>CSE 491: Android</h1>
+
+	<p>Preferences</p>
+</section>
+
+<section class="future" style="display: none;" hidden="" aria-hidden="true" data-index-h="22">
+	<h1>Preferences</h1>
+	
+	<div class="figuresright">
+		<img src="./Activity Lifecycle_files/shared-preferences.png" tppabs="http://web.stanford.edu/class/cs193a/lectures/slides/images/shared-preferences.png" alt="figure">
+	</div>
+
+	<ul>
+		<li><a target="_blank" href="https://developer.android.com/reference/android/content/SharedPreferences.html"><code class="androidapi" data-class="android.content.SharedPreferences">SharedPreferences</code></a> object can store permanent settings and data for your app.
+			<ul>
+				<li>stores key/value pairs similar to a <a target="_blank" href="https://developer.android.com/reference/android/os/Bundle.html"><code class="androidapi" data-class="android.os.Bundle">Bundle</code></a> or <a target="_blank" href="https://developer.android.com/reference/android/content/Intent.html"><code class="androidapi" data-class="android.content.Intent">Intent</code></a>
+				</li><li>pairs added to <code>SharedPreferences</code> persist after shutdown/reboot (unlike <code>savedInstanceState</code> bundles)
+			</li></ul>
+		</li><li>Two ways to use it:
+			<ul>
+				<li>per-activity (<code>getPreferences</code>)
+				</li><li>per-app (<code>getSharedPreferences</code>)
+			</li></ul>
+	</li></ul>
+</section>
+
+<section class="future" style="display: none;" hidden="" aria-hidden="true" data-index-h="23">
+	<h1>SharedPreferences example</h1>
+	
+	<ul>
+		<li>Saving preferences for the activity (in <code>onPause</code>, <code>onStop</code>):
+	</li></ul>
+	
+	<div class="linenumbersouter"><pre class=" linenumbers"><code style="float: left;">&nbsp;1&nbsp;
+&nbsp;2&nbsp;
+&nbsp;3&nbsp;
+&nbsp;4&nbsp;
+&nbsp;5&nbsp;
+&nbsp;6&nbsp;</code></pre><pre><code class="java hljs">SharedPreferences prefs = getPreferences(MODE_PRIVATE);
+SharedPreferences.Editor prefsEditor = prefs.edit();
+prefsEditor.putInt(<span class="hljs-string">"</span><var><span class="hljs-string">name</span></var><span class="hljs-string">"</span>, <var>value</var>);
+prefsEditor.putString(<span class="hljs-string">"</span><var><span class="hljs-string">name</span></var><span class="hljs-string">"</span>, <var>value</var>);
+...
+prefsEditor.apply();   <span class="hljs-comment">// or commit();</span>
+</code></pre></div>
+
+	<ul>
+		<li>Loading preferences later (e.g. in <code>onCreate</code>):
+	</li></ul>
+	
+	<div class="linenumbersouter"><pre class=" linenumbers"><code style="float: left;">&nbsp;1&nbsp;
+&nbsp;2&nbsp;
+&nbsp;3&nbsp;
+&nbsp;4&nbsp;</code></pre><pre><code class="java hljs">SharedPreferences prefs = getPreferences(MODE_PRIVATE);
+<span class="hljs-keyword">int</span> i = prefs.getInt(<span class="hljs-string">"</span><var><span class="hljs-string">name</span></var><span class="hljs-string">"</span>, <var>defaultValue</var>);
+String s = prefs.getString(<span class="hljs-string">"</span><var><span class="hljs-string">name</span></var><span class="hljs-string">"</span>, <span class="hljs-string">"</span><var><span class="hljs-string">defaultValue</span></var><span class="hljs-string">"</span>);
+...
+</code></pre></div>
+</section>
+
+<section class="future" style="display: none;" hidden="" aria-hidden="true" data-index-h="24">
+	<h1>Multiple pref files</h1>
+	
+	<ul>
+		<li>You can call <code>getSharedPreferences</code> and supply a file name if you want to have multiple pref. files for the same activity:
+		<ul>
+			<li class="aside">(Note: Usually you don't want this form.
+				It is rare that one activity needs multiple preference files.
+				The existing <code>getPreferences</code> can store many different preferences in it.)
+		</li></ul>
+	</li></ul>
+	
+	<div class="linenumbersouter"><pre class=" linenumbers"><code style="float: left;">&nbsp;1&nbsp;
+&nbsp;2&nbsp;
+&nbsp;3&nbsp;
+&nbsp;4&nbsp;
+&nbsp;5&nbsp;
+&nbsp;6&nbsp;
+&nbsp;7&nbsp;
+&nbsp;8&nbsp;</code></pre><pre><code class="java hljs"><strike>SharedPreferences prefs = getPreferences(MODE_PRIVATE);</strike>
+SharedPreferences prefs = <em>getSharedPreferences</em>(
+        <span class="hljs-string">"</span><var><span class="hljs-string">filename</span></var><span class="hljs-string">"</span>, MODE_PRIVATE);
+SharedPreferences.Editor prefsEditor = prefs.edit();
+prefsEditor.putInt(<span class="hljs-string">"</span><var><span class="hljs-string">name</span></var><span class="hljs-string">"</span>, <var>value</var>);
+prefsEditor.putString(<span class="hljs-string">"</span><var><span class="hljs-string">name</span></var><span class="hljs-string">"</span>, <var>value</var>);
+...
+prefsEditor.commit();
+</code></pre></div>
+</section>
+
+
+
+<!-- END SLIDES AREA -->
+			</div>
+		<div class="progress" style="display: block;"><span style="width: 146.077px;"></span></div><aside class="controls" style="display: block;"><button class="navigate-left enabled" aria-label="previous slide"></button><button class="navigate-right enabled" aria-label="next slide"></button><button class="navigate-up" aria-label="above slide"></button><button class="navigate-down" aria-label="below slide"></button><button id="fullscreenbutton" title="full-screen mode">&#8862;</button></aside><div class="slide-number" style="display: block;"><span class="slide-number-a">4</span></div><div class="speaker-notes" data-prevent-swipe=""></div><div class="pause-overlay"></div><div id="aria-status-div" aria-live="polite" aria-atomic="true" style="position: absolute; height: 1px; width: 1px; overflow: hidden; clip: rect(1px 1px 1px 1px);">
+	Activity state transitions
+	
+	
+		jump between activities in the same app:  onPause/onResume
+		
+
+		jump between two apps that are in memory:  onStop/onStart
+		
+
+		app loaded/unloaded from memory:  onDestroy/onCreate
+	
+</div><div class="backgrounds"><div class="slide-background titleslide past" data-loaded="true" style="display: none;"></div><div class="slide-background past" data-loaded="true" style="display: block;"></div><div class="slide-background past" data-loaded="true" style="display: block;"></div><div class="slide-background present" data-loaded="true" style="display: block;"></div><div class="slide-background future" data-loaded="true" style="display: block;"></div><div class="slide-background future" data-loaded="true" style="display: block;"></div><div class="slide-background future" data-loaded="true" style="display: none;"></div><div class="slide-background future" data-loaded="true" style="display: none;"></div><div class="slide-background future" data-loaded="true" style="display: none;"></div><div class="slide-background future" data-loaded="true" style="display: none;"></div><div class="slide-background future" data-loaded="true" style="display: none;"></div><div class="slide-background future" data-loaded="true" style="display: none;"></div><div class="slide-background future" data-loaded="true" style="display: none;"></div><div class="slide-background future" data-loaded="true" style="display: none;"></div><div class="slide-background future" data-loaded="true" style="display: none;"></div><div class="slide-background future" data-loaded="true" style="display: none;"></div><div class="slide-background future" data-loaded="true" style="display: none;"></div><div class="slide-background future" data-loaded="true" style="display: none;"></div><div class="slide-background future" data-loaded="true" style="display: none;"></div><div class="slide-background future" data-loaded="true" style="display: none;"></div><div class="slide-background future" data-loaded="true" style="display: none;"></div><div class="slide-background titleslide future" data-loaded="true" style="display: none;"></div><div class="slide-background future" data-loaded="true" style="display: none;"></div><div class="slide-background future" data-loaded="true" style="display: none;"></div><div class="slide-background future" data-loaded="true" style="display: none;"></div><div class="slide-background future" data-loaded="true" style="display: none;"></div><div class="slide-background future" data-loaded="true" style="display: none;"></div></div></div>
+
+		<script src="./Activity Lifecycle_files/highlight.pack.js.download" tppabs="http://web.stanford.edu/class/cs193a/lectures/slides/highlightjs/highlight.pack.js"></script>
+		<script src="./Activity Lifecycle_files/cs193a-slides.js.download" tppabs="http://web.stanford.edu/class/cs193a/lectures/slides/cs193a-slides.js"></script>
+		<script src="./Activity Lifecycle_files/reveal.js.download" tppabs="http://web.stanford.edu/class/cs193a/lectures/slides/reveal/js/reveal.js"></script>
+		<script>
+			initializeSlides();
+		</script>
+	
+
+</body></html>

@@ -1,0 +1,720 @@
+
+<!-- saved from url=(0163)file:///D:/old_data/D3/old%20Data/Adnan/courses/2018%201%20Spring/CSE491%20Mobile/cs193a/CS193A-master/Winter2017Update/class/cs193a/lectures/slides/widgets.html#/ -->
+<html><head><meta http-equiv="Content-Type" content="text/html; charset=windows-1252">
+		<title>CSE 491: Android - Widgets</title>
+		<link rel="stylesheet" href="./Widgets_files/default.css" tppabs="http://web.stanford.edu/class/cs193a/lectures/slides/highlightjs/styles/default.css">
+		<link rel="stylesheet" href="./Widgets_files/reveal.css" tppabs="http://web.stanford.edu/class/cs193a/lectures/slides/reveal/css/reveal.css">
+		<link rel="stylesheet" href="./Widgets_files/white.css" tppabs="http://web.stanford.edu/class/cs193a/lectures/slides/reveal/css/theme/white.css">
+		<link rel="stylesheet" href="./Widgets_files/cs193a-slides.css" tppabs="http://web.stanford.edu/class/cs193a/lectures/slides/cs193a-slides.css">
+	</head>
+	<body>
+		<div class="reveal slide" role="application" data-transition-speed="default" data-background-transition="fade">
+			<div class="slides" style="width: 960px; height: 700px; left: 50%; top: 50%; bottom: auto; right: auto; transform: translate(-50%, -50%) scale(0.907929);">
+
+<!-- BEGIN SLIDES AREA -->
+
+<section class="titleslide present" style="display: block;" data-index-h="0">
+	<h1>CSE 491: Android</h1>
+
+	<p>GUI Widgets</p>
+	<br/>
+	<br/>
+	<pre>
+Acknowledgment:
+   The slides are of ones by Marty Stepp.
+   http://cs193a.stanford.edu
+	</pre>
+</section>
+
+<section class="future" style="display: block;" data-index-h="1" hidden="" aria-hidden="true">
+	<h1>Android widgets</h1>
+	
+	<table class="columns5">
+		<tbody><tr>
+			<td><img src="./Widgets_files/widget-analogclock.png" tppabs="http://web.stanford.edu/class/cs193a/lectures/slides/images/widget-analogclock.png" alt="widget"></td>
+			<td><img src="./Widgets_files/widget-button.png" tppabs="http://web.stanford.edu/class/cs193a/lectures/slides/images/widget-button.png" alt="widget"></td>
+			<td><img src="./Widgets_files/widget-checkbox.png" tppabs="http://web.stanford.edu/class/cs193a/lectures/slides/images/widget-checkbox.png" alt="widget"></td>
+			<td><img src="./Widgets_files/widget-datepicker.png" tppabs="http://web.stanford.edu/class/cs193a/lectures/slides/images/widget-datepicker.png" alt="widget"></td>
+			<td><img src="./Widgets_files/widget-digitalclock.png" tppabs="http://web.stanford.edu/class/cs193a/lectures/slides/images/widget-digitalclock.png" alt="widget"></td>
+		</tr>
+
+		<tr>
+			<td><a target="_blank" href="https://developer.android.com/reference/android/widget/AnalogClock.html"><code class="androidapi" data-class="android.widget.AnalogClock">AnalogClock</code></a></td>
+			<td><a target="_blank" href="https://developer.android.com/reference/android/widget/Button.html"><code class="androidapi" data-class="android.widget.Button">Button</code></a></td>
+			<td><a target="_blank" href="https://developer.android.com/reference/android/widget/CheckBox.html"><code class="androidapi" data-class="android.widget.CheckBox">CheckBox</code></a></td>
+			<td><a target="_blank" href="https://developer.android.com/reference/android/widget/DatePicker.html"><code class="androidapi" data-class="android.widget.DatePicker">DatePicker</code></a></td>
+			<td><a target="_blank" href="https://developer.android.com/reference/android/widget/DigitalClock.html"><code class="androidapi" data-class="android.widget.DigitalClock" style="margin-left: 0.5em">DigitalClock</code></a></td>
+		</tr>
+
+		<tr>
+			<td><img src="./Widgets_files/widget-edittext.png" tppabs="http://web.stanford.edu/class/cs193a/lectures/slides/images/widget-edittext.png" alt="widget"></td>
+			<td><img src="./Widgets_files/widget-gallery.png" tppabs="http://web.stanford.edu/class/cs193a/lectures/slides/images/widget-gallery.png" alt="widget"></td>
+			<td><img src="./Widgets_files/widget-imageview.png" tppabs="http://web.stanford.edu/class/cs193a/lectures/slides/images/widget-imageview.png" alt="widget">
+				<img src="./Widgets_files/widget-imagebutton.png" tppabs="http://web.stanford.edu/class/cs193a/lectures/slides/images/widget-imagebutton.png" alt="widget"></td>
+			<td><img src="./Widgets_files/widget-mapview.png" tppabs="http://web.stanford.edu/class/cs193a/lectures/slides/images/widget-mapview.png" alt="widget"></td>
+			<td><img src="./Widgets_files/widget-progressbar.png" tppabs="http://web.stanford.edu/class/cs193a/lectures/slides/images/widget-progressbar.png" alt="widget"></td>
+		</tr>
+
+		<tr>
+			<td><a target="_blank" href="https://developer.android.com/reference/android/widget/EditText.html"><code class="androidapi" data-class="android.widget.EditText">EditText</code></a></td>
+			<td><a target="_blank" href="https://developer.android.com/reference/android/widget/Gallery.html"><code class="androidapi" data-class="android.widget.Gallery">Gallery</code></a></td>
+			<td><a target="_blank" href="https://developer.android.com/reference/android/widget/ImageView.html"><code class="androidapi" data-class="android.widget.ImageView">ImageView</code></a>/<a target="_blank" href="https://developer.android.com/reference/android/widget/Button.html"><code class="androidapi" data-class="android.widget.Button">Button</code></a></td>
+			<td><a class="popup" href="javascript:if(confirm(%27https://developers.google.com/android/reference/com/google/android/gms/maps/MapView  \n\nThis file was not retrieved by Teleport Pro, because it is addressed using an unsupported protocol (e.g., gopher).  \n\nDo you want to open it from the server?%27))window.location=%27https://developers.google.com/android/reference/com/google/android/gms/maps/MapView%27" tppabs="https://developers.google.com/android/reference/com/google/android/gms/maps/MapView" target="_blank"><code data-class="android.gms.maps.MapView">MapView</code></a></td>
+			<td><a target="_blank" href="https://developer.android.com/reference/android/widget/ProgressBar.html"><code class="androidapi" data-class="android.widget.ProgressBar">ProgressBar</code></a></td>
+		</tr>
+
+		<tr>
+			<td><img src="./Widgets_files/widget-radiobutton.png" tppabs="http://web.stanford.edu/class/cs193a/lectures/slides/images/widget-radiobutton.png" alt="widget"></td>
+			<td><img src="./Widgets_files/spinner.png" tppabs="http://web.stanford.edu/class/cs193a/lectures/slides/images/spinner.png" alt="widget"></td>
+			<td><img src="./Widgets_files/widget-textview.png" tppabs="http://web.stanford.edu/class/cs193a/lectures/slides/images/widget-textview.png" alt="widget"></td>
+			<td><img src="./Widgets_files/widget-timepicker.png" tppabs="http://web.stanford.edu/class/cs193a/lectures/slides/images/widget-timepicker.png" alt="widget"></td>
+			<td><img src="./Widgets_files/widget-webview.png" tppabs="http://web.stanford.edu/class/cs193a/lectures/slides/images/widget-webview.png" alt="widget"></td>
+		</tr>
+
+		<tr>
+			<td><a target="_blank" href="https://developer.android.com/reference/android/widget/RadioButton.html"><code class="androidapi" data-class="android.widget.RadioButton">RadioButton</code></a></td>
+			<td><a target="_blank" href="https://developer.android.com/reference/android/widget/Spinner.html"><code class="androidapi" data-class="android.widget.Spinner">Spinner</code></a></td>
+			<td><a target="_blank" href="https://developer.android.com/reference/android/widget/TextView.html"><code class="androidapi" data-class="android.widget.TextView">TextView</code></a></td>
+			<td><a target="_blank" href="https://developer.android.com/reference/android/widget/TimePicker.html"><code class="androidapi" data-class="android.widget.TimePicker">TimePicker</code></a></td>
+			<td><a target="_blank" href="https://developer.android.com/reference/android/webkit/WebView.html"><code class="androidapi" data-class="android.webkit.WebView">WebView</code></a></td>
+		</tr>
+	</tbody></table>
+</section>
+
+<section class="future" style="display: block;" data-index-h="2" hidden="" aria-hidden="true">
+	<h1>
+		Button (<a class="popup" href="javascript:if(confirm(%27http://developer.android.com/guide/topics/ui/controls/button.html  \n\nThis file was not retrieved by Teleport Pro, because it is addressed on a domain or path outside the boundaries set for its Starting Address.  \n\nDo you want to open it from the server?%27))window.location=%27http://developer.android.com/guide/topics/ui/controls/button.html%27" tppabs="http://developer.android.com/guide/topics/ui/controls/button.html" target="_blank">link</a>)
+
+		<span class="figuresright">
+			<img src="./Widgets_files/widget-button.png" tppabs="http://web.stanford.edu/class/cs193a/lectures/slides/images/widget-button.png" alt="figure">
+		</span>
+	</h1>
+
+	<p class="caption">
+		A clickable widget with a text label
+	</p>
+	
+	<table class="methodtable boxedtable">
+		<caption>key attributes in XML</caption>
+		<tbody><tr>
+			<td><code>android:clickable="<var>bool</var>"</code></td>
+			<td>set to <code>false</code> to disable the button</td>
+		</tr>
+		<tr>
+			<td><code>android:id="@+id/<var>theID</var>"</code></td>
+			<td>unique ID for use in Java code</td>
+		</tr>
+		<tr>
+			<td><code>android:onClick="<var>function</var>"</code></td>
+			<td>function to call in activity when clicked <br>
+				(must be <code>public</code>, <code>void</code>, and take a <code>View</code> arg)</td>
+		</tr>
+		<tr>
+			<td><code>android:text="<var>text</var>"</code></td>
+			<td>text to put in the button</td>
+		</tr>
+	</tbody></table>
+
+	<div class="linenumbersouter"><pre class=" linenumbers"><code style="float: left;">&nbsp;1&nbsp;
+&nbsp;2&nbsp;
+&nbsp;3&nbsp;</code></pre><pre><code class="java hljs"><span class="hljs-comment">// represented by Button class in Java code</span>
+Button b = (Button) findViewById(R.id.<var>theID</var>);
+...    
+</code></pre></div>
+</section>
+
+<section class="future" style="display: none;" data-index-h="3" hidden="" aria-hidden="true">
+	<h1>
+		TextView
+
+		<span class="figuresright">
+			<img src="./Widgets_files/widget-textview.png" tppabs="http://web.stanford.edu/class/cs193a/lectures/slides/images/widget-textview.png" alt="figure">
+		</span>
+	</h1>
+
+	<p class="caption">
+		Displays non-editable text
+	</p>
+	
+	<table class="methodtable boxedtable">
+		<caption>key attributes in XML</caption>
+		<tbody><tr>
+			<td><code>android:id="@+id/<var>theID</var>"</code></td>
+			<td>unique ID for use in Java code</td>
+		</tr>
+		<tr>
+			<td><code>android:text="<var>string</var>"</code></td>
+			<td>text to display</td>
+		</tr>
+	</tbody></table>
+
+	<div class="linenumbersouter"><pre class=" linenumbers"><code style="float: left;">&nbsp;1&nbsp;
+&nbsp;2&nbsp;
+&nbsp;3&nbsp;</code></pre><pre><code class="java hljs"><span class="hljs-comment">// to change the visible text in Java code</span>
+TextView myTextView = (TextView) findViewById(R.id.<var>theID</var>);
+myTextView.setText(<span class="hljs-string">"</span><var><span class="hljs-string">text</span></var><span class="hljs-string">"</span>);
+</code></pre></div>
+</section>
+
+<section class="future" style="display: none;" data-index-h="4" hidden="" aria-hidden="true">
+	<h1>
+		ScrollView
+
+		<span class="figuresright">
+			<img src="./Widgets_files/widget-scrollview.png" tppabs="http://web.stanford.edu/class/cs193a/lectures/slides/images/widget-scrollview.png" alt="figure">
+		</span>
+	</h1>
+
+	<p class="caption">
+		A container with scrollbars around another widget or container
+	</p>
+	
+<div class="linenumbersouter"><pre class=" linenumbers"><code style="float: left;">&nbsp;1&nbsp;
+&nbsp;2&nbsp;
+&nbsp;3&nbsp;
+&nbsp;4&nbsp;
+&nbsp;5&nbsp;
+&nbsp;6&nbsp;
+&nbsp;7&nbsp;
+&nbsp;8&nbsp;</code></pre><pre><code class="xml hljs"><span class="hljs-tag">&lt;<span class="hljs-name">LinearLayout</span> <span class="hljs-attr">...</span>&gt;</span>
+    ...
+    <span class="hljs-tag">&lt;<span class="hljs-name">ScrollView</span>
+            <span class="hljs-attr">android:layout_width</span>=<span class="hljs-string">"wrap_content"</span>
+            <span class="hljs-attr">android:layout_height</span>=<span class="hljs-string">"wrap_content"</span>&gt;</span>
+        <span class="hljs-tag">&lt;<span class="hljs-name">TextView</span> <span class="hljs-attr">...</span> <span class="hljs-attr">android:id</span>=<span class="hljs-string">"@+id/turtle_info"</span> /&gt;</span>
+    <span class="hljs-tag">&lt;/<span class="hljs-name">ScrollView</span>&gt;</span>
+<span class="hljs-tag">&lt;/<span class="hljs-name">LinearLayout</span>&gt;</span>
+</code></pre></div>
+</section>
+
+<section class="future" style="display: none;" data-index-h="5" hidden="" aria-hidden="true">
+	<h1>
+		EditText
+		(<a class="popup" href="javascript:if(confirm(%27http://developer.android.com/reference/android/widget/EditText.html  \n\nThis file was not retrieved by Teleport Pro, because it is addressed on a domain or path outside the boundaries set for its Starting Address.  \n\nDo you want to open it from the server?%27))window.location=%27http://developer.android.com/reference/android/widget/EditText.html%27" tppabs="http://developer.android.com/reference/android/widget/EditText.html" target="_blank">link</a>)
+
+		<span class="figuresright">
+			<img src="./Widgets_files/widget-edittext.png" tppabs="http://web.stanford.edu/class/cs193a/lectures/slides/images/widget-edittext.png" alt="figure">
+		</span>
+	</h1>
+
+	<p class="caption">
+		An editable text input box
+	</p>
+	
+	<table class="methodtable boxedtable">
+		<caption>key attributes in XML <br>
+					(other attributes: 
+					capitalize, digits, fontFamily, letterSpacing, lineSpacingExtra, minLines, numeric, password,
+					phoneNumber, singleLine, textAllCaps, textColor, typeface)
+
+		</caption>
+		<tbody><tr>
+			<td><code>android:id="@+id/<var>theID</var>"</code></td>
+			<td>unique ID for use in Java code</td>
+		</tr>
+		<tr>
+			<td><code>android:hint="<var>text</var>"</code></td>
+			<td>
+				gray placeholder text shown before user types
+			</td>
+		</tr>
+		<tr>
+			<td><code>android:inputType="<var>type</var>"</code></td>
+			<td>
+				what kind of input is being typed;
+				<code>number</code>, <code>phone</code>, <code>date</code>,<code>time</code>, ...
+			</td>
+		</tr>
+		<tr>
+			<td><code>android:lines="<var>int</var>"</code></td>
+			<td>
+				number of visible lines (rows) of input
+			</td>
+		</tr>
+		<tr>
+			<td><code>android:maxLines="<var>int</var>"</code></td>
+			<td>
+				max lines to allow user to type in the box
+			</td>
+		</tr>
+		<tr>
+			<td><code>android:text="<var>text</var>"</code></td>
+			<td>
+				initial text to put in box (default empty)
+			</td>
+		</tr>
+		<tr>
+			<td><code>android:textSize="<var>size</var>"</code></td>
+			<td>
+				size of font to use (e.g. "20dp")
+			</td>
+		</tr>
+	</tbody></table>
+
+	<div class="linenumbersouter"><pre class=" linenumbers"><code style="float: left;">&nbsp;1&nbsp;
+&nbsp;2&nbsp;
+&nbsp;3&nbsp;
+&nbsp;4&nbsp;</code></pre><pre><code class="java hljs"><span class="hljs-comment">// to get the user's text in Java code</span>
+EditText myEditText = (EditText) findViewById(R.id.<var>theID</var>);
+String text = myEditText.getText().toString();
+...
+</code></pre></div>
+</section>
+
+<section class="future" style="display: none;" data-index-h="6" hidden="" aria-hidden="true">
+	<h1>
+		ImageView
+
+		<span class="figuresright">
+			<img src="./Widgets_files/widget-imageview.png" tppabs="http://web.stanford.edu/class/cs193a/lectures/slides/images/widget-imageview.png" alt="figure">
+		</span>
+	</h1>
+
+	<p class="caption">
+		Displays an image without being clickable
+	</p>
+	
+	<table class="methodtable boxedtable">
+		<caption>key attributes in XML</caption>
+		<tbody><tr>
+			<td><code>android:id="@+id/<var>theID</var>"</code></td>
+			<td>unique ID for use in Java code</td>
+		</tr>
+		<tr>
+			<td><code>android:src="@drawable/<var>img</var>"</code></td>
+			<td>image to put in the view <br>
+				(must correspond to an image resource)
+			</td>
+		</tr>
+		<tr>
+			<td><code>android:tag="<var>string</var>"</code></td>
+			<td>a text tag to associate with the image</td>
+		</tr>
+		<tr>
+			<td><code>android:scaleType="<var>type</var>"</code></td>
+			<td>causes the image to grow/shrink; can be <code>"center"</code>, <code>"centerCrop"</code>, <code>"fitCenter"</code>, <code>"matrix"</code>, ...</td>
+		</tr>
+	</tbody></table>
+
+	<div class="linenumbersouter"><pre class=" linenumbers"><code style="float: left;">&nbsp;1&nbsp;
+&nbsp;2&nbsp;
+&nbsp;3&nbsp;</code></pre><pre><code class="java hljs"><span class="hljs-comment">// to change the visible image in Java code</span>
+ImageView myImageView = (ImageView) findViewById(R.id.<var>theID</var>);
+myImageView.setImageResource(R.drawable.<var>filename</var>);
+</code></pre></div>
+</section>
+
+<section class="future" style="display: none;" data-index-h="7" hidden="" aria-hidden="true">
+	<h1>
+		ImageButton
+
+		<span class="figuresright">
+			<img src="./Widgets_files/widget-imagebutton.png" tppabs="http://web.stanford.edu/class/cs193a/lectures/slides/images/widget-imagebutton.png" alt="figure">
+		</span>
+	</h1>
+
+	<p class="caption">
+		A clickable widget with an image label
+	</p>
+	
+	<table class="methodtable boxedtable">
+		<caption>key attributes in XML</caption>
+		<tbody><tr>
+			<td><code>android:clickable="<var>bool</var>"</code></td>
+			<td>set to <code>false</code> to disable the button</td>
+		</tr>
+		<tr>
+			<td><code>android:id="@+id/<var>theID</var>"</code></td>
+			<td>unique ID for use in Java code</td>
+		</tr>
+		<tr>
+			<td><code>android:onClick="<var>function</var>"</code></td>
+			<td>function to call in activity when clicked <br>
+				(must be <code>public</code>, <code>void</code>, and take a <code>View</code> arg)</td>
+		</tr>
+		<tr>
+			<td><code>android:src="@drawable/<var>img</var>"</code></td>
+			<td>image to put in the button <br>
+				(must correspond to an image resource)
+			</td>
+		</tr>
+	</tbody></table>
+
+	<ul>
+		<li>to set up an image resource:
+			<ul>
+				<li>put image file in project folder <span class="filename">app/src/main/res/drawable</span></li>
+				<li class="subbullet">(use <span class="filename">app/src/main/res/drawable-xxhdpi</span> if image is very large)</li>
+				<li>use <code>@drawable/<var>foo</var></code> to refer to <span class="filename"><var>foo</var>.png</span></li>
+				<li>use simple file names with only letters and numbers</li>
+			</ul>
+	</li></ul>
+</section>
+
+<section class="future" style="display: none;" data-index-h="8" hidden="" aria-hidden="true">
+	<h1>Resources</h1>
+	
+	<div class="figuresright">
+		<img src="./Widgets_files/pikachu.png" tppabs="http://web.stanford.edu/class/cs193a/lectures/slides/images/pikachu.png" alt="figure">
+	</div>
+	
+	<ul>
+		<li>In the project directory structure:
+			<ul>
+				<li><code>res/<var>type</var>/<var>name</var>.<var>extension</var></code></li>
+				<li>example: <code>res/drawable/pikachu.png</code></li>
+				<li>(on disk: <span class="filename">AndroidStudioProjects/<var>ProjectName</var>/app/src/main/res/<var>type</var>/<var>name</var></span>)
+			</li></ul>
+		</li>
+		
+		<li>Referring to a resource, in the XML:
+			<ul>
+				<li><code>@<var>type</var>/<var>name</var></code></li>
+				<li>example: <code>@drawable/pikachu</code></li>
+			</ul>
+		</li>
+		
+		<li>Referring to a resource ID, in the Java code:
+			<ul>
+				<li><code>R.<var>type</var>.<var>name</var></code></li>
+				<li>example: <code>R.drawable.pikachu</code></li>
+			</ul>
+		</li>
+	</ul>
+</section>
+
+<section class="future" style="display: none;" data-index-h="9" hidden="" aria-hidden="true">
+	<h1>Converting resource IDs</h1>
+	
+	<ul>
+		<li>
+			If you have a resource name and want its ID:
+		</li>
+		<li>
+			<div class="linenumbersouter"><pre class=" linenumbers"><code style="float: left;">&nbsp;1&nbsp;
+&nbsp;2&nbsp;
+&nbsp;3&nbsp;</code></pre><pre><code class="java hljs"><span class="hljs-comment">// set pikaID to the integer value of R.drawable.pikachu</span>
+<span class="hljs-keyword">int</span> pikaID = getResources().getIdentifier(
+        <span class="hljs-string">"pikachu"</span>, <span class="hljs-string">"drawable"</span>, getPackageName());
+</code></pre></div>
+		</li>
+
+		<li>
+			If you have a resource ID and want its name:
+		</li>
+		<li>
+			<div class="linenumbersouter"><pre class=" linenumbers"><code style="float: left;">&nbsp;1&nbsp;
+&nbsp;2&nbsp;
+&nbsp;3&nbsp;
+&nbsp;4&nbsp;
+&nbsp;5&nbsp;
+&nbsp;6&nbsp;
+&nbsp;7&nbsp;</code></pre><pre><code class="java hljs"><span class="hljs-comment">// set pika to "pikachu"</span>
+String pika = getResources().getResourceEntryName(
+        R.drawable.pikachu);
+
+<span class="hljs-comment">// set full to "R.drawable.pikachu"</span>
+String full = getResources().getResourceName(
+        R.drawable.pikachu);
+</code></pre></div>
+		</li>
+	</ul>
+</section>
+
+<section class="future" style="display: none;" data-index-h="10" hidden="" aria-hidden="true">
+	<h1>
+		CheckBox
+		(<a class="popup" href="javascript:if(confirm(%27http://developer.android.com/guide/topics/ui/controls/checkbox.html  \n\nThis file was not retrieved by Teleport Pro, because it is addressed on a domain or path outside the boundaries set for its Starting Address.  \n\nDo you want to open it from the server?%27))window.location=%27http://developer.android.com/guide/topics/ui/controls/checkbox.html%27" tppabs="http://developer.android.com/guide/topics/ui/controls/checkbox.html" target="_blank">link</a>)
+
+		<span class="figuresright">
+			<img src="./Widgets_files/widget-checkbox.png" tppabs="http://web.stanford.edu/class/cs193a/lectures/slides/images/widget-checkbox.png" alt="figure">
+		</span>
+	</h1>
+
+	<p class="caption">
+		An individual toggleable boolean on/off check box
+	</p>
+	
+	<table class="methodtable boxedtable">
+		<caption>key attributes in XML</caption>
+		<tbody><tr>
+			<td><code>android:id="@+id/<var>theID</var>"</code></td>
+			<td>unique ID for use in Java code</td>
+		</tr>
+		<tr>
+			<td><code>android:checked="<var>bool</var>"</code></td>
+			<td>
+				whether box is initially checked (default <code>false</code>)
+			</td>
+		</tr>
+		<tr>
+			<td><code>android:clickable="<var>bool</var>"</code></td>
+			<td>
+				set <code>false</code> to disable the checkbox
+			</td>
+		</tr>
+		<tr>
+			<td><code>android:onClick="<var>function</var>"</code></td>
+			<td>
+				function to call in activity when clicked <br>
+				(must be <code>public</code>, <code>void</code>, and take a <code>View</code> arg)
+			</td>
+		</tr>
+		<tr>
+			<td><code>android:text="<var>text</var>"</code></td>
+			<td>
+				text to put next to the checkbox
+			</td>
+		</tr>
+	</tbody></table>
+
+	<div class="linenumbersouter"><pre class=" linenumbers"><code style="float: left;">&nbsp;1&nbsp;
+&nbsp;2&nbsp;
+&nbsp;3&nbsp;
+&nbsp;4&nbsp;
+&nbsp;5&nbsp;</code></pre><pre><code class="java hljs"><span class="hljs-comment">// to manipulate a CheckBox in Java code</span>
+CheckBox cb = (CheckBox) findViewById(R.id.<var>theID</var>);
+cb.toggle();
+cb.setChecked(<span class="hljs-keyword">true</span>);
+cb.performClick();
+</code></pre></div>
+</section>
+
+<section class="future" style="display: none;" data-index-h="11" hidden="" aria-hidden="true">
+	<h1>
+		Switch
+		(<a class="popup" href="javascript:if(confirm(%27http://developer.android.com/guide/topics/ui/controls/switch.html  \n\nThis file was not retrieved by Teleport Pro, because it is addressed on a domain or path outside the boundaries set for its Starting Address.  \n\nDo you want to open it from the server?%27))window.location=%27http://developer.android.com/guide/topics/ui/controls/switch.html%27" tppabs="http://developer.android.com/guide/topics/ui/controls/switch.html" target="_blank">link</a>)
+
+		<span class="figuresright">
+			<img src="./Widgets_files/widget-switch.png" tppabs="http://web.stanford.edu/class/cs193a/lectures/slides/images/widget-switch.png" alt="figure">
+		</span>
+	</h1>
+
+	<p class="caption">
+		An individual toggleable boolean on/off switch
+	</p>
+	
+	<table class="methodtable boxedtable">
+		<caption>key attributes in XML</caption>
+		<tbody><tr>
+			<td><code>android:id="@+id/<var>theID</var>"</code></td>
+			<td>unique ID for use in Java code</td>
+		</tr>
+		<tr>
+			<td><code>android:textOn="<var>text</var>"</code></td>
+			<td>
+				text to show next to "on" (right) side
+			</td>
+		</tr>
+		<tr>
+			<td><code>android:textOff="<var>text</var>"</code></td>
+			<td>
+				text to show next to "off" (left) side
+			</td>
+		</tr>
+		<tr>
+			<td><code>android:showText="<var>bool</var>"</code></td>
+			<td>
+				whether to show text on L/R sides (default <code>false</code>)
+			</td>
+		</tr>
+		<tr>
+			<td><code>android:onClick="<var>function</var>"</code></td>
+			<td>
+				function to call in activity when clicked
+			</td>
+		</tr>
+		<tr>
+			<td><code>android:text="<var>text</var>"</code></td>
+			<td>
+				text to put on left side next to the switch
+			</td>
+		</tr>
+	</tbody></table>
+
+	<div class="linenumbersouter"><pre class=" linenumbers"><code style="float: left;">&nbsp;1&nbsp;
+&nbsp;2&nbsp;
+&nbsp;3&nbsp;</code></pre><pre><code class="java hljs"><span class="hljs-comment">// to interact with a Switch in Java code</span>
+Switch sw = (Switch) findViewById(R.id.<var>theID</var>);
+<span class="hljs-keyword">if</span> (sw.isChecked()) { ... }
+</code></pre></div>
+</section>
+
+<section class="future" style="display: none;" data-index-h="12" hidden="" aria-hidden="true">
+	<h1>
+		RadioButton
+		(<a class="popup" href="javascript:if(confirm(%27http://developer.android.com/guide/topics/ui/controls/radiobutton.html  \n\nThis file was not retrieved by Teleport Pro, because it is addressed on a domain or path outside the boundaries set for its Starting Address.  \n\nDo you want to open it from the server?%27))window.location=%27http://developer.android.com/guide/topics/ui/controls/radiobutton.html%27" tppabs="http://developer.android.com/guide/topics/ui/controls/radiobutton.html" target="_blank">link</a>)
+
+		<span class="figuresright">
+			<img src="./Widgets_files/widget-radiobutton.png" tppabs="http://web.stanford.edu/class/cs193a/lectures/slides/images/widget-radiobutton.png" alt="figure">
+		</span>
+	</h1>
+
+	<p class="caption">
+		A toggleable on/off switch; part of a group
+	</p>
+	
+	<table class="methodtable boxedtable">
+		<caption>key attributes in XML</caption>
+		<tbody><tr>
+			<td><code>android:id="@+id/<var>theID</var>"</code></td>
+			<td>unique ID for use in Java code</td>
+		</tr>
+		<tr>
+			<td><code>android:checked="<var>bool</var>"</code></td>
+			<td>
+				whether button is initially checked (default <code>false</code>)
+			</td>
+		</tr>
+		<tr>
+			<td><code>android:clickable="<var>bool</var>"</code></td>
+			<td>
+				set to <code>false</code> to disable the button
+			</td>
+		</tr>
+		<tr>
+			<td><code>android:onClick="<var>function</var>"</code></td>
+			<td>
+				function to call in activity when clicked
+			</td>
+		</tr>
+		<tr>
+			<td><code>android:text="<var>text</var>"</code></td>
+			<td>
+				text to put next to the button
+			</td>
+		</tr>
+	</tbody></table>
+
+	<ul>
+		<li>
+			need to be nested inside a <code>RadioGroup</code> tag in XML so that only one can be selected at a time
+		</li>
+	</ul>
+</section>
+
+<section class="future" style="display: none;" data-index-h="13" hidden="" aria-hidden="true">
+	<h1>RadioGroup example</h1>
+	
+	<div class="linenumbersouter"><pre class="longcode linenumbers"><code style="float: left;">&nbsp;1&nbsp;
+&nbsp;2&nbsp;
+&nbsp;3&nbsp;
+&nbsp;4&nbsp;
+&nbsp;5&nbsp;
+&nbsp;6&nbsp;
+&nbsp;7&nbsp;
+&nbsp;8&nbsp;
+&nbsp;9&nbsp;
+10&nbsp;
+11&nbsp;
+12&nbsp;
+13&nbsp;
+14&nbsp;</code></pre><pre class="longcode"><code class="xml hljs"><span class="hljs-tag">&lt;<span class="hljs-name">LinearLayout</span> <span class="hljs-attr">...</span>
+        <span class="hljs-attr">android:orientation</span>=<span class="hljs-string">"vertical"</span>
+        <span class="hljs-attr">android:gravity</span>=<span class="hljs-string">"center|top"</span>&gt;</span>
+    <em><span class="hljs-tag">&lt;<span class="hljs-name">RadioGroup</span></span></em><span class="hljs-tag"> <span class="hljs-attr">...</span>
+            <span class="hljs-attr">android:orientation</span>=<span class="hljs-string">"horizontal"</span>&gt;</span>
+        <span class="hljs-tag">&lt;<span class="hljs-name">RadioButton</span> <span class="hljs-attr">...</span> <span class="hljs-attr">android:id</span>=<span class="hljs-string">"@+id/lions"</span>  <span class="hljs-attr">android:text</span>=<span class="hljs-string">"Lions"</span>
+                         </span><em><span class="hljs-tag"><span class="hljs-attr">android:onClick</span>=<span class="hljs-string">"radioClick"</span></span></em><span class="hljs-tag"> /&gt;</span>
+        <span class="hljs-tag">&lt;<span class="hljs-name">RadioButton</span> <span class="hljs-attr">...</span> <span class="hljs-attr">android:id</span>=<span class="hljs-string">"@+id/tigers"</span> <span class="hljs-attr">android:text</span>=<span class="hljs-string">"Tigers"</span> 
+                         <span class="hljs-attr">android:checked</span>=<span class="hljs-string">"true"</span>
+                         </span><em><span class="hljs-tag"><span class="hljs-attr">android:onClick</span>=<span class="hljs-string">"radioClick"</span></span></em><span class="hljs-tag"> /&gt;</span>
+        <span class="hljs-tag">&lt;<span class="hljs-name">RadioButton</span> <span class="hljs-attr">...</span> <span class="hljs-attr">android:id</span>=<span class="hljs-string">"@+id/bears"</span>  <span class="hljs-attr">android:text</span>=<span class="hljs-string">"Bears, oh my!"</span>
+                         </span><em><span class="hljs-tag"><span class="hljs-attr">android:onClick</span>=<span class="hljs-string">"radioClick"</span></span></em><span class="hljs-tag"> /&gt;</span>
+    <em><span class="hljs-tag">&lt;/<span class="hljs-name">RadioGroup</span>&gt;</span></em>
+<span class="hljs-tag">&lt;/<span class="hljs-name">LinearLayout</span>&gt;</span>
+</code></pre></div>
+
+	<div class="">
+		<img src="./Widgets_files/radiobuttons-1.png" tppabs="http://web.stanford.edu/class/cs193a/lectures/slides/images/radiobuttons-1.png" alt="figure">
+	</div>
+</section>
+
+<section class="future" style="display: none;" data-index-h="14" hidden="" aria-hidden="true">
+	<h1>Reusing onClick handler</h1>
+	
+	<div class="linenumbersouter"><pre class="longcode linenumbers"><code style="float: left;">&nbsp;1&nbsp;
+&nbsp;2&nbsp;
+&nbsp;3&nbsp;
+&nbsp;4&nbsp;
+&nbsp;5&nbsp;
+&nbsp;6&nbsp;
+&nbsp;7&nbsp;
+&nbsp;8&nbsp;
+&nbsp;9&nbsp;
+10&nbsp;
+11&nbsp;
+12&nbsp;
+13&nbsp;</code></pre><pre class="longcode"><code class="java hljs"><span class="hljs-comment">// in MainActivity.java</span>
+<span class="hljs-keyword">public</span> <span class="hljs-class"><span class="hljs-keyword">class</span> <span class="hljs-title">MainActivity</span> <span class="hljs-keyword">extends</span> <span class="hljs-title">Activity</span> </span>{
+
+    <span class="hljs-function"><span class="hljs-keyword">public</span> <span class="hljs-keyword">void</span> <span class="hljs-title">radioClick</span><span class="hljs-params">(View view)</span> </span>{
+        <span class="hljs-comment">// check which radio button was clicked</span>
+        <span class="hljs-keyword">if</span> (view.getId() == R.id.lions) {
+            <span class="hljs-comment">// ...</span>
+        } <span class="hljs-keyword">else</span> <span class="hljs-keyword">if</span> (view.getId() == R.id.tigers) {
+            <span class="hljs-comment">// ...</span>
+        } <span class="hljs-keyword">else</span> {
+            <span class="hljs-comment">// bears ...</span>
+        }
+    }
+</code></pre></div>
+
+	<div class="">
+		<img src="./Widgets_files/radiobuttons-1.png" tppabs="http://web.stanford.edu/class/cs193a/lectures/slides/images/radiobuttons-1.png" alt="figure">
+	</div>
+</section>
+
+
+<section class="future" style="display: none;" data-index-h="15" hidden="" aria-hidden="true">
+	<h1>List</h1>
+	
+	<div class="figuresright">
+		<img src="./Widgets_files/widget-listview.png" tppabs="http://web.stanford.edu/class/cs193a/lectures/slides/images/widget-listview.png" alt="figure">
+	</div>
+	
+	<p class="caption">
+		A visible menu of selectable choices
+	</p>
+	
+	<ul>
+		<li>
+			lists are more complicated, so we'll cover them later ...
+		</li>
+	</ul>
+</section>
+
+<section class="future" style="display: none;" data-index-h="16" hidden="" aria-hidden="true">
+	<h1>TMNT app exercise</h1>
+	
+	<p>
+		Write an app to select TMNT characters from a spinner.
+	</p>
+	
+	<div class="figuresright">
+		<img src="./Widgets_files/tmnt-app-raphael.png" tppabs="http://web.stanford.edu/class/cs193a/lectures/slides/images/tmnt-app-raphael.png" alt="figure">
+	</div>
+
+	<ul>
+		<li>When a character is selected, an image about that character and other information is presented to the user.</li>
+		<li>Assume that relevant image files are already available for each character.</li>
+	</ul>
+</section>
+
+<!-- END SLIDES AREA -->
+			</div>
+		<div class="progress" style="display: block;"><span style="width: 0px;"></span></div><aside class="controls" style="display: block;"><button class="navigate-left" aria-label="previous slide"></button><button class="navigate-right enabled" aria-label="next slide"></button><button class="navigate-up" aria-label="above slide"></button><button class="navigate-down" aria-label="below slide"></button><button id="fullscreenbutton" title="full-screen mode">&#8862;</button></aside><div class="slide-number" style="display: block;"><span class="slide-number-a">1</span></div><div class="speaker-notes" data-prevent-swipe=""></div><div class="pause-overlay"></div><div id="aria-status-div" aria-live="polite" aria-atomic="true" style="position: absolute; height: 1px; width: 1px; overflow: hidden; clip: rect(1px 1px 1px 1px);">
+	CSE 491: Android
+
+	GUI Widgets
+</div><div class="backgrounds"><div class="slide-background titleslide present" data-loaded="true" style="display: block;"></div><div class="slide-background future" data-loaded="true" style="display: block;"></div><div class="slide-background future" data-loaded="true" style="display: block;"></div><div class="slide-background future" data-loaded="true" style="display: none;"></div><div class="slide-background future" data-loaded="true" style="display: none;"></div><div class="slide-background future" data-loaded="true" style="display: none;"></div><div class="slide-background future" data-loaded="true" style="display: none;"></div><div class="slide-background future" data-loaded="true" style="display: none;"></div><div class="slide-background future" data-loaded="true" style="display: none;"></div><div class="slide-background future" data-loaded="true" style="display: none;"></div><div class="slide-background future" data-loaded="true" style="display: none;"></div><div class="slide-background future" data-loaded="true" style="display: none;"></div><div class="slide-background future" data-loaded="true" style="display: none;"></div><div class="slide-background future" data-loaded="true" style="display: none;"></div><div class="slide-background future" data-loaded="true" style="display: none;"></div><div class="slide-background future" data-loaded="true" style="display: none;"></div><div class="slide-background future" data-loaded="true" style="display: none;"></div></div></div>
+
+		<script src="./Widgets_files/highlight.pack.js.download" tppabs="http://web.stanford.edu/class/cs193a/lectures/slides/highlightjs/highlight.pack.js"></script>
+		<script src="./Widgets_files/cs193a-slides.js.download" tppabs="http://web.stanford.edu/class/cs193a/lectures/slides/cs193a-slides.js"></script>
+		<script src="./Widgets_files/reveal.js.download" tppabs="http://web.stanford.edu/class/cs193a/lectures/slides/reveal/js/reveal.js"></script>
+		<script>
+			initializeSlides();
+		</script>
+	
+
+</body></html>

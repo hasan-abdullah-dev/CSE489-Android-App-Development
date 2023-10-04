@@ -1,0 +1,542 @@
+
+<!-- saved from url=(0163)file:///D:/old_data/D3/old%20Data/Adnan/courses/2018%201%20Spring/CSE491%20Mobile/cs193a/CS193A-master/Winter2017Update/class/cs193a/lectures/slides/intents.html#/ -->
+<html><head><meta http-equiv="Content-Type" content="text/html; charset=windows-1252">
+		<title>CSE 491: Android - Intents</title>
+		<link rel="stylesheet" href="./Intents_files/default.css" tppabs="http://web.stanford.edu/class/cs193a/lectures/slides/highlightjs/styles/default.css">
+		<link rel="stylesheet" href="./Intents_files/reveal.css" tppabs="http://web.stanford.edu/class/cs193a/lectures/slides/reveal/css/reveal.css">
+		<link rel="stylesheet" href="./Intents_files/white.css" tppabs="http://web.stanford.edu/class/cs193a/lectures/slides/reveal/css/theme/white.css">
+		<link rel="stylesheet" href="./Intents_files/cs193a-slides.css" tppabs="http://web.stanford.edu/class/cs193a/lectures/slides/cs193a-slides.css">
+	</head>
+	<body>
+		<div class="reveal slide" role="application" data-transition-speed="default" data-background-transition="fade">
+			<div class="slides" style="width: 960px; height: 700px; left: 50%; top: 50%; bottom: auto; right: auto; transform: translate(-50%, -50%) scale(0.907929);">
+
+<!-- BEGIN SLIDES AREA -->
+
+<section class="titleslide present" style="display: block;" data-index-h="0">
+	<h1>CSE 491: Android</h1>
+
+	<p>Multiple Activities and Intents</p>
+	<br/>
+	<br/>
+	<pre>
+Acknowledgment:
+   The slides are of ones by Marty Stepp.
+   http://cs193a.stanford.edu
+	</pre>
+</section>
+
+<section class="future" style="display: block;" hidden="" aria-hidden="true" data-index-h="1">
+	<h1>Multiple activities</h1>
+	
+	<ul>
+		<li>Many apps have multiple activities.
+			<ul>
+				<li>Example: address book app. main activity = contact list; clicking a contact goes to another activity for viewing details.
+			</li></ul>
+		</li><li>Activity A can launch Activity B in response to an event.
+			<ul>
+				<li>Data params can be passed and "returned" between them.
+			</li></ul>
+	</li></ul>
+	
+	<div class="figure">
+		<img src="./Intents_files/multiple-activities.png" tppabs="http://web.stanford.edu/class/cs193a/lectures/slides/images/multiple-activities.png" alt="figure">
+	</div>
+</section>
+
+<section class="future" style="display: block;" hidden="" aria-hidden="true" data-index-h="2">
+	<h1>Adding an activity</h1>
+	
+	<ul>
+		<li>in Android Studio, right click "<strong>app</strong>" at left: <strong>New</strong> &#8594; <strong>Activity</strong> (empty)
+			<ul>
+				<li>creates a new .XML file in <span class="filename">res/layouts</span>
+				</li><li>creates a new .java class in <span class="filename">src/java</span>
+				</li><li>adds information to <span class="filename">AndroidManifest.xml</span> about the activity (without this information, the app will not allow the activity)
+			</li></ul>
+	</li></ul>
+	
+	<div class="figure">
+		<img src="./Intents_files/android-studio-add-activity.png" tppabs="http://web.stanford.edu/class/cs193a/lectures/slides/images/android-studio-add-activity.png" alt="figure">
+	</div>
+</section>
+
+<section class="future" style="display: none;" hidden="" aria-hidden="true" data-index-h="3">
+	<h1>Activities in Manifest</h1>
+	
+	<ul>
+		<li>Every activity has an entry in project's <span class="filename">AndroidManifest.xml</span>, added automatically by Android Studio:
+	</li></ul>
+	
+	<div class="linenumbersouter"><pre class=" linenumbers"><code style="float: left;">&nbsp;1&nbsp;
+&nbsp;2&nbsp;
+&nbsp;3&nbsp;
+&nbsp;4&nbsp;
+&nbsp;5&nbsp;
+&nbsp;6&nbsp;
+&nbsp;7&nbsp;
+&nbsp;8&nbsp;
+&nbsp;9&nbsp;
+10&nbsp;
+11&nbsp;
+12&nbsp;
+13&nbsp;
+14&nbsp;</code></pre><pre><code class="xml hljs"><span class="hljs-comment">&lt;!-- AndroidManifest.xml --&gt;</span>
+<span class="hljs-tag">&lt;<span class="hljs-name">manifest</span> <span class="hljs-attr">...</span>&gt;</span>
+    <span class="hljs-tag">&lt;<span class="hljs-name">application</span> <span class="hljs-attr">...</span>&gt;</span>
+        <em><span class="hljs-tag">&lt;<span class="hljs-name">activity</span></span></em><span class="hljs-tag"> <span class="hljs-attr">android:name</span>=<span class="hljs-string">".MainActivity"</span>
+                  <span class="hljs-attr">android:label</span>=<span class="hljs-string">"@string/app_name"</span> &gt;</span>
+            ...
+        <em><span class="hljs-tag">&lt;/<span class="hljs-name">activity</span>&gt;</span></em>
+
+        <em><span class="hljs-tag">&lt;<span class="hljs-name">activity</span></span></em><span class="hljs-tag"> <span class="hljs-attr">android:name</span>=<span class="hljs-string">".SecondActivity"</span>
+                  <span class="hljs-attr">android:label</span>=<span class="hljs-string">"@string/title_activity_second"</span>&gt;</span>
+            ...
+        <em><span class="hljs-tag">&lt;/<span class="hljs-name">activity</span>&gt;</span></em>
+    <span class="hljs-tag">&lt;/<span class="hljs-name">application</span>&gt;</span>
+<span class="hljs-tag">&lt;/<span class="hljs-name">manifest</span>&gt;</span>
+</code></pre></div>
+</section>
+
+<section class="future" style="display: none;" hidden="" aria-hidden="true" data-index-h="4">
+	<h1>Intents</h1>
+	
+	<ul>
+		<li><strong>intent:</strong> an object representing a desired action;
+			<ul>
+				<li>used as a bridge between activities, for one to invoke another
+				</li><li>the activity can be in the same app or in a different app
+				</li><li>can store extra data to pass as "<strong>parameters</strong>" to that activity
+				</li><li>second activity can "<strong>return</strong>" information back to the caller if needed
+			</li></ul>
+	</li></ul>
+
+	<div class="figure">
+		<img src="./Intents_files/intent.png" tppabs="http://web.stanford.edu/class/cs193a/lectures/slides/images/intent.png" alt="figure">
+	</div>
+</section>
+
+<section class="future" style="display: none;" hidden="" aria-hidden="true" data-index-h="5">
+	<h1>Uses of Intents</h1>
+	
+	<ul>
+		<li>to start an <strong>activity</strong> from another activity in the same app
+			<ul>
+				<li>e.g. <code>Activity1</code> launches <code>Activity2</code>
+			</li></ul>
+		</li><li>to start a <strong>service</strong>
+			<ul>
+				<li>seen later;  a service is a long-running app with no GUI
+				</li><li>system services include camera, phone dialer, music player, ...
+			</li></ul>
+		</li><li>to <strong>broadcast</strong> a message to another app or service
+			<ul>
+				<li>other apps can listen and respond to messages
+			</li></ul>
+		
+		</li><li>types of intents:
+			<ul>
+				<li><strong>explicit</strong>: Names a particular activity to launch.  ("run <code>Activity2</code>")
+				</li><li><strong>implicit</strong>: Describes task to perform; one of many apps could potentially handle it.  ("launch web browser")
+			</li></ul>
+	</li></ul>
+</section>
+
+<section class="future" style="display: none;" hidden="" aria-hidden="true" data-index-h="6">
+	<h1>Creating an Intent</h1>
+	
+	<ul>
+		<li>To launch another activity (usually in response to an event), create an <a target="_blank" href="https://developer.android.com/reference/android/content/Intent.html"><code class="androidapi" data-class="android.content.Intent">Intent</code></a> object and call <code>startActivity</code> with it:
+		
+		<div class="linenumbersouter"><pre class=" linenumbers"><code style="float: left;">&nbsp;1&nbsp;
+&nbsp;2&nbsp;</code></pre><pre><code class="java hljs">Intent intent = <span class="hljs-keyword">new</span> Intent(<span class="hljs-keyword">this</span>, <var>ActivityName</var>.class);
+startActivity(intent);
+</code></pre></div>
+	
+		</li><li>If you need to pass any parameters or data to the second activity, call <code>putExtra</code> on the intent.
+		
+			<ul>
+				<li>It stores "extra" data as key/value pairs, not unlike a <code>Map</code>.
+			</li></ul>
+			
+		<div class="linenumbersouter"><pre class=" linenumbers"><code style="float: left;">&nbsp;1&nbsp;
+&nbsp;2&nbsp;
+&nbsp;3&nbsp;
+&nbsp;4&nbsp;</code></pre><pre><code class="java hljs">Intent intent = <span class="hljs-keyword">new</span> Intent(<span class="hljs-keyword">this</span>, <var>ActivityName</var>.class);
+intent.putExtra(<span class="hljs-string">"</span><var><span class="hljs-string">name</span></var><span class="hljs-string">"</span>, <var>value</var>);
+intent.putExtra(<span class="hljs-string">"</span><var><span class="hljs-string">name</span></var><span class="hljs-string">"</span>, <var>value</var>);
+startActivity(intent);
+</code></pre></div>
+	</li></ul>
+</section>
+
+<section class="future" style="display: none;" hidden="" aria-hidden="true" data-index-h="7">
+	<h1>Extracting extra data</h1>
+	
+	<ul>
+		<li>In the second activity that was invoked, you can grab any extra data that was passed to it by the calling activity.
+			<ul>
+				<li>Access the <code>Intent</code> that spawned you by calling <code>getIntent</code>.
+				</li><li>The <code>Intent</code> has methods like <code>getIntExtra</code>, <code>getStringExtra</code>, etc. to extract data that was stored inside the intent.
+			</li></ul>
+	</li></ul>
+
+	<div class="linenumbersouter"><pre class=" linenumbers"><code style="float: left;">&nbsp;1&nbsp;
+&nbsp;2&nbsp;
+&nbsp;3&nbsp;
+&nbsp;4&nbsp;
+&nbsp;5&nbsp;
+&nbsp;6&nbsp;
+&nbsp;7&nbsp;
+&nbsp;8&nbsp;
+&nbsp;9&nbsp;
+10&nbsp;
+11&nbsp;
+12&nbsp;</code></pre><pre><code class="java hljs"><span class="hljs-keyword">public</span> <span class="hljs-class"><span class="hljs-keyword">class</span> <span class="hljs-title">SecondActivity</span> <span class="hljs-keyword">extends</span> <span class="hljs-title">Activity</span> </span>{
+    ...
+    <span class="hljs-function"><span class="hljs-keyword">public</span> <span class="hljs-keyword">void</span> <span class="hljs-title">onCreate</span><span class="hljs-params">(Bundle savedState)</span> </span>{
+        <span class="hljs-keyword">super</span>.onCreate(savedState);
+        setContentView(R.layout.activity_second);
+        
+        <span class="hljs-comment">// extract "extra" data from the intent that loaded me</span>
+        <em>Intent intent = getIntent();</em>
+        <em>String extra = intent.getStringExtra(<span class="hljs-string">"</span><var><span class="hljs-string">name</span></var><span class="hljs-string">"</span>);</em>
+        ...
+    }
+}
+</code></pre></div>
+</section>
+
+<section class="future" style="display: none;" hidden="" aria-hidden="true" data-index-h="8">
+	<h1>
+		Intent methods
+		(<a class="popup" href="javascript:if(confirm(%27https://developer.android.com/reference/android/content/Intent.html  \n\nThis file was not retrieved by Teleport Pro, because it is addressed using an unsupported protocol (e.g., gopher).  \n\nDo you want to open it from the server?%27))window.location=%27https://developer.android.com/reference/android/content/Intent.html%27" tppabs="https://developer.android.com/reference/android/content/Intent.html" target="_blank">list</a>)
+	</h1>
+	
+	<table class="methodtable">
+		<tbody><tr>
+			<th>Method</th>
+			<th>Description</th>
+		</tr>
+		
+		<tr>
+			<td style="width: 50%; font-size: 0.5em"><code>getBooleanArrayExtra("<var>name</var>")</code>, <code>getBooleanExtra("<var>name</var>")</code>, <code>getByteArrayExtra("<var>name</var>")</code>, <code>getByteExtra("<var>name</var>")</code>, <code>getCharArrayExtra("<var>name</var>")</code>, <code>getCharExtra("<var>name</var>")</code>, <code>getDoubleArrayExtra("<var>name</var>")</code>, <code>getDoubleExtra("<var>name</var>")</code>, <code> getFloatArrayExtra("<var>name</var>")</code>, <code>getFloatExtra("<var>name</var>")</code>, <code>getIntArrayExtra("<var>name</var>")</code>, <code>getIntExtra("<var>name</var>")</code>, <code>getIntegerArrayListExtra("<var>name</var>")</code>, <code>getLongArrayExtra("<var>name</var>")</code>, <code>getLongExtra("<var>name</var>")</code>, <code>getParcelableArrayExtra("<var>name</var>")</code>, <code>getParcelableExtra("<var>name</var>")</code>, <code>getSerializableExtra("<var>name</var>")</code>, <code>getStringArrayExtra("<var>name</var>")</code>, <code>getStringArrayListExtra("<var>name</var>")</code>, <code>getStringExtra("<var>name</var>")</code></td>
+			<td>return extra data of given type that is associated with the given key name</td>
+		</tr>
+		
+		<tr>
+			<td><code>getData()</code></td>
+			<td>returns URI of associated data</td>
+		</tr>
+		
+		<tr>
+			<td><code>hasExtra("<var>name</var>")</code></td>
+			<td><code>true</code> if extra data exists with given key name</td>
+		</tr>
+		
+		<tr>
+			<td><code>putExtra("<var>name</var>", <var>value</var>);</code></td>
+			<td>adds extra data with given key name</td>
+		</tr>
+		
+		<tr>
+			<td><code>putExtras(<var>bundle</var>);</code></td>
+			<td>adds all key/value pairs from the given bundle/intent as extra data</td>
+		</tr>
+		
+		<tr>
+			<td><code>removeExtra("<var>name</var>");</code></td>
+			<td>delete the given extra data</td>
+		</tr>
+		
+		<tr>
+			<td><code>replaceExtras(<var>bundle</var>);</code></td>
+			<td>wipe out all extra data and replace it w/ data from given bundle/intent</td>
+		</tr>
+		
+		<tr>
+			<td><code>setData(<var>uri</var>);</code></td>
+			<td>sets URI of associated data</td>
+		</tr>
+		
+		<tr>
+			<td><code>setFlags(<var>flags</var>);</code></td>
+			<td>various flags and settings</td>
+		</tr>
+	</tbody></table>
+</section>
+
+<section class="future" style="display: none;" hidden="" aria-hidden="true" data-index-h="9">
+	<h1>Waiting for a result</h1>
+	
+	<ul>
+		<li>If calling activity wants to wait for a result from called activity:
+			<ul>
+				<li>Call <strong><code>startActivityForResult</code></strong> rather than <code>startActivity</code>.
+					<ul>
+						<li><code>startActivityForResult</code> requires you to pass a unique ID number to represent the action being performed.
+						</li><li>By convention, you declare a final <code>int</code> constant with a value of your choice.
+						</li><li>The call to <code>startActivityForResult</code> will not wait; it will return immediately.
+					</li></ul>
+				
+				</li><li>Write an <strong><code>onActivityResult</code></strong> method that will be called when the second activity is done.
+					<ul>
+						<li>Check for your unique ID as was passed to <code>startActivityForResult</code>.
+						</li><li>If you see your unique ID, you can ask the intent for any extra data.
+					</li></ul>
+				
+				</li><li><strong>Modify the called activity</strong> to send a result back.
+					<ul>
+						<li>Use its <code>setResult</code> and <code>finish</code> methods to end the called activity.
+					</li></ul>
+			</li></ul>
+	</li></ul>
+</section>
+
+<section class="future" style="display: none;" data-index-h="10" hidden="" aria-hidden="true">
+	<h1>Sending back a result</h1>
+	
+	<ul>
+		<li>In the second activity that was invoked, send data back:
+			<ul>
+				<li>Need to create an <code>Intent</code> to go back.
+				</li><li>Store any extra data in that intent; call <code>setResult</code> and <code>finish</code>.
+			</li></ul>
+	</li></ul>
+	
+	<div class="linenumbersouter"><pre class=" linenumbers"><code style="float: left;">&nbsp;1&nbsp;
+&nbsp;2&nbsp;
+&nbsp;3&nbsp;
+&nbsp;4&nbsp;
+&nbsp;5&nbsp;
+&nbsp;6&nbsp;
+&nbsp;7&nbsp;
+&nbsp;8&nbsp;
+&nbsp;9&nbsp;
+10&nbsp;
+11&nbsp;</code></pre><pre><code class="java hljs"><span class="hljs-keyword">public</span> <span class="hljs-class"><span class="hljs-keyword">class</span> <span class="hljs-title">SecondActivity</span> <span class="hljs-keyword">extends</span> <span class="hljs-title">Activity</span> </span>{
+    ...
+    <span class="hljs-function"><span class="hljs-keyword">public</span> <span class="hljs-keyword">void</span> <span class="hljs-title">myOnClick</span><span class="hljs-params">(View view)</span> </span>{
+        <span class="hljs-comment">// close this activity and send two results back</span>
+        Intent intent = <span class="hljs-keyword">new</span> Intent();
+        intent.putExtra(<span class="hljs-string">"</span><var><span class="hljs-string">name1</span></var><span class="hljs-string">"</span>, <var>value1</var>);
+        intent.putExtra(<span class="hljs-string">"</span><var><span class="hljs-string">name2</span></var><span class="hljs-string">"</span>, <var>value2</var>);
+        setResult(RESULT_OK, intent);
+        finish();   <span class="hljs-comment">// stops/closes the current activity</span>
+    }
+}
+</code></pre></div>
+</section>
+
+<section class="future" style="display: none;" data-index-h="11" hidden="" aria-hidden="true">
+	<h1>Grabbing the result</h1>
+	
+	<div class="linenumbersouter"><pre class=" linenumbers"><code style="float: left;">&nbsp;1&nbsp;
+&nbsp;2&nbsp;
+&nbsp;3&nbsp;
+&nbsp;4&nbsp;
+&nbsp;5&nbsp;
+&nbsp;6&nbsp;
+&nbsp;7&nbsp;
+&nbsp;8&nbsp;
+&nbsp;9&nbsp;
+10&nbsp;
+11&nbsp;
+12&nbsp;
+13&nbsp;
+14&nbsp;
+15&nbsp;
+16&nbsp;
+17&nbsp;
+18&nbsp;
+19&nbsp;</code></pre><pre><code class="java hljs"><span class="hljs-keyword">public</span> <span class="hljs-class"><span class="hljs-keyword">class</span> <span class="hljs-title">FirstActivity</span> <span class="hljs-keyword">extends</span> <span class="hljs-title">Activity</span> </span>{
+    <span class="hljs-keyword">private</span> <span class="hljs-keyword">static</span> <span class="hljs-keyword">final</span> <span class="hljs-keyword">int</span> REQ_CODE = <span class="hljs-number">123</span>;   <span class="hljs-comment">// MUST be 0-65535</span>
+
+    <span class="hljs-function"><span class="hljs-keyword">public</span> <span class="hljs-keyword">void</span> <span class="hljs-title">myOnClick</span><span class="hljs-params">(View view)</span> </span>{
+        Intent intent = <span class="hljs-keyword">new</span> Intent(<span class="hljs-keyword">this</span>, SecondActivity.class);
+        startActivityForResult(intent, REQ_CODE);
+    }
+
+    <span class="hljs-function"><span class="hljs-keyword">protected</span> <span class="hljs-keyword">void</span> <span class="hljs-title">onActivityResult</span><span class="hljs-params">(<span class="hljs-keyword">int</span> requestCode,
+            <span class="hljs-keyword">int</span> resultCode, Intent intent)</span> </span>{
+        <span class="hljs-keyword">super</span>.onActivityResult(requestCode, resultCode, intent);
+        <span class="hljs-keyword">if</span> (requestCode == REQ_CODE) {
+            <span class="hljs-comment">// came back from SecondActivity</span>
+            String data = intent.getStringExtra(<span class="hljs-string">"name"</span>);
+            Toast.makeText(<span class="hljs-keyword">this</span>, <span class="hljs-string">"Got back: "</span> + data,
+                    Toast.LENGTH_SHORT).show();
+        }
+    }
+}
+</code></pre></div>
+</section>
+
+
+<section class="future" style="display: none;" data-index-h="14" hidden="" aria-hidden="true">
+	<h1>
+		Implicit Intent
+		(<a class="popup" href="javascript:if(confirm(%27http://developer.android.com/training/basics/intents/sending.html  \n\nThis file was not retrieved by Teleport Pro, because it is addressed on a domain or path outside the boundaries set for its Starting Address.  \n\nDo you want to open it from the server?%27))window.location=%27http://developer.android.com/training/basics/intents/sending.html%27" tppabs="http://developer.android.com/training/basics/intents/sending.html" target="_blank">link</a>)
+	</h1>
+	
+	<ul>
+		<li><strong>implicit intent</strong>: One that launches another app, without naming that specific app, to handle a given type of request or action.
+			<ul>
+				<li>examples: invoke default browser;  load music player to play a song
+			</li></ul>
+	</li></ul>
+	
+	<div class="linenumbersouter"><pre class=" linenumbers"><code style="float: left;">&nbsp;1&nbsp;
+&nbsp;2&nbsp;
+&nbsp;3&nbsp;
+&nbsp;4&nbsp;
+&nbsp;5&nbsp;
+&nbsp;6&nbsp;
+&nbsp;7&nbsp;
+&nbsp;8&nbsp;
+&nbsp;9&nbsp;
+10&nbsp;
+11&nbsp;</code></pre><pre><code class="java hljs"><span class="hljs-comment">// make a phone call</span>
+Uri number = Uri.parse(<span class="hljs-string">"tel:5551234"</span>);
+Intent callIntent = <span class="hljs-keyword">new</span> Intent(Intent.ACTION_DIAL, number);
+
+<span class="hljs-comment">// go to a web page in the default browser</span>
+Uri webpage = Uri.parse(<span class="hljs-string">"http://www.stanford.edu/"</span>);
+Intent webIntent = <span class="hljs-keyword">new</span> Intent(Intent.ACTION_VIEW, webpage);
+
+<span class="hljs-comment">// open a map pointing at a given latitude/longitude (z=zoom)</span>
+Uri location = Uri.parse(<span class="hljs-string">"geo:37.422219,-122.08364?z=14"</span>);
+Intent mapIntent = <span class="hljs-keyword">new</span> Intent(Intent.ACTION_VIEW, location);
+</code></pre></div>
+</section>
+
+<section class="future" style="display: none;" data-index-h="15" hidden="" aria-hidden="true">
+	<h1>Activity stack and Back button</h1>
+	
+	<ul>
+		<li><strong>activity stack</strong>: Set of activities visited most recently.
+			<ul>
+				<li>current activity is on "top" of stack; prior activity is below that;  etc.
+				</li><li>When user presses Back/Up button or <code>finish()</code> is called, the app pops the activity stack and goes back to the prior one.
+			</li></ul>
+	</li></ul>
+	
+	<div class="figure">
+		<img src="./Intents_files/activity-stack.png" tppabs="http://web.stanford.edu/class/cs193a/lectures/slides/images/activity-stack.png" alt="figure">
+	</div>
+</section>
+
+<section class="future" style="display: none;" data-index-h="16" hidden="" aria-hidden="true">
+	<h1>Parent activity in manifest</h1>
+	
+	<ul>
+		<li>You can set a "parent" activity for a given activity to go back to.
+		</li><li>To set a parent activity, declare it in <span class="filename">AndroidManifest.xml</span>:
+	</li></ul>
+	
+	<div class="linenumbersouter"><pre class="longcode linenumbers"><code style="float: left;">&nbsp;1&nbsp;
+&nbsp;2&nbsp;
+&nbsp;3&nbsp;
+&nbsp;4&nbsp;
+&nbsp;5&nbsp;
+&nbsp;6&nbsp;
+&nbsp;7&nbsp;
+&nbsp;8&nbsp;
+&nbsp;9&nbsp;
+10&nbsp;
+11&nbsp;
+12&nbsp;
+13&nbsp;
+14&nbsp;
+15&nbsp;</code></pre><pre class="longcode"><code class="xml hljs"><span class="hljs-tag">&lt;<span class="hljs-name">manifest</span> <span class="hljs-attr">...</span>&gt;</span>
+    <span class="hljs-tag">&lt;<span class="hljs-name">application</span> <span class="hljs-attr">...</span>&gt;</span>
+        <span class="hljs-tag">&lt;<span class="hljs-name">activity</span> <span class="hljs-attr">android:name</span>=<span class="hljs-string">".MainActivity"</span>
+                  <span class="hljs-attr">android:label</span>=<span class="hljs-string">"@string/app_name"</span> &gt;</span>
+            ...
+        <span class="hljs-tag">&lt;/<span class="hljs-name">activity</span>&gt;</span>
+        <span class="hljs-tag">&lt;<span class="hljs-name">activity</span> <span class="hljs-attr">android:name</span>=<span class="hljs-string">".SecondActivity"</span>
+                  <span class="hljs-attr">android:label</span>=<span class="hljs-string">"@string/title_activity_second"</span>
+                  </span><em><span class="hljs-tag"><span class="hljs-attr">android:parentActivityName</span>=<span class="hljs-string">".MainActivity"</span></span></em><span class="hljs-tag"> &gt;</span>
+            <span class="hljs-comment">&lt;!-- meta is for backward compatibility w/ Android &lt; 4 --&gt;</span>
+            <span class="hljs-tag">&lt;<span class="hljs-name">meta-data</span> <span class="hljs-attr">android:name</span>=<span class="hljs-string">"android.support.PARENT_ACTIVITY"</span>
+                <span class="hljs-attr">android:value</span>=<span class="hljs-string">"com.example.myusername.myapplication.MainActivity"</span> /&gt;</span>
+        <span class="hljs-tag">&lt;/<span class="hljs-name">activity</span>&gt;</span>
+    <span class="hljs-tag">&lt;/<span class="hljs-name">application</span>&gt;</span>
+<span class="hljs-tag">&lt;/<span class="hljs-name">manifest</span>&gt;</span>
+</code></pre></div>
+</section>
+
+<section class="future" style="display: none;" data-index-h="17" hidden="" aria-hidden="true">
+	<h1>Activities and Toolbar</h1>
+	
+	<ul>
+		<li><strong>toolbar</strong>: A top-level menu of actions in an activity.
+			<ul>
+				<li>replaces "menu" and "action bar" in past versions of Android
+				</li><li>identifies current activity/app to user
+				</li><li>make common actions prominent and available
+				</li><li>make less common actions available through a drop-down menu
+			</li></ul>
+		</li><li>If your activity has a parent, its toolbar will have a "<strong>back</strong>" button or "up" button to return to the parent activity.
+			<ul>
+				<li>or call:  <code>getActionBar().setDisplayHomeAsUpEnabled(true);</code>
+			</li></ul>
+	</li></ul>
+
+	<div class="figure">
+		<img src="./Intents_files/action-bar-back.png" tppabs="http://web.stanford.edu/class/cs193a/lectures/slides/images/action-bar-back.png" alt="figure">
+	</div>
+</section>
+
+<section class="future" style="display: none;" data-index-h="18" hidden="" aria-hidden="true">
+	<h1>More about activity stack</h1>
+	
+	<ul>
+		<li>Navigating up to parent activity manually:
+			
+			<pre><code class="java hljs">NavUtils.navigateUpFromSameTask(<span class="hljs-keyword">this</span>);
+</code></pre>
+
+		</li><li>Smashing and recreating your own activity stack:
+		
+			<div class="linenumbersouter"><pre class=" linenumbers"><code style="float: left;">&nbsp;1&nbsp;
+&nbsp;2&nbsp;
+&nbsp;3&nbsp;
+&nbsp;4&nbsp;
+&nbsp;5&nbsp;
+&nbsp;6&nbsp;
+&nbsp;7&nbsp;
+&nbsp;8&nbsp;
+&nbsp;9&nbsp;
+10&nbsp;</code></pre><pre><code class="java hljs">Intent upIntent = NavUtils.getParentActivityIntent(<span class="hljs-keyword">this</span>);
+<span class="hljs-keyword">if</span> (NavUtils.shouldUpRecreateTask(<span class="hljs-keyword">this</span>, upIntent)) {
+    <span class="hljs-comment">// This activity is NOT part of this app's task</span>
+    TaskStackBuilder.create(<span class="hljs-keyword">this</span>)
+        <span class="hljs-comment">// Add this activity's parents to back stack</span>
+        .addNextIntentWithParentStack(upIntent)
+
+        <span class="hljs-comment">// Navigate up to the closest parent</span>
+        .startActivities();
+}
+</code></pre></div>
+	</li></ul>
+</section>
+
+
+<!-- END SLIDES AREA -->
+			</div>
+		<div class="progress" style="display: block;"><span style="width: 0px;"></span></div><aside class="controls" style="display: block;"><button class="navigate-left" aria-label="previous slide"></button><button class="navigate-right enabled" aria-label="next slide"></button><button class="navigate-up" aria-label="above slide"></button><button class="navigate-down" aria-label="below slide"></button><button id="fullscreenbutton" title="full-screen mode">&#8862;</button></aside><div class="slide-number" style="display: block;"><span class="slide-number-a">1</span></div><div class="speaker-notes" data-prevent-swipe=""></div><div class="pause-overlay"></div><div id="aria-status-div" aria-live="polite" aria-atomic="true" style="position: absolute; height: 1px; width: 1px; overflow: hidden; clip: rect(1px 1px 1px 1px);">
+	CSE 491: Android
+
+	Multiple Activities and Intents
+</div><div class="backgrounds"><div class="slide-background titleslide present" data-loaded="true" style="display: block;"></div><div class="slide-background future" data-loaded="true" style="display: block;"></div><div class="slide-background future" data-loaded="true" style="display: block;"></div><div class="slide-background future" data-loaded="true" style="display: none;"></div><div class="slide-background future" data-loaded="true" style="display: none;"></div><div class="slide-background future" data-loaded="true" style="display: none;"></div><div class="slide-background future" data-loaded="true" style="display: none;"></div><div class="slide-background future" data-loaded="true" style="display: none;"></div><div class="slide-background future" data-loaded="true" style="display: none;"></div><div class="slide-background future" data-loaded="true" style="display: none;"></div><div class="slide-background future" data-loaded="true" style="display: none;"></div><div class="slide-background future" data-loaded="true" style="display: none;"></div><div class="slide-background future" data-loaded="true" style="display: none;"></div><div class="slide-background future" data-loaded="true" style="display: none;"></div><div class="slide-background future" data-loaded="true" style="display: none;"></div><div class="slide-background future" data-loaded="true" style="display: none;"></div><div class="slide-background future" data-loaded="true" style="display: none;"></div><div class="slide-background future" data-loaded="true" style="display: none;"></div><div class="slide-background future" data-loaded="true" style="display: none;"></div></div></div>
+
+		<script src="./Intents_files/highlight.pack.js.download" tppabs="http://web.stanford.edu/class/cs193a/lectures/slides/highlightjs/highlight.pack.js"></script>
+		<script src="./Intents_files/cs193a-slides.js.download" tppabs="http://web.stanford.edu/class/cs193a/lectures/slides/cs193a-slides.js"></script>
+		<script src="./Intents_files/reveal.js.download" tppabs="http://web.stanford.edu/class/cs193a/lectures/slides/reveal/js/reveal.js"></script>
+		<script>
+			initializeSlides();
+		</script>
+	
+
+</body></html>

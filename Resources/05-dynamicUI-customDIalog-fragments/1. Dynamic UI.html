@@ -1,0 +1,527 @@
+
+<!-- saved from url=(0167)file:///D:/old_data/D3/old%20Data/Adnan/courses/2018%201%20Spring/CSE491%20Mobile/cs193a/CS193A-master/Winter2017Update/class/cs193a/lectures/slides/dynamic-ui.html#/2 -->
+<html><head><meta http-equiv="Content-Type" content="text/html; charset=windows-1252">
+		<title>CSE 491: Android - Dynamic UI</title>
+		<link rel="stylesheet" href="./Dynamic UI_files/default.css" tppabs="http://web.stanford.edu/class/cs193a/lectures/slides/highlightjs/styles/default.css">
+		<link rel="stylesheet" href="./Dynamic UI_files/reveal.css" tppabs="http://web.stanford.edu/class/cs193a/lectures/slides/reveal/css/reveal.css">
+		<link rel="stylesheet" href="./Dynamic UI_files/white.css" tppabs="http://web.stanford.edu/class/cs193a/lectures/slides/reveal/css/theme/white.css">
+		<link rel="stylesheet" href="./Dynamic UI_files/cs193a-slides.css" tppabs="http://web.stanford.edu/class/cs193a/lectures/slides/cs193a-slides.css">
+	</head>
+	<body>
+		<div class="reveal slide" role="application" data-transition-speed="default" data-background-transition="fade">
+			<div class="slides" style="width: 960px; height: 700px; zoom: 1.5;">
+
+<!-- BEGIN SLIDES AREA -->
+
+<section class="titleslide past" style="display: block;" hidden="" aria-hidden="true">
+	<h1>CSE 491: Android</h1>
+
+	<p>Generating a Dynamic UI</p>
+	<br/>
+	<br/>
+	<pre>
+Acknowledgment:
+   The slides are of ones by Marty Stepp.
+   http://cs193a.stanford.edu
+	</pre>
+</section>
+
+<section class="past" style="display: block;" hidden="" aria-hidden="true">
+	<h1>Generating a UI at runtime</h1>
+	
+	<ul>
+		<li>Sometimes your app's UI cannot be fully specified in XML.
+			<ul>
+				<li>Example: You don't know how many widgets you will need until the user gives input or until a file is downloaded.
+			</li></ul>
+		
+		</li><li>In these cases, your app needs to be able to generate UI widgets dynamically in Java code.
+	</li></ul>
+
+	<div class="figureshorizontal">
+		<img src="./Dynamic UI_files/twitter-android.png" tppabs="http://web.stanford.edu/class/cs193a/lectures/slides/images/twitter-android.png" alt="figure">
+		<img src="./Dynamic UI_files/hello-grid-view.png" tppabs="http://web.stanford.edu/class/cs193a/lectures/slides/images/hello-grid-view.png" alt="figure">
+	</div>
+</section>
+
+<section class="present" style="display: block;">
+	<h1>UI Widget objects</h1>
+	
+	<ul>
+		<li>Any UI widget class from XML has a corresponding Java class.
+		</li><li>You already used these when you find a view by ID.
+	</li></ul>
+	
+	<div class="linenumbersouter"><pre class=" linenumbers"><code style="float: left;">&nbsp;1&nbsp;
+&nbsp;2&nbsp;</code></pre><pre><code class="java hljs"><span class="hljs-comment">// inside an activity class</span>
+<var>WidgetType</var> <var>name</var> = <span class="hljs-keyword">new</span> <var>WidgetType</var>(<span class="hljs-keyword">this</span>);
+</code></pre></div>
+
+	<ul>
+		<li>Example:
+	</li></ul>
+
+	<pre><code class="java hljs">TextView tv = <span class="hljs-keyword">new</span> TextView(<span class="hljs-keyword">this</span>);
+</code></pre>
+</section>
+
+<section class="future" style="display: block;" hidden="" aria-hidden="true">
+	<h1>Adding widget to layout</h1>
+	
+	<ul>
+		<li>You can add a widget to an onscreen container (<a target="_blank" href="https://developer.android.com/reference/android/view/ViewGroup.html"><code class="androidapi" data-class="android.view.ViewGroup">ViewGroup</code></a>) such as a layout.
+			<ul>
+				<li>Add a widget to a container using the <code>addView</code> method.
+				</li><li>You must give the container an ID.
+			</li></ul>
+	</li></ul>
+	
+<div class="linenumbersouter"><pre class=" linenumbers"><code style="float: left;">&nbsp;1&nbsp;
+&nbsp;2&nbsp;</code></pre><pre><code class="xml hljs"><span class="hljs-comment">&lt;!-- activity_main.xml --&gt;</span>
+<span class="hljs-tag">&lt;<span class="hljs-name">LinearLayout</span> </span><em><span class="hljs-tag"><span class="hljs-attr">android:id</span>=<span class="hljs-string">"@+id/mainlayout"</span></span></em><span class="hljs-tag"> <span class="hljs-attr">...</span>&gt;</span>
+</code></pre></div>
+
+
+	<div class="linenumbersouter"><pre class=" linenumbers"><code style="float: left;">&nbsp;1&nbsp;
+&nbsp;2&nbsp;
+&nbsp;3&nbsp;
+&nbsp;4&nbsp;</code></pre><pre><code class="java hljs"><span class="hljs-comment">// MainActivity.java</span>
+TextView tv = <span class="hljs-keyword">new</span> TextView(<span class="hljs-keyword">this</span>);
+LinearLayout layout = (LinearLayout) findViewById(R.id.mainlayout);
+layout.<em>addView</em>(tv);
+</code></pre></div>
+</section>
+
+<section class="future" style="display: block;" hidden="" aria-hidden="true">
+	<h1>
+		<a target="_blank" href="https://developer.android.com/reference/android/view/ViewGroup.html"><code class="androidapi" data-class="android.view.ViewGroup">ViewGroup</code></a> methods
+	</h1>
+	
+	<table class="methodtable">
+		<tbody><tr>
+			<th>Method</th>
+			<th>Description</th>
+		</tr>
+		
+		<tr>
+			<td><code>addView(<var>view</var>); <br>
+				addView(view, <var>index</var>); <br>
+				addView(view, <var>params</var>);</code>
+			</td>
+			<td>add a view to this container</td>
+		</tr>
+		
+		<tr>
+			<td><code>bringChildToFront(<var>view</var>);</code></td>
+			<td>move view to top of Z-order</td>
+		</tr>
+		
+		<tr>
+			<td><code>getChildAt(<var>index</var>)</code></td>
+			<td>return a view</td>
+		</tr>
+		
+		<tr>
+			<td><code>getChildCount()</code></td>
+			<td>return number of children</td>
+		</tr>
+		
+		<tr>
+			<td><code>removeAllViews();</code></td>
+			<td>remove all children</td>
+		</tr>
+		
+		<tr>
+			<td><code>removeView(<var>view</var>);</code></td>
+			<td>remove a particular child</td>
+		</tr>
+		
+		<tr>
+			<td><code>removeViewAt(<var>index</var>);</code></td>
+			<td>remove child at given index</td>
+		</tr>
+	</tbody></table>
+</section>
+
+<section class="future" style="display: none;" hidden="" aria-hidden="true">
+	<h1>Widget parameters</h1>
+	
+	<ul>
+		<li>What about setting attributes that would have been inside the XML tag?
+		</li><li>Some are just <code>set</code> methods on the widget object itself.
+	</li></ul>
+	
+	<div class="linenumbersouter"><pre class=" linenumbers"><code style="float: left;">&nbsp;1&nbsp;
+&nbsp;2&nbsp;
+&nbsp;3&nbsp;
+&nbsp;4&nbsp;
+&nbsp;5&nbsp;
+&nbsp;6&nbsp;
+&nbsp;7&nbsp;
+&nbsp;8&nbsp;</code></pre><pre><code class="xml hljs"><span class="hljs-comment">&lt;!-- activity_main.xml --&gt;</span>
+<span class="hljs-tag">&lt;<span class="hljs-name">TextView</span>
+    </span><em><span class="hljs-tag"><span class="hljs-attr">android:id</span>=<span class="hljs-string">"@+id/mymessage"</span>
+    <span class="hljs-attr">android:text</span>=<span class="hljs-string">"Hello there!"</span>
+    <span class="hljs-attr">android:textSize</span>=<span class="hljs-string">"20dp"</span>
+    <span class="hljs-attr">android:textStyle</span>=<span class="hljs-string">"bold"</span></span></em><span class="hljs-tag">
+    <span class="hljs-attr">android:layout_width</span>=<span class="hljs-string">"wrap_content"</span>
+    <span class="hljs-attr">android:layout_height</span>=<span class="hljs-string">"wrap_content"</span> /&gt;</span>
+</code></pre></div>
+
+	<div class="linenumbersouter"><pre class=" linenumbers"><code style="float: left;">&nbsp;1&nbsp;
+&nbsp;2&nbsp;
+&nbsp;3&nbsp;
+&nbsp;4&nbsp;
+&nbsp;5&nbsp;
+&nbsp;6&nbsp;</code></pre><pre><code class="java hljs"><span class="hljs-comment">// MainActivity.java</span>
+TextView tv = <span class="hljs-keyword">new</span> TextView(<span class="hljs-keyword">this</span>);
+tv.<em>setId</em>(R.id.mymessage);   <span class="hljs-comment">// or use your own number</span>
+tv.<em>setText</em>(<span class="hljs-string">"Hello there!"</span>);
+tv.<em>setTextSize</em>(<span class="hljs-number">20</span>);
+...
+</code></pre></div>
+</section>
+
+<section class="future" style="display: none;" hidden="" aria-hidden="true">
+	<h1>Layout parameters</h1>
+	
+	<ul>
+		<li>Attributes that start with <code>layout_</code> are for the layout.
+		</li><li>These are packaged into an internal <code>LayoutParams</code> object.
+	</li></ul>
+	
+	<div class="linenumbersouter"><pre class=" linenumbers"><code style="float: left;">&nbsp;1&nbsp;
+&nbsp;2&nbsp;
+&nbsp;3&nbsp;
+&nbsp;4&nbsp;
+&nbsp;5&nbsp;
+&nbsp;6&nbsp;
+&nbsp;7&nbsp;
+&nbsp;8&nbsp;</code></pre><pre><code class="xml hljs"><span class="hljs-comment">&lt;!-- activity_main.xml --&gt;</span>
+<span class="hljs-tag">&lt;<span class="hljs-name">TextView</span>
+    <span class="hljs-attr">android:id</span>=<span class="hljs-string">"@+id/mymessage"</span>
+    <span class="hljs-attr">android:text</span>=<span class="hljs-string">"Hello there!"</span>
+    <span class="hljs-attr">android:textSize</span>=<span class="hljs-string">"20dp"</span>
+    <span class="hljs-attr">android:textStyle</span>=<span class="hljs-string">"bold"</span>
+    </span><em><span class="hljs-tag"><span class="hljs-attr">android:layout_width</span>=<span class="hljs-string">"wrap_content"</span>
+    <span class="hljs-attr">android:layout_height</span>=<span class="hljs-string">"wrap_content"</span></span></em><span class="hljs-tag"> /&gt;</span>
+</code></pre></div>
+
+	<div class="linenumbersouter"><pre class=" linenumbers"><code style="float: left;">&nbsp;1&nbsp;
+&nbsp;2&nbsp;
+&nbsp;3&nbsp;
+&nbsp;4&nbsp;
+&nbsp;5&nbsp;
+&nbsp;6&nbsp;</code></pre><pre><code class="java hljs"><span class="hljs-comment">// MainActivity.java</span>
+TextView tv = <span class="hljs-keyword">new</span> TextView(<span class="hljs-keyword">this</span>);
+ViewGroup.LayoutParams params = <span class="hljs-keyword">new</span> ViewGroup.LayoutParams(
+        ViewGroup.LayoutParams.WRAP_CONTENT,   <span class="hljs-comment">// width</span>
+        ViewGroup.LayoutParams.WRAP_CONTENT);  <span class="hljs-comment">// height</span>
+tv.<em>setLayoutParams</em>(params);
+</code></pre></div>
+</section>
+
+<section class="future" style="display: none;" hidden="" aria-hidden="true">
+	<h1>Layout-specific params</h1>
+	
+	<ul>
+		<li>Each layout type has its own <code>LayoutParams</code> inner class.
+			<ul>
+				<li>Contains attributes and methods used by that kind of layout.
+			</li></ul>
+		</li><li>Example for <code>LinearLayout</code>:
+	</li></ul>
+	
+	<div class="linenumbersouter"><pre class=" linenumbers"><code style="float: left;">&nbsp;1&nbsp;
+&nbsp;2&nbsp;
+&nbsp;3&nbsp;
+&nbsp;4&nbsp;
+&nbsp;5&nbsp;
+&nbsp;6&nbsp;</code></pre><pre><code class="java hljs">LinearLayout.LayoutParams params =
+    <span class="hljs-keyword">new</span> LinearLayout.LayoutParams(
+        ViewGroup.LayoutParams.MATCH_PARENT,     <span class="hljs-comment">// width</span>
+        ViewGroup.LayoutParams.WRAP_CONTENT);    <span class="hljs-comment">// height</span>
+params.weight  = <span class="hljs-number">1</span>;
+params.gravity = Gravity.TOP | Gravity.CENTER;
+</code></pre></div>
+</section>
+
+<section class="future" style="display: none;" hidden="" aria-hidden="true">
+	<h1>Setting widget size</h1>
+	
+	<ul>
+		<li>Most common sizes are <code>wrap_content</code> and <code>match_parent</code>.
+		<ul>
+			<li class="subbullet"><code>ViewGroup.LayoutParams.WRAP_CONTENT</code>
+			</li><li class="subbullet"><code>ViewGroup.LayoutParams.MATCH_PARENT</code>
+		</li></ul>
+		
+		</li><li>If you want to set width that is relative to the screen size:
+	</li></ul>
+	
+	<div class="linenumbersouter"><pre class=" linenumbers"><code style="float: left;">&nbsp;1&nbsp;
+&nbsp;2&nbsp;
+&nbsp;3&nbsp;
+&nbsp;4&nbsp;
+&nbsp;5&nbsp;
+&nbsp;6&nbsp;
+&nbsp;7&nbsp;
+&nbsp;8&nbsp;
+&nbsp;9&nbsp;</code></pre><pre><code class="java hljs"><span class="hljs-comment">// or use Stanford lib's getScreenWidth/Height methods</span>
+Display display = getWindowManager().getDefaultDisplay();
+Point size = <span class="hljs-keyword">new</span> Point();
+display.getSize(size);
+<span class="hljs-keyword">int</span> screenWidth  = size.x;
+<span class="hljs-keyword">int</span> screenHeight = size.y;
+LinearLayout.LayoutParams params = <span class="hljs-keyword">new</span> LinearLayout.LayoutParams(
+        screenWidth / <span class="hljs-number">2</span>,      <span class="hljs-comment">// width = half of screen</span>
+        screenHeight / <span class="hljs-number">2</span>);    <span class="hljs-comment">// height = half of screen</span>
+</code></pre></div>
+</section>
+
+<section class="future" style="display: none;" hidden="" aria-hidden="true">
+	<h1>Layout inflater</h1>
+	
+	<ul>
+		<li><strong>layout inflater</strong>: Converts layout XML into Java widget objects.
+			<ul>
+				<li>Manual creation of widgets works, but it is pretty painful if you are creating a lot of them, or a complex nested structure of widgets.
+				</li><li>A layout inflater lets you specify an entire chunk of layout, perhaps a complex subcomponent, as XML and then load it in Java as needed.
+				</li><li>Similar to a fragment but without its own events and lifecycle.
+			</li></ul>
+	</li></ul>
+	
+	<div class="figure">
+		<img src="./Dynamic UI_files/layout-inflater.png" tppabs="http://web.stanford.edu/class/cs193a/lectures/slides/images/layout-inflater.png" alt="figure">
+	</div>
+</section>
+
+<section class="future" style="display: none;" hidden="" aria-hidden="true">
+	<h1>Using the layout inflater</h1>
+	
+	<ul>
+		<li>Inside an activity:
+		
+		<div class="linenumbersouter"><pre class=" linenumbers"><code style="float: left;">&nbsp;1&nbsp;
+&nbsp;2&nbsp;</code></pre><pre><code class="java hljs">View <var>name</var> = getLayoutInflater()
+        .inflate(R.layout.<var>name</var>, <var>parent</var>);
+</code></pre></div>
+
+		</li><li>When not in an activity:
+
+		<div class="linenumbersouter"><pre class=" linenumbers"><code style="float: left;">&nbsp;1&nbsp;
+&nbsp;2&nbsp;
+&nbsp;3&nbsp;</code></pre><pre><code class="java hljs">LayoutInflater inflater = (LayoutInflater) 
+        context.getSystemService(Context.LAYOUT_INFLATER_SERVICE);
+View <var>name</var> = inflater.inflate(R.layout.<var>name</var>, <var>parent</var>);
+</code></pre></div>
+
+		</li><li>in both cases, parent can be <code>null</code>
+		</li><li>if parent is non-<code>null</code>, new view is automatically added to parent
+	</li></ul>
+</section>
+
+<section class="future" style="display: none;" hidden="" aria-hidden="true">
+	<h1>Example layout XML</h1>
+	
+	<div class="figuresright">
+		<img src="./Dynamic UI_files/flag-usa.png" tppabs="http://web.stanford.edu/class/cs193a/lectures/slides/images/flag-usa.png" alt="figure" style="width: 200px">
+	</div>
+	
+	<div class="linenumbersouter"><pre class="longcode linenumbers"><code style="float: left;">&nbsp;1&nbsp;
+&nbsp;2&nbsp;
+&nbsp;3&nbsp;
+&nbsp;4&nbsp;
+&nbsp;5&nbsp;
+&nbsp;6&nbsp;
+&nbsp;7&nbsp;
+&nbsp;8&nbsp;
+&nbsp;9&nbsp;
+10&nbsp;
+11&nbsp;
+12&nbsp;
+13&nbsp;
+14&nbsp;
+15&nbsp;
+16&nbsp;
+17&nbsp;
+18&nbsp;
+19&nbsp;
+20&nbsp;</code></pre><pre class="longcode"><code class="xml hljs"><span class="hljs-comment">&lt;!-- res/layout/flag.xml --&gt;</span>
+<span class="hljs-tag">&lt;<span class="hljs-name">LinearLayout</span> <span class="hljs-attr">...</span>
+        <span class="hljs-attr">android:orientation</span>=<span class="hljs-string">"vertical"</span>
+        <span class="hljs-attr">android:gravity</span>=<span class="hljs-string">"top|center"</span>&gt;</span>
+    <span class="hljs-tag">&lt;<span class="hljs-name">ImageView</span>
+        <span class="hljs-attr">android:id</span>=<span class="hljs-string">"@+id/flagimage"</span>
+        <span class="hljs-attr">android:src</span>=<span class="hljs-string">"@drawable/unitedstates"</span>
+        <span class="hljs-attr">android:layout_width</span>=<span class="hljs-string">"wrap_content"</span>
+        <span class="hljs-attr">android:layout_height</span>=<span class="hljs-string">"wrap_content"</span> /&gt;</span>
+    <span class="hljs-tag">&lt;<span class="hljs-name">TextView</span>
+        <span class="hljs-attr">android:id</span>=<span class="hljs-string">"@+id/countryname"</span>
+        <span class="hljs-attr">android:text</span>=<span class="hljs-string">"example"</span>
+        <span class="hljs-attr">android:layout_width</span>=<span class="hljs-string">"wrap_content"</span>
+        <span class="hljs-attr">android:layout_height</span>=<span class="hljs-string">"wrap_content"</span> /&gt;</span>
+    <span class="hljs-tag">&lt;<span class="hljs-name">CheckBox</span>
+        <span class="hljs-attr">android:id</span>=<span class="hljs-string">"@+id/beenthere"</span>
+        <span class="hljs-attr">android:text</span>=<span class="hljs-string">"visited?"</span>
+        <span class="hljs-attr">android:layout_width</span>=<span class="hljs-string">"wrap_content"</span>
+        <span class="hljs-attr">android:layout_height</span>=<span class="hljs-string">"wrap_content"</span> /&gt;</span>
+<span class="hljs-tag">&lt;/<span class="hljs-name">LinearLayout</span>&gt;</span>
+</code></pre></div>
+</section>
+
+<section class="future" style="display: none;" hidden="" aria-hidden="true">
+	<h1>Main layout XML</h1>
+
+	<div class="figuresright">
+		<img src="./Dynamic UI_files/customlayout-2.png" tppabs="http://web.stanford.edu/class/cs193a/lectures/slides/images/customlayout-2.png" alt="figure">
+	</div>
+	
+	<div class="linenumbersouter"><pre class=" linenumbers"><code style="float: left;">&nbsp;1&nbsp;
+&nbsp;2&nbsp;
+&nbsp;3&nbsp;
+&nbsp;4&nbsp;
+&nbsp;5&nbsp;
+&nbsp;6&nbsp;
+&nbsp;7&nbsp;
+&nbsp;8&nbsp;
+&nbsp;9&nbsp;
+10&nbsp;
+11&nbsp;
+12&nbsp;
+13&nbsp;
+14&nbsp;
+15&nbsp;</code></pre><pre><code class="xml hljs"><span class="hljs-comment">&lt;!-- res/layout/activity_main.xml --&gt;</span>
+<span class="hljs-tag">&lt;<span class="hljs-name">LinearLayout</span> <span class="hljs-attr">...</span>
+    <span class="hljs-attr">android:orientation</span>=<span class="hljs-string">"vertical"</span>&gt;</span>
+    <span class="hljs-tag">&lt;<span class="hljs-name">TextView</span>
+        <span class="hljs-attr">android:layout_width</span>=<span class="hljs-string">"wrap_content"</span>
+        <span class="hljs-attr">android:layout_height</span>=<span class="hljs-string">"wrap_content"</span>
+        <span class="hljs-attr">android:text</span>=<span class="hljs-string">"Hello World!"</span> /&gt;</span>
+
+    <span class="hljs-comment">&lt;!-- a container in which we'll put flags --&gt;</span>
+    <span class="hljs-tag">&lt;<span class="hljs-name">LinearLayout</span>
+        <span class="hljs-attr">android:id</span>=<span class="hljs-string">"@+id/flagsarea"</span>
+        <span class="hljs-attr">android:orientation</span>=<span class="hljs-string">"horizontal"</span>
+        <span class="hljs-attr">android:layout_width</span>=<span class="hljs-string">"match_parent"</span>
+        <span class="hljs-attr">android:layout_height</span>=<span class="hljs-string">"wrap_content"</span> /&gt;</span>
+<span class="hljs-tag">&lt;/<span class="hljs-name">LinearLayout</span>&gt;</span>
+</code></pre></div>
+</section>
+
+<section class="future" style="display: none;" hidden="" aria-hidden="true">
+	<h1>Using our flag layout</h1>
+	
+	<div class="linenumbersouter"><pre class="longcode linenumbers"><code style="float: left;">&nbsp;1&nbsp;
+&nbsp;2&nbsp;
+&nbsp;3&nbsp;
+&nbsp;4&nbsp;
+&nbsp;5&nbsp;
+&nbsp;6&nbsp;
+&nbsp;7&nbsp;
+&nbsp;8&nbsp;
+&nbsp;9&nbsp;
+10&nbsp;
+11&nbsp;
+12&nbsp;
+13&nbsp;
+14&nbsp;
+15&nbsp;
+16&nbsp;
+17&nbsp;
+18&nbsp;
+19&nbsp;
+20&nbsp;
+21&nbsp;
+22&nbsp;</code></pre><pre class="longcode"><code class="java hljs"><span class="hljs-keyword">public</span> <span class="hljs-class"><span class="hljs-keyword">class</span> <span class="hljs-title">MainActivity</span> <span class="hljs-keyword">extends</span> <span class="hljs-title">Activity</span> </span>{
+    <span class="hljs-function"><span class="hljs-keyword">protected</span> <span class="hljs-keyword">void</span> <span class="hljs-title">onCreate</span><span class="hljs-params">(Bundle savedInstanceState)</span> </span>{
+        ...
+        LinearLayout layout = (LinearLayout) findViewById(R.id.flagsarea);
+        createFlag(layout, <span class="hljs-string">"USA"</span>, R.drawable.unitedstates, <span class="hljs-keyword">true</span>);
+        createFlag(layout, <span class="hljs-string">"UK"</span>, R.drawable.unitedkingdom, <span class="hljs-keyword">false</span>);
+        createFlag(layout, <span class="hljs-string">"France"</span>, R.drawable.france, <span class="hljs-keyword">true</span>);
+        createFlag(layout, <span class="hljs-string">"Brazil"</span>, R.drawable.brazil, <span class="hljs-keyword">false</span>);
+    }
+
+    <span class="hljs-function"><span class="hljs-keyword">private</span> <span class="hljs-keyword">void</span> <span class="hljs-title">createFlag</span><span class="hljs-params">(ViewGroup layout, String name,
+                            <span class="hljs-keyword">int</span> imgID, <span class="hljs-keyword">boolean</span> visited)</span> </span>{
+        View flag = <em>getLayoutInflater().inflate</em>(R.layout.flag, <span class="hljs-keyword">null</span>);
+        TextView text = (TextView) flag.findViewById(R.id.countryname);
+        text.setText(name);
+        ImageView img = (ImageView) flag.findViewById(R.id.flagimage);
+        img.setImageResource(imgID);
+        CheckBox check = (CheckBox) flag.findViewById(R.id.beenthere);
+        check.setChecked(visited);
+        layout.addView(flag);
+    }
+}
+</code></pre></div>
+
+	<div class="figureshorizontal">
+		<img src="./Dynamic UI_files/customlayout-3.png" tppabs="http://web.stanford.edu/class/cs193a/lectures/slides/images/customlayout-3.png" alt="figure">
+	</div>
+</section>
+
+<section class="future" style="display: none;" hidden="" aria-hidden="true">
+	<h1>Layout inflater or fragment?</h1>
+	
+	<div class="figuresright">
+		<img src="./Dynamic UI_files/customlayout-3.png" tppabs="http://web.stanford.edu/class/cs193a/lectures/slides/images/customlayout-3.png" alt="figure">
+		<img src="./Dynamic UI_files/fragment-2-tablet.png" tppabs="http://web.stanford.edu/class/cs193a/lectures/slides/images/fragment-2-tablet.png" alt="figure">
+	</div>
+
+	<ul>
+		<li><strong>inflated views</strong>: tend to be <strong>simpler</strong>
+			<ul>
+				<li>maybe you'll have many of them on screen
+				</li><li>they do not respond to many events
+			</li></ul>
+
+		</li><li><strong>fragments</strong>: larger, more <strong>complex</strong>
+			<ul>
+				<li>almost big enough to be an activity by itself
+				</li><li>have their own lifecycle methods
+				</li><li>save/restore state, handle many events, etc.
+				</li><li>more self-contained; better decomposition
+			</li></ul>
+		
+		</li><li>How to choose between them?
+			<ul>
+				<li>If handling lot of <strong>events</strong>, use a fragment. Else use an inflated view.
+				</li><li>Some companies have particular guidelines. (Square: <em>Never</em> uses fragments.)
+			</li></ul>
+	</li></ul>
+</section>
+
+<!-- END SLIDES AREA -->
+			</div>
+		<div class="backgrounds"><div class="slide-background titleslide past" data-loaded="true" style="display: block;"></div><div class="slide-background past" data-loaded="true" style="display: block;"></div><div class="slide-background present" data-loaded="true" style="display: block;"></div><div class="slide-background future" data-loaded="true" style="display: block;"></div><div class="slide-background future" data-loaded="true" style="display: block;"></div><div class="slide-background future" data-loaded="true" style="display: none;"></div><div class="slide-background future" data-loaded="true" style="display: none;"></div><div class="slide-background future" data-loaded="true" style="display: none;"></div><div class="slide-background future" data-loaded="true" style="display: none;"></div><div class="slide-background future" data-loaded="true" style="display: none;"></div><div class="slide-background future" data-loaded="true" style="display: none;"></div><div class="slide-background future" data-loaded="true" style="display: none;"></div><div class="slide-background future" data-loaded="true" style="display: none;"></div><div class="slide-background future" data-loaded="true" style="display: none;"></div><div class="slide-background future" data-loaded="true" style="display: none;"></div></div><div class="progress" style="display: block;"><span style="width: 361.143px;"></span></div><aside class="controls" style="display: block;"><button class="navigate-left enabled" aria-label="previous slide"></button><button class="navigate-right enabled" aria-label="next slide"></button><button class="navigate-up" aria-label="above slide"></button><button class="navigate-down" aria-label="below slide"></button><button id="fullscreenbutton" title="full-screen mode">&#8862;</button></aside><div class="slide-number" style="display: block;"><span class="slide-number-a">3</span></div><div class="speaker-notes" data-prevent-swipe=""></div><div class="pause-overlay"></div><div id="aria-status-div" aria-live="polite" aria-atomic="true" style="position: absolute; height: 1px; width: 1px; overflow: hidden; clip: rect(1px 1px 1px 1px);">
+	UI Widget objects
+	
+	
+		Any UI widget class from XML has a corresponding Java class.
+		You already used these when you find a view by ID.
+	
+	
+	&nbsp;1&nbsp;
+&nbsp;2&nbsp;// inside an activity class
+WidgetType name = new WidgetType(this);
+
+
+	
+		Example:
+	
+
+	TextView tv = new TextView(this);
+
+</div></div>
+
+		<script src="./Dynamic UI_files/highlight.pack.js.download" tppabs="http://web.stanford.edu/class/cs193a/lectures/slides/highlightjs/highlight.pack.js"></script>
+		<script src="./Dynamic UI_files/cs193a-slides.js.download" tppabs="http://web.stanford.edu/class/cs193a/lectures/slides/cs193a-slides.js"></script>
+		<script src="./Dynamic UI_files/reveal.js.download" tppabs="http://web.stanford.edu/class/cs193a/lectures/slides/reveal/js/reveal.js"></script>
+		<script>
+			initializeSlides();
+		</script>
+	
+
+</body></html>

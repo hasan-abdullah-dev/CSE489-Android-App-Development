@@ -1,0 +1,812 @@
+
+<!-- saved from url=(0161)file:///D:/old_data/D3/old%20Data/Adnan/courses/2018%201%20Spring/CSE491%20Mobile/cs193a/CS193A-master/Winter2017Update/class/cs193a/lectures/slides/lists.html#/ -->
+<html><head><meta http-equiv="Content-Type" content="text/html; charset=windows-1252">
+		<title>CSE 491: Android - Lists</title>
+		<link rel="stylesheet" href="./Lists_files/default.css" tppabs="http://web.stanford.edu/class/cs193a/lectures/slides/highlightjs/styles/default.css">
+		<link rel="stylesheet" href="./Lists_files/reveal.css" tppabs="http://web.stanford.edu/class/cs193a/lectures/slides/reveal/css/reveal.css">
+		<link rel="stylesheet" href="./Lists_files/white.css" tppabs="http://web.stanford.edu/class/cs193a/lectures/slides/reveal/css/theme/white.css">
+		<link rel="stylesheet" href="./Lists_files/cs193a-slides.css" tppabs="http://web.stanford.edu/class/cs193a/lectures/slides/cs193a-slides.css">
+	</head>
+	<body>
+		<div class="reveal slide" role="application" data-transition-speed="default" data-background-transition="fade">
+			<div class="slides" style="width: 960px; height: 700px; left: 50%; top: 50%; bottom: auto; right: auto; transform: translate(-50%, -50%) scale(0.907929);">
+
+<!-- BEGIN SLIDES AREA -->
+
+<section class="titleslide present" style="display: block;" data-index-h="0">
+	<h1>CSE 491: Android</h1>
+
+	<p>Lists</p>
+	<br/>
+	<br/>
+	<pre>
+Acknowledgment:
+   The slides are of ones by Marty Stepp.
+   http://cs193a.stanford.edu
+	</pre>
+</section>
+
+<section class="future" style="display: block;" hidden="" aria-hidden="true" data-index-h="1">
+	<h1>
+		ListView
+		(<a class="popup" href="javascript:if(confirm(%27http://developer.android.com/guide/topics/ui/layout/listview.html  \n\nThis file was not retrieved by Teleport Pro, because it is addressed on a domain or path outside the boundaries set for its Starting Address.  \n\nDo you want to open it from the server?%27))window.location=%27http://developer.android.com/guide/topics/ui/layout/listview.html%27" tppabs="http://developer.android.com/guide/topics/ui/layout/listview.html" target="_blank">link</a>)
+
+		<span class="figuresright">
+			<img src="./Lists_files/widget-listview.png" tppabs="http://web.stanford.edu/class/cs193a/lectures/slides/images/widget-listview.png" alt="figure">
+		</span>
+	</h1>
+
+	<p class="caption">
+		An ordered collection of selectable choices
+	</p>
+	
+	<table class="methodtable boxedtable">
+		<caption>key attributes in XML</caption>
+		<tbody><tr>
+			<td><code>android:id="@+id/<var>theID</var>"</code></td>
+			<td>unique ID for use in Java code</td>
+		</tr>
+		<tr>
+			<td><code>android:clickable="<var>bool</var>"</code></td>
+			<td>set to <code>false</code> to disable the button</td>
+		</tr>
+		<tr>
+			<td><code>android:entries="@array/<var>array</var>"</code></td>
+			<td>set of options to appear in the list
+				(must match an array in <span class="filename">strings.xml</span>)</td>
+		</tr>
+	</tbody></table>
+</section>
+
+<section class="future" style="display: block;" hidden="" aria-hidden="true" data-index-h="2">
+	<h1>
+		Spinner
+		(<a class="popup" href="javascript:if(confirm(%27http://developer.android.com/guide/topics/ui/controls/spinner.html  \n\nThis file was not retrieved by Teleport Pro, because it is addressed on a domain or path outside the boundaries set for its Starting Address.  \n\nDo you want to open it from the server?%27))window.location=%27http://developer.android.com/guide/topics/ui/controls/spinner.html%27" tppabs="http://developer.android.com/guide/topics/ui/controls/spinner.html" target="_blank">link</a>)
+
+		<span class="figuresright">
+			<img src="./Lists_files/widget-spinner.png" tppabs="http://web.stanford.edu/class/cs193a/lectures/slides/images/widget-spinner.png" alt="figure">
+		</span>
+	</h1>
+
+	<p class="caption">
+		A drop-down menu of selectable choices
+	</p>
+
+	<div class="linenumbersouter"><pre class=" linenumbers"><code style="float: left;">&nbsp;1&nbsp;
+&nbsp;2&nbsp;
+&nbsp;3&nbsp;
+&nbsp;4&nbsp;</code></pre><pre><code class="java hljs"><span class="hljs-comment">// to handle events in Java code</span>
+Spinner spin = (Spinner) findViewById(R.id.<var>theID</var>);
+spin.setOnItemSelectedListener(<span class="hljs-keyword">this</span>);
+...
+</code></pre></div>
+	
+	<table class="methodtable boxedtable">
+		<caption>key attributes in XML</caption>
+		<tbody><tr>
+			<td><code>android:id="@+id/<var>theID</var>"</code></td>
+			<td>unique ID for use in Java code</td>
+		</tr>
+		<tr>
+			<td><code>android:clickable="bool"</code></td>
+			<td>
+				set to <code>false</code> to disable the spinner
+			</td>
+		</tr>
+		<tr>
+			<td><code>android:entries="@array/<var>array</var>"</code></td>
+			<td>
+				set of options to appear in spinner <br>
+				(must match an array in <span class="filename">strings.xml</span>)
+			</td>
+		</tr>
+		<tr>
+			<td><code>android:prompt="@string/<var>text</var>"</code></td>
+			<td>
+				title text when dialog of choices pops up
+			</td>
+		</tr>
+	</tbody></table>
+</section>
+
+<section class="future" style="display: none;" hidden="" aria-hidden="true" data-index-h="3">
+	<h1>Static lists</h1>
+	
+	<div class="figuresright">
+		<img src="./Lists_files/list-display.png" tppabs="http://web.stanford.edu/class/cs193a/lectures/slides/images/list-display.png" alt="figure">
+	</div>
+	
+	<ul>
+		<li><strong>static list</strong>: Content is fixed and known before the app runs.
+		<ul><li>Declare the list elements in the strings.xml resource file.</li></ul>
+	</li></ul>
+	
+	<ul>
+		<li><strong>dynamic list</strong>: Content is read or generated as the program runs.
+		<ul><li>Comes from a data file, or from the internet, etc.
+			</li><li>Must be set in the Java code.
+	</li></ul>
+	
+	<!--
+	<pre><code class="xml">
+&lt;!-- res/values/strings.xml --&gt;
+&lt;resources&gt;
+	&lt;string-array name=&quot;oses&quot;&gt;
+		&lt;item&gt;Android&lt;/item&gt;
+		&lt;item&gt;iPhone&lt;/item&gt;
+		...
+		&lt;item&gt;Max OS X&lt;/item&gt;
+	&lt;/string-array&gt;
+&lt;/resources&gt;
+</code></pre>
+
+	<pre><code class="xml">
+&lt;!-- res/layout/activity_main.xml --&gt;
+&lt;ListView ... android:id=&quot;@+id/mylist&quot;
+		android:entries=&quot;@array/oses&quot; /&gt;
+</code></pre>
+	-->
+
+</li></ul></section>
+
+<section class="future" style="display: none;" hidden="" aria-hidden="true" data-index-h="4">
+	<h1>String resources</h1>
+	
+	<ul>
+		<li>Declare constant strings and arrays in <span class="filename">res/values/strings.xml</span>:</li>
+	</ul>
+	
+	<div class="linenumbersouter"><pre class=" linenumbers"><code style="float: left;">&nbsp;1&nbsp;
+&nbsp;2&nbsp;
+&nbsp;3&nbsp;
+&nbsp;4&nbsp;
+&nbsp;5&nbsp;
+&nbsp;6&nbsp;
+&nbsp;7&nbsp;
+&nbsp;8&nbsp;
+&nbsp;9&nbsp;
+10&nbsp;
+11&nbsp;</code></pre><pre class=""><code class="xml hljs"><span class="hljs-tag">&lt;<span class="hljs-name">resources</span>&gt;</span>
+    <span class="hljs-tag">&lt;<span class="hljs-name">string</span> <span class="hljs-attr">name</span>=<span class="hljs-string">"</span></span><var><span class="hljs-tag"><span class="hljs-string">name</span></span></var><span class="hljs-tag"><span class="hljs-string">"</span>&gt;</span><var>value</var><span class="hljs-tag">&lt;/<span class="hljs-name">string</span>&gt;</span>
+    <span class="hljs-tag">&lt;<span class="hljs-name">string</span> <span class="hljs-attr">name</span>=<span class="hljs-string">"</span></span><var><span class="hljs-tag"><span class="hljs-string">name</span></span></var><span class="hljs-tag"><span class="hljs-string">"</span>&gt;</span><var>value</var><span class="hljs-tag">&lt;/<span class="hljs-name">string</span>&gt;</span>
+
+    <span class="hljs-tag">&lt;<span class="hljs-name">string-array</span> </span><var><span class="hljs-tag"><span class="hljs-attr">name</span></span></var><span class="hljs-tag">=<span class="hljs-string">"</span></span><var><span class="hljs-tag"><span class="hljs-string">arrayname</span></span></var><span class="hljs-tag"><span class="hljs-string">"</span>&gt;</span>
+        <span class="hljs-tag">&lt;<span class="hljs-name">item</span>&gt;</span><var>value</var><span class="hljs-tag">&lt;/<span class="hljs-name">item</span>&gt;</span>
+        <span class="hljs-tag">&lt;<span class="hljs-name">item</span>&gt;</span><var>value</var><span class="hljs-tag">&lt;/<span class="hljs-name">item</span>&gt;</span>   <span class="hljs-comment">&lt;!-- must escape ' as \' in values --&gt;</span>
+        ...
+        <span class="hljs-tag">&lt;<span class="hljs-name">item</span>&gt;</span><var>value</var><span class="hljs-tag">&lt;/<span class="hljs-name">item</span>&gt;</span>
+    <span class="hljs-tag">&lt;/<span class="hljs-name">string-array</span>&gt;</span>
+<span class="hljs-tag">&lt;/<span class="hljs-name">resources</span>&gt;</span>
+</code></pre></div>
+
+	<ul>
+		<li>Refer to them in Java code:
+			<ul>
+				<li>as a resource:	    <code>R.string.<var>name</var></code>,  <code>R.array.<var>name</var></code></li>
+				<li>as a string or array:  <code>getResources().getString(R.string.<var>name</var>)</code>,
+					<code>getResources().getStringArray(R.array.<var>name</var>)</code>
+				</li>
+			</ul>
+		</li>
+	</ul>
+</section>
+
+<section class="future" style="display: none;" data-index-h="5" hidden="" aria-hidden="true">
+	<h1>Spinner example</h1>
+	
+	<div class="figuresright">
+		<img src="./Lists_files/spinner-turtles.png" tppabs="http://web.stanford.edu/class/cs193a/lectures/slides/images/spinner-turtles.png" alt="figure">
+	</div>
+
+	<div class="linenumbersouter"><pre class=" linenumbers"><code style="float: left;">&nbsp;1&nbsp;
+&nbsp;2&nbsp;
+&nbsp;3&nbsp;
+&nbsp;4&nbsp;
+&nbsp;5&nbsp;
+&nbsp;6&nbsp;
+&nbsp;7&nbsp;
+&nbsp;8&nbsp;
+&nbsp;9&nbsp;
+10&nbsp;</code></pre><pre class=""><code class="xml hljs"><span class="hljs-comment">&lt;!-- in res/values/strings.xml: --&gt;</span>
+<span class="hljs-tag">&lt;<span class="hljs-name">resources</span>&gt;</span>
+    <span class="hljs-tag">&lt;<span class="hljs-name">string</span> <span class="hljs-attr">name</span>=<span class="hljs-string">"choose_turtle"</span>&gt;</span>Choose a turtle:<span class="hljs-tag">&lt;/<span class="hljs-name">string</span>&gt;</span>
+    <span class="hljs-tag">&lt;<span class="hljs-name">string-array</span> <span class="hljs-attr">name</span>=<span class="hljs-string">"turtles"</span>&gt;</span>
+        <span class="hljs-tag">&lt;<span class="hljs-name">item</span>&gt;</span>Leonardo<span class="hljs-tag">&lt;/<span class="hljs-name">item</span>&gt;</span>
+        <span class="hljs-tag">&lt;<span class="hljs-name">item</span>&gt;</span>Michelangelo<span class="hljs-tag">&lt;/<span class="hljs-name">item</span>&gt;</span>
+        <span class="hljs-tag">&lt;<span class="hljs-name">item</span>&gt;</span>Donatello<span class="hljs-tag">&lt;/<span class="hljs-name">item</span>&gt;</span>
+        <span class="hljs-tag">&lt;<span class="hljs-name">item</span>&gt;</span>Raphael<span class="hljs-tag">&lt;/<span class="hljs-name">item</span>&gt;</span>
+    <span class="hljs-tag">&lt;/<span class="hljs-name">string-array</span>&gt;</span>
+<span class="hljs-tag">&lt;/<span class="hljs-name">resources</span>&gt;</span>
+</code></pre></div>
+	
+	<div class="linenumbersouter"><pre class=" linenumbers"><code style="float: left;">&nbsp;1&nbsp;
+&nbsp;2&nbsp;
+&nbsp;3&nbsp;
+&nbsp;4&nbsp;
+&nbsp;5&nbsp;
+&nbsp;6&nbsp;
+&nbsp;7&nbsp;</code></pre><pre class=""><code class="xml hljs"><span class="hljs-comment">&lt;!-- in layout XML --&gt;</span>
+<span class="hljs-tag">&lt;<span class="hljs-name">LinearLayout</span> <span class="hljs-attr">...</span>&gt;</span>
+    <span class="hljs-tag">&lt;<span class="hljs-name">Spinner</span> <span class="hljs-attr">...</span> <span class="hljs-attr">android:id</span>=<span class="hljs-string">"@+id/tmnt"</span>
+        <span class="hljs-attr">android:entries</span>=<span class="hljs-string">"@array/turtles"</span>
+        <span class="hljs-attr">android:prompt</span>=<span class="hljs-string">"@string/choose_turtle"</span> /&gt;</span>
+    <span class="hljs-tag">&lt;<span class="hljs-name">TextView</span> <span class="hljs-attr">...</span> <span class="hljs-attr">android:id</span>=<span class="hljs-string">"@+id/result"</span> /&gt;</span>
+<span class="hljs-tag">&lt;/<span class="hljs-name">LinearLayout</span>&gt;</span>
+</code></pre></div>
+</section>
+
+<section class="future" style="display: none;" hidden="" aria-hidden="true" data-index-h="6">
+	<h1>List adapters</h1>
+	
+	<p>
+		<strong>adapter</strong>: Helps turn list data into list view items.
+	</p>
+
+	<ul>
+		<li>common adapters:
+		<ul>
+			<li><a class="popup" href="javascript:if(confirm(%27https://developer.android.com/reference/android/widget/ArrayAdapter.html  \n\nThis file was not retrieved by Teleport Pro, because it is addressed using an unsupported protocol (e.g., gopher).  \n\nDo you want to open it from the server?%27))window.location=%27https://developer.android.com/reference/android/widget/ArrayAdapter.html%27" tppabs="https://developer.android.com/reference/android/widget/ArrayAdapter.html" target="_blank"><code>ArrayAdapter</code></a>: items come from an array or list
+			</li><li><a class="popup" href="javascript:if(confirm(%27https://developer.android.com/reference/android/widget/CursorAdapter.html  \n\nThis file was not retrieved by Teleport Pro, because it is addressed using an unsupported protocol (e.g., gopher).  \n\nDo you want to open it from the server?%27))window.location=%27https://developer.android.com/reference/android/widget/CursorAdapter.html%27" tppabs="https://developer.android.com/reference/android/widget/CursorAdapter.html" target="_blank"><code>CursorAdapter</code></a>: items come from a database query
+		</li></ul>
+		
+		</li><li>Syntax for creating an adapter:
+			<div class="linenumbersouter"><pre class=" linenumbers"><code style="float: left;">&nbsp;1&nbsp;
+&nbsp;2&nbsp;</code></pre><pre><code class="java hljs">ArrayAdapter&lt;String&gt; <var>name</var> =
+        <span class="hljs-keyword">new</span> ArrayAdapter&lt;&gt;(<var>activity</var>, <var>layout</var>, <var>array</var>);</code></pre></div>
+			<ul>
+				<li>the activity is usually this</li>
+				<li>the default layout for lists is  <code>android.R.layout.simple_list_item_1</code></li>
+				<li>get the array/list by reading your file or data source of choice</li>
+			</ul>
+		</li><li>attach it by calling <code>setAdapter</code> method of <code>ListView</code></li>
+	</ul>
+</section>
+
+<section class="future" style="display: none;" hidden="" aria-hidden="true" data-index-h="7">
+	<h1>Adapter example</h1>
+	
+	<div class="linenumbersouter"><pre class=" linenumbers"><code style="float: left;">&nbsp;1&nbsp;
+&nbsp;2&nbsp;
+&nbsp;3&nbsp;
+&nbsp;4&nbsp;
+&nbsp;5&nbsp;
+&nbsp;6&nbsp;
+&nbsp;7&nbsp;
+&nbsp;8&nbsp;
+&nbsp;9&nbsp;
+10&nbsp;
+11&nbsp;</code></pre><pre><code class="java hljs"><span class="hljs-comment">// create an adapter based on a list</span>
+ArrayList&lt;String&gt; myArray = <span class="hljs-keyword">new</span> ArrayList&lt;&gt;();
+myArray.add(<span class="hljs-string">"Windows"</span>);
+myArray.add(<span class="hljs-string">"Linux"</span>);
+myArray.add(<span class="hljs-string">"Mac OS X"</span>);
+
+ArrayAdapter&lt;String&gt; adapter = <span class="hljs-keyword">new</span> ArrayAdapter&lt;&gt;(
+        <span class="hljs-keyword">this</span>, android.R.layout.simple_list_item_1, myArray);
+
+ListView list = (ListView) findViewById(R.id.mylist);
+list.setAdapter(myAdapter);
+</code></pre></div>
+
+</section>
+
+<section class="future" style="display: none;" hidden="" aria-hidden="true" data-index-h="8">
+	<h1>Handling list events</h1>
+	
+	<div class="figuresright">
+		<img src="./Lists_files/event.png" tppabs="http://web.stanford.edu/class/cs193a/lectures/slides/images/event.png" alt="image">
+	</div>
+
+	<ul>
+		<li>Lists don't use the <code>onClick</code> event.</li>
+		<li>Event listeners must be attached in Java, not XML.</li>
+		<li>We must use Java anonymous inner classes.</li>
+	</ul>
+	<ul>
+		<li><strong>anonymous inner class</strong>: A shorthand syntax for declaring a small class without giving it an explicit name.</li>
+	</ul>
+</section>
+
+<section class="future" style="display: none;" hidden="" aria-hidden="true" data-index-h="9">
+	<h1>Event listener in Java</h1>
+	
+	<div class="linenumbersouter"><pre class=" linenumbers"><code style="float: left;">&nbsp;1&nbsp;
+&nbsp;2&nbsp;
+&nbsp;3&nbsp;</code></pre><pre><code class="xml hljs"><span class="hljs-comment">&lt;!-- activity_main.xml --&gt;</span>
+<strike><span class="hljs-tag">&lt;<span class="hljs-name">Button</span> <span class="hljs-attr">...</span> <span class="hljs-attr">android:onClick</span>=<span class="hljs-string">"mybuttonOnClick"</span> /&gt;</span></strike>
+<span class="hljs-tag">&lt;<span class="hljs-name">Button</span> <span class="hljs-attr">...</span> <span class="hljs-attr">android:id</span>=<span class="hljs-string">"@+id/mybutton"</span> /&gt;</span>
+</code></pre></div>
+
+	<div class="linenumbersouter"><pre class=" linenumbers"><code style="float: left;">&nbsp;1&nbsp;
+&nbsp;2&nbsp;
+&nbsp;3&nbsp;
+&nbsp;4&nbsp;
+&nbsp;5&nbsp;
+&nbsp;6&nbsp;
+&nbsp;7&nbsp;
+&nbsp;8&nbsp;
+&nbsp;9&nbsp;
+10&nbsp;
+11&nbsp;</code></pre><pre><code class="java hljs"><span class="hljs-comment">// MainActivity.java</span>
+<strike><span class="hljs-function"><span class="hljs-keyword">public</span> <span class="hljs-keyword">void</span> <span class="hljs-title">mybuttonOnClick</span><span class="hljs-params">()</span> </span>{ ... }</strike>
+Button button = (Button) findViewById(R.id.mybutton);
+button.setOnClickListener(<em><span class="hljs-keyword">new</span> View.OnClickListener() {
+    <span class="hljs-function"><span class="hljs-keyword">public</span> <span class="hljs-keyword">void</span> <span class="hljs-title">onClick</span><span class="hljs-params">(View v)</span> </span>{
+        <span class="hljs-comment">// code to run when the button gets clicked</span>
+    }
+}</em>);
+
+<span class="hljs-comment">// this was the required style for event listeners</span>
+<span class="hljs-comment">// in older versions of Android :-/</span>
+</code></pre></div>
+</section>
+
+<section class="future" style="display: none;" hidden="" aria-hidden="true" data-index-h="10">
+	<h1>List events</h1>
+	
+	<ul>
+		<li>List views respond to the following events:
+		<ul>
+			<li><code>setOnItemClickListener(AdapterView.OnItemClickListener)</code>
+			</li><li class="subbullet">Listener for when an item in the list has been clicked.
+
+			</li><li><code>setOnItemLongClickListener(AdapterView.OnItemLongClickListener)</code>
+			</li><li class="subbullet">Listener for when an item in the list has been clicked and held.
+
+			</li><li><code>setOnItemSelectedListener(AdapterView.OnItemSelectedListener)</code>
+			</li><li class="subbullet">Listener for when an item in the list has been selected.
+
+			</li><li>Others: <code>onDrag</code>, <code>onFocusChanged</code>, <code>onHover</code> <code>onKey</code>, <code>onScroll</code>, <code>onTouch</code>, ...
+		</li></ul>
+</li></ul></section>
+
+<section data-transition="fade-out" class="future" style="display: none;" hidden="" aria-hidden="true" data-index-h="11">
+	<h1>List event example</h1>
+	
+	<div class="linenumbersouter"><pre class="longcode linenumbers"><code style="float: left;">&nbsp;1&nbsp;
+&nbsp;2&nbsp;
+&nbsp;3&nbsp;
+&nbsp;4&nbsp;
+&nbsp;5&nbsp;
+&nbsp;6&nbsp;
+&nbsp;7&nbsp;
+&nbsp;8&nbsp;
+&nbsp;9&nbsp;
+10&nbsp;
+11&nbsp;
+12&nbsp;
+13&nbsp;
+14&nbsp;
+15&nbsp;
+16&nbsp;
+17&nbsp;
+18&nbsp;
+19&nbsp;</code></pre><pre class="longcode"><code class="java hljs"><span class="hljs-keyword">public</span> <span class="hljs-class"><span class="hljs-keyword">class</span> <span class="hljs-title">MyActivity</span> <span class="hljs-keyword">extends</span> <span class="hljs-title">Activity</span> </span>{
+
+
+    <span class="hljs-meta">@Override</span>
+    <span class="hljs-function"><span class="hljs-keyword">protected</span> <span class="hljs-keyword">void</span> <span class="hljs-title">onCreate</span><span class="hljs-params">(Bundle savedInstanceState)</span> </span>{
+        ...
+        ListView list = (ListView) findViewById(R.id.id);
+        list.setOnItemClickListener(
+            <em><span class="hljs-keyword">new</span> AdapterView.OnItemClickListener() {
+                <span class="hljs-meta">@Override</span>
+                <span class="hljs-function"><span class="hljs-keyword">public</span> <span class="hljs-keyword">void</span> <span class="hljs-title">onItemClick</span><span class="hljs-params">(AdapterView&lt;?&gt; list,
+                                        View row, <span class="hljs-keyword">int</span> index, <span class="hljs-keyword">long</span> rowID)</span> </span>{
+                    <span class="hljs-comment">// code to run when user clicks that item</span>
+                    ...
+                }
+            }</em>
+        );
+    }
+}
+</code></pre></div>
+</section>
+
+<section data-transition="fade-out" class="future" style="display: none;" hidden="" aria-hidden="true" data-index-h="12">
+	<h1>Item long click example</h1>
+	
+	<div class="linenumbersouter"><pre class="longcode linenumbers"><code style="float: left;">&nbsp;1&nbsp;
+&nbsp;2&nbsp;
+&nbsp;3&nbsp;
+&nbsp;4&nbsp;
+&nbsp;5&nbsp;
+&nbsp;6&nbsp;
+&nbsp;7&nbsp;
+&nbsp;8&nbsp;
+&nbsp;9&nbsp;
+10&nbsp;
+11&nbsp;
+12&nbsp;
+13&nbsp;
+14&nbsp;
+15&nbsp;
+16&nbsp;
+17&nbsp;
+18&nbsp;
+19&nbsp;</code></pre><pre class="longcode"><code class="java hljs"><span class="hljs-keyword">public</span> <span class="hljs-class"><span class="hljs-keyword">class</span> <span class="hljs-title">MyActivity</span> <span class="hljs-keyword">extends</span> <span class="hljs-title">Activity</span> </span>{
+
+
+    <span class="hljs-meta">@Override</span>
+    <span class="hljs-function"><span class="hljs-keyword">protected</span> <span class="hljs-keyword">void</span> <span class="hljs-title">onCreate</span><span class="hljs-params">(Bundle savedInstanceState)</span> </span>{
+        ...
+        ListView list = (ListView) findViewById(R.id.id);
+        list.setOnItem<em>Long</em>ClickListener(
+            <span class="hljs-keyword">new</span> AdapterView.OnItem<em>Long</em>ClickListener() {
+                <span class="hljs-meta">@Override</span>
+                <span class="hljs-function"><span class="hljs-keyword">public</span> <span class="hljs-keyword">void</span> <span class="hljs-title">onItem</span></span><em><span class="hljs-function"><span class="hljs-title">Long</span></span></em><span class="hljs-function"><span class="hljs-title">Click</span><span class="hljs-params">(AdapterView&lt;?&gt; list,
+                                        View row, <span class="hljs-keyword">int</span> index, <span class="hljs-keyword">long</span> rowID)</span> </span>{
+                    <span class="hljs-comment">// code to run when user clicks that item</span>
+                    ...
+                }
+            }
+        );
+    }
+}
+</code></pre></div>
+	
+	<ul>
+		<li>Notice that the code must change in all 3 places above!
+	</li></ul>
+</section>
+
+<section data-transition="fade-in" class="future" style="display: none;" hidden="" aria-hidden="true" data-index-h="13">
+	<h1>List event alt. style</h1>
+	
+	<div class="linenumbersouter"><pre class="longcode linenumbers"><code style="float: left;">&nbsp;1&nbsp;
+&nbsp;2&nbsp;
+&nbsp;3&nbsp;
+&nbsp;4&nbsp;
+&nbsp;5&nbsp;
+&nbsp;6&nbsp;
+&nbsp;7&nbsp;
+&nbsp;8&nbsp;
+&nbsp;9&nbsp;
+10&nbsp;
+11&nbsp;
+12&nbsp;
+13&nbsp;
+14&nbsp;
+15&nbsp;
+16&nbsp;
+17&nbsp;
+18&nbsp;</code></pre><pre class="longcode"><code class="java hljs"><span class="hljs-comment">// you can make your activity itself be the listener</span>
+<span class="hljs-keyword">public</span> <span class="hljs-class"><span class="hljs-keyword">class</span> <span class="hljs-title">MyActivity</span> <span class="hljs-keyword">extends</span> <span class="hljs-title">Activity</span>
+        </span><em><span class="hljs-class"><span class="hljs-keyword">implements</span> <span class="hljs-title">AdapterView</span>.<span class="hljs-title">OnItemClickListener</span></span></em><span class="hljs-class"> </span>{
+
+    <span class="hljs-meta">@Override</span>
+    <span class="hljs-function"><span class="hljs-keyword">protected</span> <span class="hljs-keyword">void</span> <span class="hljs-title">onCreate</span><span class="hljs-params">(Bundle savedInstanceState)</span> </span>{
+        ...
+        ListView list = (ListView) findViewById(R.id.id);
+        list.setOnItemClickListener(<em><span class="hljs-keyword">this</span></em>);
+    }
+
+    <span class="hljs-meta">@Override</span>
+    <span class="hljs-function"><span class="hljs-keyword">public</span> <span class="hljs-keyword">void</span> <span class="hljs-title">onItemClick</span><span class="hljs-params">(AdapterView&lt;?&gt; list,
+                            View row, <span class="hljs-keyword">int</span> index, <span class="hljs-keyword">long</span> rowID)</span> </span>{
+        <span class="hljs-comment">// code to run when user clicks that item</span>
+        ...
+    }
+}
+</code></pre></div>
+</section>
+
+<section class="future" style="display: none;" hidden="" aria-hidden="true" data-index-h="14">
+	<h1>List event lambda with Java 8</h1>
+	
+	<ul>
+		<li><strong>lambda</strong>: An anonymous "function" used as a parameter.
+			<ul>
+				<li>New feature of Java 8.
+			</li></ul>
+	</li></ul>
+	
+	<div class="linenumbersouter"><pre class="longcode linenumbers"><code style="float: left;">&nbsp;1&nbsp;
+&nbsp;2&nbsp;
+&nbsp;3&nbsp;
+&nbsp;4&nbsp;
+&nbsp;5&nbsp;
+&nbsp;6&nbsp;
+&nbsp;7&nbsp;
+&nbsp;8&nbsp;
+&nbsp;9&nbsp;
+10&nbsp;
+11&nbsp;
+12&nbsp;</code></pre><pre class="longcode"><code class="java hljs"><span class="hljs-keyword">public</span> <span class="hljs-class"><span class="hljs-keyword">class</span> <span class="hljs-title">MyActivity</span> <span class="hljs-keyword">extends</span> <span class="hljs-title">Activity</span> </span>{
+
+    <span class="hljs-meta">@Override</span>
+    <span class="hljs-function"><span class="hljs-keyword">protected</span> <span class="hljs-keyword">void</span> <span class="hljs-title">onCreate</span><span class="hljs-params">(Bundle savedInstanceState)</span> </span>{
+        ...
+        ListView list = (ListView) findViewById(R.id.id);
+        list.setOnItemClickListener(<em>(list, row, index, rowID) -&gt; {</em>
+            <span class="hljs-comment">// code to run when user clicks that item</span>
+            ...
+        <em>}</em>);
+    }
+}
+</code></pre></div>
+</section>
+
+<section class="future" style="display: none;" hidden="" aria-hidden="true" data-index-h="15">
+	<h1>Enabling Java 8 in your project</h1>
+	
+	<ul>
+		<li>in your Module (not Project)'s <span class="filename">build.gradle</span> file, add these (bold) lines, then click <strong>Sync Now</strong> to rebuild your project.
+	</li></ul>
+	
+	<div class="linenumbersouter"><pre class=" linenumbers"><code style="float: left;">&nbsp;1&nbsp;
+&nbsp;2&nbsp;
+&nbsp;3&nbsp;
+&nbsp;4&nbsp;
+&nbsp;5&nbsp;
+&nbsp;6&nbsp;
+&nbsp;7&nbsp;
+&nbsp;8&nbsp;
+&nbsp;9&nbsp;
+10&nbsp;
+11&nbsp;
+12&nbsp;
+13&nbsp;
+14&nbsp;
+15&nbsp;
+16&nbsp;</code></pre><pre><code class="groovy hljs">android {
+    ...
+    defaultConfig {
+        ...
+        <em>jackOptions {</em>
+            <em>enabled <span class="hljs-literal">true</span></em>
+        <em>}</em>
+    }
+    buildTypes {
+        ...
+    }
+    <em>compileOptions {</em>
+        <em>sourceCompatibility JavaVersion.VERSION_1_8</em>
+        <em>targetCompatibility JavaVersion.VERSION_1_8</em>
+    <em>}</em>
+}
+</code></pre></div>
+</section>
+
+<section class="future" style="display: none;" hidden="" aria-hidden="true" data-index-h="16">
+	<h1>Changes to list data</h1>
+	
+	<p>
+		If the data in the list changes, you must notify the list.
+	</p>
+	
+	<div class="linenumbersouter"><pre class=" linenumbers"><code style="float: left;">&nbsp;1&nbsp;
+&nbsp;2&nbsp;
+&nbsp;3&nbsp;
+&nbsp;4&nbsp;
+&nbsp;5&nbsp;
+&nbsp;6&nbsp;
+&nbsp;7&nbsp;
+&nbsp;8&nbsp;
+&nbsp;9&nbsp;
+10&nbsp;
+11&nbsp;</code></pre><pre><code class="java hljs">ArrayList&lt;String&gt; myArray = ...;
+ArrayAdapter&lt;String&gt; adapter = ...;
+ListView list = (ListView) findViewById(R.id.mylist);
+list.setAdapter(myAdapter);
+
+<span class="hljs-comment">// data changes in some way</span>
+myArray.remove(<span class="hljs-number">0</span>);
+...
+
+<span class="hljs-comment">// need to notify the ListView of the change!</span>
+myAdapter.notifyDataSetChanged();
+</code></pre></div>
+</section>
+
+<section class="future" style="display: none;" hidden="" aria-hidden="true" data-index-h="17">
+	<h1>
+		ListView methods
+		(<a href="javascript:if(confirm(%27https://developer.android.com/reference/android/widget/ListView.html  \n\nThis file was not retrieved by Teleport Pro, because it is addressed using an unsupported protocol (e.g., gopher).  \n\nDo you want to open it from the server?%27))window.location=%27https://developer.android.com/reference/android/widget/ListView.html%27" tppabs="https://developer.android.com/reference/android/widget/ListView.html">link</a>)
+	</h1>
+	
+	<table class="methodtable">
+		<tbody><tr>
+			<th>Method</th>
+			<th>Description</th>
+		</tr>
+		
+		<tr>
+			<td><code>getAdapter()</code></td>
+			<td>returns array adapter</td>
+		</tr>
+		
+		<tr>
+			<td><code>getCount()</code></td>
+			<td># of items in list</td>
+		</tr>
+		
+		<tr>
+			<td><code>getItemAtPosition(<var>index</var>)</code></td>
+			<td>return item at a given index</td>
+		</tr>
+		
+		<tr>
+			<td><code>getSelectedItem()</code></td>
+			<td>item currently selected, if any</td>
+		</tr>
+		
+		<tr>
+			<td><code>getSelectedItemIndex()</code></td>
+			<td>currently selected item's index</td>
+		</tr>
+		
+		<tr>
+			<td><code>performItemClick(<var>view</var>, <var>index</var>, <var>id</var>)</code></td>
+			<td>simulate a click</td>
+		</tr>
+		
+		<tr>
+			<td><code>setAdapter(<var>adapter</var>)</code></td>
+			<td>sets array adapter</td>
+		</tr>
+		
+		<tr>
+			<td><code>setFocusable(<var>bool</var>)</code></td>
+			<td>whether items can be focused on</td>
+		</tr>
+		
+		<tr>
+			<td><code>setOnItemClickListener(<var>L</var>)</code></td>
+			<td>attaching event listeners</td>
+		</tr>
+		
+		<tr>
+			<td><code>setOnItemLongClickListener(<var>L</var>)</code></td>
+			<td></td>
+		</tr>
+		
+		<tr>
+			<td><code>setOnItemSelectedListener(<var>L</var>)</code></td>
+			<td></td>
+		</tr>
+		
+		<tr>
+			<td><code>setSelection(<var>index</var>)</code></td>
+			<td>sets which element is selected</td>
+		</tr>
+	</tbody></table>
+</section>
+
+<!--
+TODO: SimpleList
+-->
+
+<section class="future" style="display: none;" hidden="" aria-hidden="true" data-index-h="18">
+	<h1>Custom list layout</h1>
+	
+	<div class="figuresright">
+		<img src="./Lists_files/list-custom-layout.jpg" tppabs="http://web.stanford.edu/class/cs193a/lectures/slides/images/list-custom-layout.jpg" alt="figure">
+	</div>
+	
+	<ul>
+		<li>If you want your list to look different than the default appearance (of just a text string for each line), you must:
+			<ul>
+				<li>Write a short <strong>layout XML file</strong> describing the layout for each row.
+				</li><li>Tell your <code>ArrayAdapter</code> how to supply the item text to each item.
+	</li></ul>
+</li></ul></section>
+
+<section class="future" style="display: none;" hidden="" aria-hidden="true" data-index-h="19">
+	<h1>Custom list layout XML</h1>
+	
+	<div class="linenumbersouter"><pre class=" linenumbers"><code style="float: left;">&nbsp;1&nbsp;
+&nbsp;2&nbsp;
+&nbsp;3&nbsp;
+&nbsp;4&nbsp;
+&nbsp;5&nbsp;
+&nbsp;6&nbsp;
+&nbsp;7&nbsp;
+&nbsp;8&nbsp;
+&nbsp;9&nbsp;
+10&nbsp;
+11&nbsp;
+12&nbsp;
+13&nbsp;
+14&nbsp;
+15&nbsp;</code></pre><pre><code class="xml hljs"><span class="hljs-comment">&lt;!-- res/layout/mylistlayout.xml --&gt;</span>
+<span class="hljs-tag">&lt;<span class="hljs-name">LinearLayout</span> <span class="hljs-attr">...</span> <span class="hljs-attr">android:orientation</span>=<span class="hljs-string">"horizontal"</span>&gt;</span>
+    <span class="hljs-comment">&lt;!-- an icon on each list item --&gt;</span>
+    <span class="hljs-tag">&lt;<span class="hljs-name">ImageView</span> <span class="hljs-attr">...</span> </span><em><span class="hljs-tag"><span class="hljs-attr">android:id</span>=<span class="hljs-string">"@+id/list_row_image"</span></span></em><span class="hljs-tag">
+        <span class="hljs-attr">android:layout_width</span>=<span class="hljs-string">"100dp"</span>
+        <span class="hljs-attr">android:layout_height</span>=<span class="hljs-string">"100dp"</span>
+        <span class="hljs-attr">android:src</span>=<span class="hljs-string">"@drawable/smiley"</span> /&gt;</span>
+
+    <span class="hljs-comment">&lt;!-- the text of each list item --&gt;</span>
+    <span class="hljs-tag">&lt;<span class="hljs-name">TextView</span> <span class="hljs-attr">...</span> </span><em><span class="hljs-tag"><span class="hljs-attr">android:id</span>=<span class="hljs-string">"@+id/list_row_text"</span></span></em><span class="hljs-tag">
+        <span class="hljs-attr">android:textStyle</span>=<span class="hljs-string">"bold"</span>
+        <span class="hljs-attr">android:textSize</span>=<span class="hljs-string">"22dp"</span>
+        <span class="hljs-attr">android:text</span>=<span class="hljs-string">""</span>
+        <span class="hljs-attr">android:background</span>=<span class="hljs-string">"#336699"</span> /&gt;</span>
+<span class="hljs-tag">&lt;/<span class="hljs-name">LinearLayout</span>&gt;</span>
+</code></pre></div>
+</section>
+
+<section class="future" style="display: none;" hidden="" aria-hidden="true" data-index-h="20">
+	<h1>Custom list adapter code</h1>
+	
+	<div class="linenumbersouter"><pre class=" linenumbers"><code style="float: left;">&nbsp;1&nbsp;
+&nbsp;2&nbsp;
+&nbsp;3&nbsp;
+&nbsp;4&nbsp;
+&nbsp;5&nbsp;
+&nbsp;6&nbsp;
+&nbsp;7&nbsp;
+&nbsp;8&nbsp;
+&nbsp;9&nbsp;
+10&nbsp;</code></pre><pre><code class="java hljs">ArrayList&lt;String&gt; myArray = ...;  <span class="hljs-comment">// load data from file</span>
+
+ArrayAdapter&lt;String&gt; adapter =
+  <span class="hljs-keyword">new</span> ArrayAdapter&lt;&gt;(<span class="hljs-keyword">this</span>, 
+        R.layout.mylistlayout,   <span class="hljs-comment">// layout XML id</span>
+        R.id.list_row_text,      <span class="hljs-comment">// item text id</span>
+        myArray);
+
+ListView list = (ListView) findViewById(R.id.mylist);
+list.setAdapter(myAdapter);
+</code></pre></div>
+</section>
+
+<section class="future" style="display: none;" hidden="" aria-hidden="true" data-index-h="21">
+	<h1>Spinner event example</h1>
+	
+	<div class="linenumbersouter"><pre class=" linenumbers"><code style="float: left;">&nbsp;1&nbsp;
+&nbsp;2&nbsp;
+&nbsp;3&nbsp;
+&nbsp;4&nbsp;
+&nbsp;5&nbsp;
+&nbsp;6&nbsp;
+&nbsp;7&nbsp;
+&nbsp;8&nbsp;
+&nbsp;9&nbsp;
+10&nbsp;
+11&nbsp;
+12&nbsp;
+13&nbsp;
+14&nbsp;
+15&nbsp;
+16&nbsp;
+17&nbsp;
+18&nbsp;</code></pre><pre class=""><code class="java hljs"><span class="hljs-keyword">public</span> <span class="hljs-class"><span class="hljs-keyword">class</span> <span class="hljs-title">MainActivity</span> <span class="hljs-keyword">extends</span> <span class="hljs-title">Activity</span> </span>{
+    <span class="hljs-meta">@Override</span>
+    <span class="hljs-function"><span class="hljs-keyword">protected</span> <span class="hljs-keyword">void</span> <span class="hljs-title">onCreate</span><span class="hljs-params">(Bundle savedInstanceState)</span> </span>{
+        Spinner spin = (Spinner) findViewById(R.id.<var>theID</var>);
+        spin.setOnItemSelectedListener(
+            <span class="hljs-keyword">new</span> AdapterView.OnItemSelectedListener() {
+                <span class="hljs-function"><span class="hljs-keyword">public</span> <span class="hljs-keyword">void</span> <span class="hljs-title">onItemSelected</span><span class="hljs-params">(AdapterView&lt;?&gt; spin,
+                        View v, <span class="hljs-keyword">int</span> i, <span class="hljs-keyword">long</span> id)</span> </span>{
+                    <span class="hljs-comment">// code to run when an item is selected</span>
+                }
+
+                <span class="hljs-function"><span class="hljs-keyword">public</span> <span class="hljs-keyword">void</span> <span class="hljs-title">onNothingSelected</span><span class="hljs-params">(AdapterView&lt;?&gt; parent)</span> </span>{
+                    <span class="hljs-comment">// empty</span>
+                }
+            }
+        );
+    }
+}
+</code></pre></div>
+</section>
+
+<!-- END SLIDES AREA -->
+			</div>
+		<div class="progress" style="display: block;"><span style="width: 0px;"></span></div><aside class="controls" style="display: block;"><button class="navigate-left" aria-label="previous slide"></button><button class="navigate-right enabled" aria-label="next slide"></button><button class="navigate-up" aria-label="above slide"></button><button class="navigate-down" aria-label="below slide"></button><button id="fullscreenbutton" title="full-screen mode">&#8862;</button></aside><div class="slide-number" style="display: block;"><span class="slide-number-a">1</span></div><div class="speaker-notes" data-prevent-swipe=""></div><div class="pause-overlay"></div><div id="aria-status-div" aria-live="polite" aria-atomic="true" style="position: absolute; height: 1px; width: 1px; overflow: hidden; clip: rect(1px 1px 1px 1px);">
+	CSE 491: Android
+
+	Lists
+</div><div class="backgrounds"><div class="slide-background titleslide present" data-loaded="true" style="display: block;"></div><div class="slide-background future" data-loaded="true" style="display: block;"></div><div class="slide-background future" data-loaded="true" style="display: block;"></div><div class="slide-background future" data-loaded="true" style="display: none;"></div><div class="slide-background future" data-loaded="true" style="display: none;"></div><div class="slide-background future" data-loaded="true" style="display: none;"></div><div class="slide-background future" data-loaded="true" style="display: none;"></div><div class="slide-background future" data-loaded="true" style="display: none;"></div><div class="slide-background future" data-loaded="true" style="display: none;"></div><div class="slide-background future" data-loaded="true" style="display: none;"></div><div class="slide-background future" data-loaded="true" style="display: none;"></div><div class="slide-background future" data-loaded="true" style="display: none;"></div><div class="slide-background future" data-loaded="true" style="display: none;"></div><div class="slide-background future" data-loaded="true" style="display: none;"></div><div class="slide-background future" data-loaded="true" style="display: none;"></div><div class="slide-background future" data-loaded="true" style="display: none;"></div><div class="slide-background future" data-loaded="true" style="display: none;"></div><div class="slide-background future" data-loaded="true" style="display: none;"></div><div class="slide-background future" data-loaded="true" style="display: none;"></div><div class="slide-background future" data-loaded="true" style="display: none;"></div><div class="slide-background future" data-loaded="true" style="display: none;"></div><div class="slide-background future" data-loaded="true" style="display: none;"></div></div></div>
+
+		<script src="./Lists_files/highlight.pack.js.download" tppabs="http://web.stanford.edu/class/cs193a/lectures/slides/highlightjs/highlight.pack.js"></script>
+		<script src="./Lists_files/cs193a-slides.js.download" tppabs="http://web.stanford.edu/class/cs193a/lectures/slides/cs193a-slides.js"></script>
+		<script src="./Lists_files/reveal.js.download" tppabs="http://web.stanford.edu/class/cs193a/lectures/slides/reveal/js/reveal.js"></script>
+		<script>
+			initializeSlides();
+		</script>
+	
+
+</body></html>

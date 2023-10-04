@@ -1,0 +1,459 @@
+
+<!-- saved from url=(0169)file:///D:/old_data/D3/old%20Data/Adnan/courses/2018%201%20Spring/CSE491%20Mobile/cs193a/CS193A-master/Winter2017Update/class/cs193a/lectures/slides/files-storage.html#/ -->
+<html><head><meta http-equiv="Content-Type" content="text/html; charset=windows-1252">
+		<title>CSE 491: Android - Files and Storage</title>
+		<link rel="stylesheet" href="./Files and Storage_files/default.css" tppabs="http://web.stanford.edu/class/cs193a/lectures/slides/highlightjs/styles/default.css">
+		<link rel="stylesheet" href="./Files and Storage_files/reveal.css" tppabs="http://web.stanford.edu/class/cs193a/lectures/slides/reveal/css/reveal.css">
+		<link rel="stylesheet" href="./Files and Storage_files/white.css" tppabs="http://web.stanford.edu/class/cs193a/lectures/slides/reveal/css/theme/white.css">
+		<link rel="stylesheet" href="./Files and Storage_files/cs193a-slides.css" tppabs="http://web.stanford.edu/class/cs193a/lectures/slides/cs193a-slides.css">
+	</head>
+	<body>
+		<div class="reveal slide" role="application" data-transition-speed="default" data-background-transition="fade">
+			<div class="slides" style="width: 960px; height: 700px; left: 50%; top: 50%; bottom: auto; right: auto; transform: translate(-50%, -50%) scale(0.907929);">
+
+<!-- BEGIN SLIDES AREA -->
+
+<section class="titleslide present" style="display: block;">
+	<h1>CSE 491: Android</h1>
+
+	<p>Files and Storage</p>
+	<br/>
+	<br/>
+	<pre>
+Acknowledgment:
+   The slides are of ones by Marty Stepp.
+   http://cs193a.stanford.edu
+	</pre>
+</section>
+
+<section class="future" style="display: block;" hidden="" aria-hidden="true">
+	<h1>Android Storage</h1>
+	
+	<div class="figuresright">
+		<img src="./Files and Storage_files/internal-storage-phone.jpg" tppabs="http://web.stanford.edu/class/cs193a/lectures/slides/images/internal-storage-phone.jpg" alt="figure">
+		<img src="./Files and Storage_files/internal-storage.png" tppabs="http://web.stanford.edu/class/cs193a/lectures/slides/images/internal-storage.png" alt="figure">
+	</div>
+	
+	<p>
+		Android can read/write files from two locations:
+		<strong>internal</strong> and <strong>external</strong> storage.
+		Both are <strong>persistent</strong>;  data remains after power-off / reboot.
+	</p>
+	
+	<ul>
+		<li><strong>internal storage</strong>: Built into the device.
+		</li><li><strong>external storage</strong>: An SD card or other drive attached to device.
+	</li></ul>
+	
+	<ul>
+		<li>An app can typically be installed into either area.
+	</li></ul>
+</section>
+
+<section class="future" style="display: block;" hidden="" aria-hidden="true">
+	<h1>Internal Storage</h1>
+	
+	<div class="figuresright">
+		<img src="./Files and Storage_files/android-internal-storage-surgery.jpg" tppabs="http://web.stanford.edu/class/cs193a/lectures/slides/images/android-internal-storage-surgery.jpg" alt="figure">
+	</div>
+
+	<p>
+		<strong>internal storage</strong>: Built into the device.
+	</p>
+	
+	<ul>
+		<li>guaranteed to be present
+		</li><li>typically smaller (~4-8 gb)
+		</li><li>can't be expanded or removed
+		</li><li>specific and private to each app
+		</li><li>wiped out when the app is uninstalled
+		</li><li>more secure; visible only to a given app and user
+	</li></ul>
+	
+	<ul>
+		<li>To put an input file into your app's internal storage,
+			place it in the <span class="filename">res/raw</span> folder.
+	</li></ul>
+</section>
+
+<section class="future" style="display: none;" hidden="" aria-hidden="true">
+	<h1>External Storage</h1>
+	
+	<div class="figuresright">
+		<img src="./Files and Storage_files/external-storage.jpg" tppabs="http://web.stanford.edu/class/cs193a/lectures/slides/images/external-storage.jpg" alt="figure">
+	</div>
+
+	<p>
+		<strong>external storage</strong>: An SD card or other drive attached to device.
+	</p>
+	
+	<ul>
+		<li>may not be present, depending on the device
+		</li><li>can be removed or transferred to another device if needed
+		</li><li>visible to other apps and users
+		</li><li>read/writable by other apps and users; not private to your app
+		</li><li>not wiped when the app is uninstalled, except in certain cases
+	</li></ul>
+</section>
+
+<section class="future" style="display: none;" hidden="" aria-hidden="true">
+	<h1>Files and Streams</h1>
+	
+	<ul>
+		<li><a target="_blank" href="https://docs.oracle.com/javase/8/docs/api/java/io/File.html"><code class="api" data-class="java.io.File">File</code></a> - Objects that represent a file or directory.
+			<ul>
+				<li>methods: canRead, canWrite, create, delete, exists, getName, getParent, getPath, isFile, isDirectory, lastModified, length, listFiles, mkdir, mkdirs, renameTo
+			</li></ul>
+		
+		</li><li><a target="_blank" href="https://docs.oracle.com/javase/8/docs/api/java/io/InputStream.html"><code class="api" data-class="java.io.InputStream">InputStream</code></a>,
+			<a target="_blank" href="https://docs.oracle.com/javase/8/docs/api/java/io/OutputStream.html"><code class="api" data-class="java.io.OutputStream">OutputStream</code></a> - flows of data bytes from/to a source or destination
+			<ul>
+				<li>Could come from a file, network, database, memory, ...
+				</li><li>Normally not directly used; they only include low-level methods for reading/writing a byte (character) at a time from the input.
+				</li><li>Instead, a stream is often passed as parameter to other objects like a Scanner, java.io.BufferedReader, java.io.PrintStream to do the actual reading / writing.
+			</li></ul>
+	</li></ul>
+</section>
+
+<section class="future" style="display: none;" hidden="" aria-hidden="true">
+	<h1>
+		<a target="_blank" href="https://docs.oracle.com/javase/8/docs/api/java/util/Scanner.html"><code class="javaapi" data-class="java.util.Scanner">Scanner</code></a> methods
+	</h1>
+	
+	<table class="methodtable">
+		<tbody><tr>
+			<th>Method</th>
+			<th>Description</th>
+		</tr>
+		
+		<tr>
+			<td><code>new&nbsp;Scanner(<var>InputStream</var>) <br>
+new Scanner(<var>File</var>) <br>
+new Scanner(<var>String</var>)	</code></td>
+			<td>open a scanner to read from a stream, file, or to tokenize the words of a string</td>
+		</tr>
+		
+		<tr>
+			<td><code>close()</code></td>
+			<td>shuts down scanner and stops reading</td>
+		</tr>
+		
+		<tr>
+			<td><code>hasNext()</code></td>
+			<td>true if there are more tokens</td>
+		</tr>
+		
+		<tr>
+			<td><code>hasNextDouble()</code></td>
+			<td>true if there is a next token and it's a double</td>
+		</tr>
+		
+		<tr>
+			<td><code>hasNextInt()</code></td>
+			<td>true if there is a next token and it's an int</td>
+		</tr>
+		
+		<tr>
+			<td><code>hasNextLine()</code></td>
+			<td>true if there are more lines</td>
+		</tr>
+		
+		<tr>
+			<td><code>String next()</code></td>
+			<td>returns next word (whitespace-separated)</td>
+		</tr>
+		
+		<tr>
+			<td><code>nextDouble()</code></td>
+			<td>returns next token as a double</td>
+		</tr>
+		
+		<tr>
+			<td><code>nextInt()</code></td>
+			<td>returns next token as an int</td>
+		</tr>
+		
+		<tr>
+			<td><code>nextLine()</code></td>
+			<td>returns next line (up to but excluding \n)</td>
+		</tr>
+		
+		<tr>
+			<td><code>useDelimiter("<var>str</var>")</code></td>
+			<td>uses given string as separator for tokenizing</td>
+		</tr>
+	</tbody></table>
+</section>
+
+<section class="future" style="display: none;" hidden="" aria-hidden="true">
+	<h1>
+		Using internal storage
+		(<a class="popup" href="javascript:if(confirm(%27http://developer.android.com/training/basics/data-storage/files.html  \n\nThis file was not retrieved by Teleport Pro, because it is addressed on a domain or path outside the boundaries set for its Starting Address.  \n\nDo you want to open it from the server?%27))window.location=%27http://developer.android.com/training/basics/data-storage/files.html%27" tppabs="http://developer.android.com/training/basics/data-storage/files.html" target="_blank">link</a>)
+	</h1>
+	
+	<p>
+		An activity has methods you can call to read/write files:
+	</p>
+	
+	<table class="methodtable">
+		<tbody><tr>
+			<th>Method</th>
+			<th>Description</th>
+		</tr>
+		<tr>
+			<td><code>getResources().openRawResource(R.raw.<var>id</var>)</code></td>
+			<td>read an input file from <span class="filename">res/raw/</span></td>
+		</tr>
+		<tr>
+			<td><code>getFilesDir()</code></td>
+			<td>returns internal directory for your app</td>
+		</tr>
+		<tr>
+			<td><code>getCacheDir()</code></td>
+			<td>returns a "temp" directory for scrap files</td>
+		</tr>
+		<tr>
+			<td><code>openFileInput("<var>name</var>", <var>mode</var>)</code></td>
+			<td>opens a file for reading</td>
+		</tr>
+		<tr>
+			<td><code>openFileOutput("<var>name</var>", <var>mode</var>)</code></td>
+			<td>opens a file for writing</td>
+		</tr>
+	</tbody></table>
+	
+	<ul>
+		<li>You can use these to read/write files on the device.
+			<ul>
+				<li>many methods return standard <a target="_blank" href="https://docs.oracle.com/javase/8/docs/api/java/io/File.html"><code class="javaapi" data-class="java.io.File">File</code></a> objects
+				</li><li>some return <a target="_blank" href="https://docs.oracle.com/javase/8/docs/api/java/io/InputStream.html"><code class="javaapi" data-class="java.io.InputStream">InputStream</code></a> or <a target="_blank" href="https://docs.oracle.com/javase/8/docs/api/java/io/OutputStream.html"><code class="javaapi" data-class="java.io.OutputStream">OutputStream</code></a> objects, which can be used with standard classes like <a target="_blank" href="https://docs.oracle.com/javase/8/docs/api/java/util/Scanner.html"><code class="javaapi" data-class="java.util.Scanner">Scanner</code></a>, <a target="_blank" href="https://docs.oracle.com/javase/8/docs/api/java/io/BufferedReader.html"><code class="javaapi" data-class="java.io.BufferedReader">BufferedReader</code></a>, and <a target="_blank" href="https://docs.oracle.com/javase/8/docs/api/java/io/PrintStream.html"><code class="javaapi" data-class="java.io.PrintStream">PrintStream</code></a> to read/write files
+			</li></ul>
+	</li></ul>
+</section>
+
+<section class="future" style="display: none;" hidden="" aria-hidden="true">
+	<h1>Read an existing file</h1>
+	
+	<div class="linenumbersouter"><pre class=" linenumbers"><code style="float: left;">&nbsp;1&nbsp;
+&nbsp;2&nbsp;
+&nbsp;3&nbsp;
+&nbsp;4&nbsp;
+&nbsp;5&nbsp;
+&nbsp;6&nbsp;
+&nbsp;7&nbsp;
+&nbsp;8&nbsp;
+&nbsp;9&nbsp;
+10&nbsp;
+11&nbsp;
+12&nbsp;
+13&nbsp;
+14&nbsp;</code></pre><pre><code class="java hljs"><span class="hljs-comment">// read a file, and put its contents into a TextView</span>
+<span class="hljs-comment">// (assumes hello.txt file exists in res/raw/ directory)</span>
+Scanner scan = <span class="hljs-keyword">new</span> Scanner(
+        <strong>getResources().openRawResource</strong>(R.raw.hello));
+
+<span class="hljs-comment">// read entire file</span>
+String allText = <span class="hljs-string">""</span>;
+<span class="hljs-keyword">while</span> (scan.hasNextLine()) {
+    String line = scan.nextLine();
+    allText += line;
+}
+scan.close();
+
+myTextView.setText(allText);
+</code></pre></div>
+</section>
+
+<section class="future" style="display: none;" hidden="" aria-hidden="true">
+	<h1>Write a new file</h1>
+	
+	<div class="linenumbersouter"><pre class=" linenumbers"><code style="float: left;">&nbsp;1&nbsp;
+&nbsp;2&nbsp;
+&nbsp;3&nbsp;
+&nbsp;4&nbsp;
+&nbsp;5&nbsp;
+&nbsp;6&nbsp;
+&nbsp;7&nbsp;
+&nbsp;8&nbsp;
+&nbsp;9&nbsp;
+10&nbsp;
+11&nbsp;
+12&nbsp;
+13&nbsp;
+14&nbsp;
+15&nbsp;
+16&nbsp;
+17&nbsp;</code></pre><pre><code class="java hljs"><span class="hljs-comment">// write a short text file to the internal storage</span>
+PrintStream output = <span class="hljs-keyword">new</span> PrintStream(
+        <em>openFileOutput</em>(<span class="hljs-string">"out.txt"</span>, MODE_PRIVATE));
+output.println(<span class="hljs-string">"Hello, world!"</span>);
+output.println(<span class="hljs-string">"How are you?"</span>);
+output.close();
+...
+<span class="hljs-comment">// read the same file, and put its contents into a TextView</span>
+Scanner scan = <span class="hljs-keyword">new</span> Scanner(
+        <em>openFileInput</em>(<span class="hljs-string">"out.txt"</span>, MODE_PRIVATE));
+String allText = <span class="hljs-string">""</span>;   <span class="hljs-comment">// read entire file</span>
+<span class="hljs-keyword">while</span> (scan.hasNextLine()) {
+    String line = scan.nextLine();
+    allText += line;
+}
+myTextView.setText(allText);
+scan.close();
+</code></pre></div>
+</section>
+
+<section class="future" style="display: none;" hidden="" aria-hidden="true">
+	<h1>External storage permission</h1>
+	
+	<div class="figuresright">
+		<img src="./Files and Storage_files/permissions-approve-dialog.png" tppabs="http://web.stanford.edu/class/cs193a/lectures/slides/images/permissions-approve-dialog.png" alt="figure">
+	</div>
+	
+	<ul>
+		<li>If your app needs to read/write the device's external storage, you must explicitly request
+			permission to do so in your app's <span class="filename">AndroidManifest.xml</span> file.
+			<ul>
+				<li>On install, the user will be prompted to confirm your app permissions.
+			</li></ul>
+	</li></ul>
+	
+	<div class="linenumbersouter"><pre class=" linenumbers"><code style="float: left;">&nbsp;1&nbsp;
+&nbsp;2&nbsp;
+&nbsp;3&nbsp;
+&nbsp;4&nbsp;
+&nbsp;5&nbsp;
+&nbsp;6&nbsp;
+&nbsp;7&nbsp;</code></pre><pre><code class="xml hljs"><span class="hljs-tag">&lt;<span class="hljs-name">manifest</span> <span class="hljs-attr">...</span>&gt;</span>
+    <span class="hljs-tag">&lt;<span class="hljs-name">uses-permission</span>
+     <span class="hljs-attr">android:name</span>=<span class="hljs-string">"android.permission.READ_EXTERNAL_STORAGE"</span> /&gt;</span>
+    <span class="hljs-tag">&lt;<span class="hljs-name">uses-permission</span>
+     <span class="hljs-attr">android:name</span>=<span class="hljs-string">"android.permission.WRITE_EXTERNAL_STORAGE"</span> /&gt;</span>
+    ...
+<span class="hljs-tag">&lt;/<span class="hljs-name">manifest</span>&gt;</span>
+</code></pre></div>
+</section>
+
+<section class="future" style="display: none;" hidden="" aria-hidden="true">
+	<h1>Using external storage</h1>
+	
+	<p>
+		Methods to read/write external storage:
+	</p>
+	
+	<table class="methodtable">
+		<tbody><tr>
+			<th>Method</th>
+			<th>Description</th>
+		</tr>
+		<tr>
+			<td><code>getExternalFilesDir("<var>name</var>")</code></td>
+			<td>returns a "private" external directory for your app with the given name</td>
+		</tr>
+		<tr>
+			<td><code>Environment. getExternalStoragePublicDirectory(<var>name</var>)</code></td>
+			<td>
+				returns a public directory for common files like photos, music, etc.
+			</td>
+		</tr>
+		<tr>
+			<td colspan="2">
+				<ul>
+					<li>pass constants for <code><var>name</var></code> such as Environment.DIRECTORY_ALARMS, DIRECTORY_DCIM, DIRECTORY_DOWNLOADS, DIRECTORY_MOVIES, DIRECTORY_MUSIC, DIRECTORY_NOTIFICATIONS, DIRECTORY_PICTURES, DIRECTORY_PODCASTS, DIRECTORY_RINGTONES
+				</li></ul>
+			</td>
+		</tr>
+	</tbody></table>
+
+	<ul>
+		<li>You can use these to write files on the ext.storage.
+			<ul>
+				<li>the above methods return standard <a target="_blank" href="https://docs.oracle.com/javase/8/docs/api/java/io/File.html"><code class="javaapi" data-class="java.io.File">File</code></a> objects
+				</li><li>can be used with standard classes like <a target="_blank" href="https://docs.oracle.com/javase/8/docs/api/java/util/Scanner.html"><code class="javaapi" data-class="java.util.Scanner">Scanner</code></a>, <a target="_blank" href="https://docs.oracle.com/javase/8/docs/api/java/io/BufferedReader.html"><code class="javaapi" data-class="java.io.BufferedReader">BufferedReader</code></a>, and <a target="_blank" href="https://docs.oracle.com/javase/8/docs/api/java/io/PrintStream.html"><code class="javaapi" data-class="java.io.PrintStream">PrintStream</code></a> to read/write files
+			</li></ul>
+	</li></ul>
+</section>
+
+<section class="future" style="display: none;" hidden="" aria-hidden="true">
+	<h1>External storage example</h1>
+	
+	<div class="linenumbersouter"><pre class=" linenumbers"><code style="float: left;">&nbsp;1&nbsp;
+&nbsp;2&nbsp;
+&nbsp;3&nbsp;
+&nbsp;4&nbsp;
+&nbsp;5&nbsp;
+&nbsp;6&nbsp;
+&nbsp;7&nbsp;
+&nbsp;8&nbsp;
+&nbsp;9&nbsp;
+10&nbsp;
+11&nbsp;
+12&nbsp;
+13&nbsp;
+14&nbsp;</code></pre><pre><code class="java hljs"><span class="hljs-comment">// write short data to app-specific external storage</span>
+File outDir = getExternalFilesDir(<span class="hljs-keyword">null</span>);   <span class="hljs-comment">// root dir</span>
+File outFile = <span class="hljs-keyword">new</span> File(outDir, <span class="hljs-string">"example.txt"</span>);
+PrintStream output = <span class="hljs-keyword">new</span> PrintStream(outFile);
+output.println(<span class="hljs-string">"Hello, world!"</span>);
+output.close();
+
+<span class="hljs-comment">// read list of pictures in external storage</span>
+File picsDir = 
+        Environment.getExternalStoragePublicDirectory(
+                Environment.DIRECTORY_PICTURES);
+<span class="hljs-keyword">for</span> (File file : picsDir.listFiles()) {
+    ...
+}
+</code></pre></div>
+</section>
+
+<section class="future" style="display: none;" hidden="" aria-hidden="true">
+	<h1>Check if storage available</h1>
+	
+	<div class="linenumbersouter"><pre class=" linenumbers"><code style="float: left;">&nbsp;1&nbsp;
+&nbsp;2&nbsp;
+&nbsp;3&nbsp;
+&nbsp;4&nbsp;
+&nbsp;5&nbsp;
+&nbsp;6&nbsp;
+&nbsp;7&nbsp;
+&nbsp;8&nbsp;
+&nbsp;9&nbsp;
+10&nbsp;
+11&nbsp;
+12&nbsp;
+13&nbsp;
+14&nbsp;</code></pre><pre><code class="java hljs"><span class="hljs-comment">/* Checks if external storage is available
+ * for reading and writing */</span>
+<span class="hljs-function"><span class="hljs-keyword">public</span> <span class="hljs-keyword">boolean</span> <span class="hljs-title">isExternalStorageWritable</span><span class="hljs-params">()</span> </span>{
+    <span class="hljs-keyword">return</span> Environment.MEDIA_MOUNTED.equals(
+            Environment.getExternalStorageState());
+}
+
+<span class="hljs-comment">/* Checks if external storage is available
+ * for reading */</span>
+<span class="hljs-function"><span class="hljs-keyword">public</span> <span class="hljs-keyword">boolean</span> <span class="hljs-title">isExternalStorageReadable</span><span class="hljs-params">()</span> </span>{
+    <span class="hljs-keyword">return</span> isExternalStorageWritable() ||
+            Environment.MEDIA_MOUNTED_READ_ONLY.equals(
+                    Environment.getExternalStorageState());
+}
+</code></pre></div>
+</section>
+
+<!-- END SLIDES AREA -->
+			</div>
+		<div class="backgrounds"><div class="slide-background titleslide present" data-loaded="true" style="display: block;"></div><div class="slide-background future" data-loaded="true" style="display: block;"></div><div class="slide-background future" data-loaded="true" style="display: block;"></div><div class="slide-background future" data-loaded="true" style="display: none;"></div><div class="slide-background future" data-loaded="true" style="display: none;"></div><div class="slide-background future" data-loaded="true" style="display: none;"></div><div class="slide-background future" data-loaded="true" style="display: none;"></div><div class="slide-background future" data-loaded="true" style="display: none;"></div><div class="slide-background future" data-loaded="true" style="display: none;"></div><div class="slide-background future" data-loaded="true" style="display: none;"></div><div class="slide-background future" data-loaded="true" style="display: none;"></div><div class="slide-background future" data-loaded="true" style="display: none;"></div><div class="slide-background future" data-loaded="true" style="display: none;"></div></div><div class="progress" style="display: block;"><span style="width: 0px;"></span></div><aside class="controls" style="display: block;"><button class="navigate-left" aria-label="previous slide"></button><button class="navigate-right enabled" aria-label="next slide"></button><button class="navigate-up" aria-label="above slide"></button><button class="navigate-down" aria-label="below slide"></button><button id="fullscreenbutton" title="full-screen mode">&#8862;</button></aside><div class="slide-number" style="display: block;"><span class="slide-number-a">1</span></div><div class="speaker-notes" data-prevent-swipe=""></div><div class="pause-overlay"></div><div id="aria-status-div" aria-live="polite" aria-atomic="true" style="position: absolute; height: 1px; width: 1px; overflow: hidden; clip: rect(1px 1px 1px 1px);">
+	CSE 491: Android
+
+	Files and Storage
+</div></div>
+
+		<script src="./Files and Storage_files/highlight.pack.js.download" tppabs="http://web.stanford.edu/class/cs193a/lectures/slides/highlightjs/highlight.pack.js"></script>
+		<script src="./Files and Storage_files/cs193a-slides.js.download" tppabs="http://web.stanford.edu/class/cs193a/lectures/slides/cs193a-slides.js"></script>
+		<script src="./Files and Storage_files/reveal.js.download" tppabs="http://web.stanford.edu/class/cs193a/lectures/slides/reveal/js/reveal.js"></script>
+		<script>
+			initializeSlides();
+		</script>
+	
+
+</body></html>

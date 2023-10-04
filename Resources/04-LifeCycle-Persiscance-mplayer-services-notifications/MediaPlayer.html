@@ -1,0 +1,74 @@
+
+<!-- saved from url=(0167)file:///D:/old_data/D3/old%20Data/Adnan/courses/2018%201%20Spring/CSE491%20Mobile/cs193a/CS193A-master/Winter2017Update/class/cs193a/lectures/slides/mediaplayer.html#/ -->
+<html><head><meta http-equiv="Content-Type" content="text/html; charset=windows-1252">
+		<title>CSE 491: Android - MediaPlayer</title>
+		<link rel="stylesheet" href="./MediaPlayer_files/default.css" tppabs="http://web.stanford.edu/class/cs193a/lectures/slides/highlightjs/styles/default.css">
+		<link rel="stylesheet" href="./MediaPlayer_files/reveal.css" tppabs="http://web.stanford.edu/class/cs193a/lectures/slides/reveal/css/reveal.css">
+		<link rel="stylesheet" href="./MediaPlayer_files/white.css" tppabs="http://web.stanford.edu/class/cs193a/lectures/slides/reveal/css/theme/white.css">
+		<link rel="stylesheet" href="./MediaPlayer_files/cs193a-slides.css" tppabs="http://web.stanford.edu/class/cs193a/lectures/slides/cs193a-slides.css">
+	</head>
+	<body>
+		<div class="reveal slide" role="application" data-transition-speed="default" data-background-transition="fade">
+			<div class="slides" style="width: 960px; height: 700px; left: 50%; top: 50%; bottom: auto; right: auto; transform: translate(-50%, -50%) scale(0.871286);">
+
+<!-- BEGIN SLIDES AREA -->
+
+<section class="titleslide present" style="display: block;">
+	<h1>CSE 491: Android</h1>
+
+	<p>Playing audio with MediaPlayer</p>
+	<br/>
+	<br/>
+	<pre>
+Acknowledgment:
+   The slides are of ones by Marty Stepp.
+   http://cs193a.stanford.edu
+	</pre>
+</section>
+
+<section class="future" style="display: block;" hidden="" aria-hidden="true">
+	<h1>
+		Playing sound effects
+		(<a class="popup" href="javascript:if(confirm(%27http://developer.android.com/guide/topics/media/mediaplayer.html  \n\nThis file was not retrieved by Teleport Pro, because it is addressed on a domain or path outside the boundaries set for its Starting Address.  \n\nDo you want to open it from the server?%27))window.location=%27http://developer.android.com/guide/topics/media/mediaplayer.html%27" tppabs="http://developer.android.com/guide/topics/media/mediaplayer.html" target="_blank">link</a>)
+	</h1>
+	
+	<ul>
+		<li>Find sound files such as .WAV, .MP3
+		</li><li>put sound files in project folder <span class="filename">res/raw</span> (really <span class="filename">app/src/main/res/raw</span>)
+		</li><li>in Java code, refer to audio file as <code>R.raw.<var>filename</var></code>
+			<ul>
+				<li>(don't include the extension;  <code>R.raw.foo</code> for <span class="filename">foo.mp3</span>)
+				</li><li>use simple file names with only letters and numbers
+			</li></ul>
+	</li></ul>
+	
+	<ul>
+		<li>Load and play clips using Android's <a target="_blank" href="https://developer.android.com/reference/android/media/MediaPlayer.html"><code class="androidapi" data-class="android.media.MediaPlayer">MediaPlayer</code></a> class
+			<div class="linenumbersouter"><pre class=" linenumbers"><code style="float: left;">&nbsp;1&nbsp;
+&nbsp;2&nbsp;</code></pre><pre><code class="java hljs">MediaPlayer mp = MediaPlayer.create(<span class="hljs-keyword">this</span>, R.raw.<var>filename</var>);
+mp.start();
+</code></pre></div>
+		
+		</li><li>other methods: <code>stop</code>, <code>pause</code>, <code>isLooping</code>, <code>isPlaying</code>, <code>getCurrentPosition</code>, <code>release</code>, <code>seekTo</code>, <code>setDataSource</code>, <code>setLooping</code>
+	</li></ul>
+</section>
+
+
+
+<!-- END SLIDES AREA -->
+			</div>
+		<div class="backgrounds"><div class="slide-background titleslide present" data-loaded="true" style="display: block;"></div><div class="slide-background future" data-loaded="true" style="display: block;"></div><div class="slide-background future" data-loaded="true" style="display: block;"></div></div><div class="progress" style="display: block;"><span style="width: 0px;"></span></div><aside class="controls" style="display: block;"><button class="navigate-left" aria-label="previous slide"></button><button class="navigate-right enabled" aria-label="next slide"></button><button class="navigate-up" aria-label="above slide"></button><button class="navigate-down" aria-label="below slide"></button><button id="fullscreenbutton" title="full-screen mode">&#8862;</button></aside><div class="slide-number" style="display: block;"><span class="slide-number-a">1</span></div><div class="speaker-notes" data-prevent-swipe=""></div><div class="pause-overlay"></div><div id="aria-status-div" aria-live="polite" aria-atomic="true" style="position: absolute; height: 1px; width: 1px; overflow: hidden; clip: rect(1px 1px 1px 1px);">
+	CSE 491: Android
+
+	Playing audio with MediaPlayer
+</div></div>
+
+		<script src="./MediaPlayer_files/highlight.pack.js.download" tppabs="http://web.stanford.edu/class/cs193a/lectures/slides/highlightjs/highlight.pack.js"></script>
+		<script src="./MediaPlayer_files/cs193a-slides.js.download" tppabs="http://web.stanford.edu/class/cs193a/lectures/slides/cs193a-slides.js"></script>
+		<script src="./MediaPlayer_files/reveal.js.download" tppabs="http://web.stanford.edu/class/cs193a/lectures/slides/reveal/js/reveal.js"></script>
+		<script>
+			initializeSlides();
+		</script>
+	
+
+</body></html>
